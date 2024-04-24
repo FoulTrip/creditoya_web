@@ -7,12 +7,14 @@ import styles from "./page.module.css";
 
 import { TbFingerprint } from "react-icons/tb";
 import { useRouter } from "next/navigation";
+import Contract from "@/components/documents/Contract";
 
 function Dashboard() {
   const router = useRouter();
   const { user } = useGlobalContext();
   const [loading, setLoading] = useState(true);
   const [completeDocs, setCompleteDocs] = useState<boolean | null>(null);
+  const [openContract, setOpenContract] = useState<boolean>(false);
 
   useEffect(() => {
     const documentsVerify = async () => {
@@ -21,8 +23,8 @@ function Dashboard() {
         { userId: user?.id },
         { headers: { Authorization: `Bearer ${user?.token}` } }
       );
-      console.log(response.data.success);
-      setCompleteDocs(response.data.success);
+      console.log(response.data);
+      setCompleteDocs(response.data.data);
       setLoading(false);
     };
 
@@ -33,6 +35,14 @@ function Dashboard() {
     }
   }, [user?.id]);
 
+  const handleOpenContract = () => {
+    setOpenContract(!openContract);
+  };
+
+  const toggleContract = () => {
+    setOpenContract(!openContract); // Cambia el estado de openContract al valor opuesto
+  };
+
   if (loading) {
     return <div>Cargando...</div>; // Aquí puedes reemplazar con tu componente de carga
   }
@@ -41,7 +51,14 @@ function Dashboard() {
     if (completeDocs) {
       return (
         <>
-          <div>Dashboard</div>
+          <main className={styles.containerDashboard}>
+            {!openContract && (
+              <div className={styles.btnNew} onClick={handleOpenContract}>
+                <p>Crear nuevo prestamo</p>
+              </div>
+            )}
+            {openContract && <Contract toggleContract={toggleContract} />}
+          </main>
         </>
       );
     }

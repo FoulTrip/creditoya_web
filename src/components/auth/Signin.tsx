@@ -32,7 +32,7 @@ function Signin() {
 
     try {
       const response = await axios.post("/api/user/signin", formData);
-      const data: AuthUser = response.data;
+      const data: AuthUser = response.data.data;
 
       if (data.token) {
         setUserData(data);

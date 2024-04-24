@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const authToken = req.headers.get("authorization");
     const token = authToken?.split(" ")[1];
 
-    if (token) {
+    if (!token) {
       throw new Error("Token is required");
     }
 
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       throw new Error("Token inválido");
     }
     const response = await UserService.hasDocumentData(userId);
-    return NextResponse.json({ success: response });
+    return NextResponse.json({ success: true, data: response });
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ success: false, error: error.message });

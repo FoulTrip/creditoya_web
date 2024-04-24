@@ -46,3 +46,15 @@
 .boxBtnComplete button:hover {
   background: var(--blue-500);
 }
+
+.containerDashboard {
+  margin-top: 5em;
+  text-align: center;
+  width: 90%;
+  margin-left: 5%;
+}
+
+.btnNew {
+  background: var(--white-400);
+  padding: 10px;
+}

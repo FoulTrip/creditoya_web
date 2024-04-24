@@ -10,7 +10,6 @@ import axios from "axios";
 import { ScalarDocument } from "@/types/User";
 import { toast } from "sonner";
 import { useGlobalContext } from "@/context/Auth";
-import imageCompression from "browser-image-compression";
 
 function Profile({ params }: { params: { userId: string } }) {
   const [imagePreview1, setImagePreview1] = useState("");
@@ -21,34 +20,27 @@ function Profile({ params }: { params: { userId: string } }) {
   const [numberCc, setNumberCc] = useState<string | null>(null);
 
   const { user } = useGlobalContext();
-  // console.log(user);
 
   const onDrop1 = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await axios.post("/api/upload", formData, {
+      headers: { Authorization: `Bearer ${user?.token}` },
+    });
+    console.log(response)
     setImagePreview1(URL.createObjectURL(file));
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64String = reader.result?.toString().split(",")[1];
-      if (base64String) {
-        setLoadingUploadFront(true);
-        handleSubmitImageFront({ image: base64String });
-      }
-    };
-    reader.readAsDataURL(file);
   }, []);
 
   const onDrop2 = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await axios.post("/api/upload", formData, {
+      headers: { Authorization: `Bearer ${user?.token}` },
+    });
+    console.log(response)
     setImagePreview2(URL.createObjectURL(file));
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64String = reader.result?.toString().split(",")[1];
-      if (base64String) {
-        setLoadingUploadBack(true);
-        handleSubmitImageBack({ image: base64String });
-      }
-    };
-    reader.readAsDataURL(file);
   }, []);
 
   const { getRootProps: getRootProps1, getInputProps: getInputProps1 } =
