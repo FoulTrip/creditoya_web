@@ -1,0 +1,13 @@
+.btnCopyText {
+  display: flex;
+  flex-direction: row;
+}
+
+.containerPerfil {
+  margin-top: 7em;
+}
+
+.boxIconCopy {
+  display: grid;
+  place-content: center;
+}

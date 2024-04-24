@@ -1,0 +1,53 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("NEXT_PUBLIC_MONGODB_URI")
+}
+
+model User {
+    id              String            @id @default(uuid()) @map("_id")
+    password        String
+    email           String            @unique
+    name            String
+    avatar          String?
+    Document        Document[]
+    createdAt       DateTime          @default(now())
+    updatedAt       DateTime          @updatedAt
+    LoanApplication LoanApplication[]
+}
+
+model LoanApplication {
+    id                 String   @id @default(uuid()) @map("_id")
+    user               User     @relation(fields: [userId], references: [id])
+    userId             String
+    bankCurrentAccount Boolean  @default(false) // Cuenta corriente
+    bankSavingAccount  Boolean  @default(false) // Ahorros
+    bankNumberAccount  String // Nro. de cuenta
+    entity             String // Entidad
+    fundsOrigin        String // Origen de fondos
+    signature          String // Firma codificada en base 64
+    ccNumber           String // Cédula de ciudadanía
+    status             Status
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @updatedAt
+}
+
+model Document {
+    id            String   @id @default(uuid()) @map("_id")
+    user          User     @relation(fields: [userId], references: [id])
+    userId        String
+    documentFront String   @default("void")
+    documentBack  String   @default("void")
+    number        String   @default("void")
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+}
+
+enum Status {
+    PENDING
+    APPROVED
+    REJECTED
+}

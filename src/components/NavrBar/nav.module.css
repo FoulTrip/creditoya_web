@@ -1,0 +1,88 @@
+.containerNav {
+  display: flex;
+  flex-direction: row;
+  padding: 15px 60px;
+  position: fixed;
+  top: 0; /* Lo fija en la parte superior */
+  left: 0;
+  right: 0;
+  background-color: transparent;
+  backdrop-filter: blur(10px);
+  transition: background-color 0.3s;
+}
+
+.NavBoxLogo {
+  display: flex;
+  justify-content: flex-start;
+  flex-basis: 400px;
+  flex-grow: 1;
+}
+
+.logoNav {
+  width: 40px;
+  height: auto;
+}
+
+.optsBox {
+  flex-basis: 400px;
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btnOpt {
+  display: grid;
+  place-content: center;
+  color: var(--blue-300);
+  /* filter: drop-shadow(5px 5px 10px #000000); */
+}
+
+.btnOpt:hover {
+  color: var(--blue-400);
+  cursor: pointer;
+}
+
+.btnOptLogin {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  padding: 0px 10px;
+  background: var(--blue-800);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 1em;
+  font-weight: 400;
+  cursor: pointer;
+  color: #bababa;
+}
+
+.btnOptLogin:hover {
+  background: var(--blue-900);
+  transition: background 0.4s;
+}
+
+.iconBtn {
+  color: var(--green-700);
+}
+
+.btnOptLogin p {
+  display: grid;
+  place-content: center;
+  color: #d2d2d2;
+}
+
+.centerIconBtn {
+  display: grid;
+  place-content: center;
+}
+
+.centerOptsBox {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+@media screen and (max-width: 700px) {
+  .containerNav {
+    padding: 10px 30px;
+  }
+}

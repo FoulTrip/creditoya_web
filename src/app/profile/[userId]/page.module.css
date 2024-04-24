@@ -1,0 +1,48 @@
+.containerPerfil {
+  margin: 7em 60px;
+}
+
+.boxImagePerfil {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.avatarIcon {
+  filter: drop-shadow(5px 5px 10px #818181);
+  border-radius: 8px;
+}
+
+.boxInfoUserAvatar {
+  display: grid;
+  place-content: center;
+  flex-basis: 200px;
+  flex-grow: 1;
+  /* background: var(--white-100); */
+  padding: 20px;
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+  border-radius: 8px;
+}
+
+.boxInfoUser {
+  display: grid;
+  place-content: center;
+  flex-basis: 200px;
+  flex-grow: 1;
+  background: var(--white-100);
+  border: 1px solid var(--white-300);
+  padding: 20px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.textPreview {
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+
+.centerBoxInfoUser {
+  display: flex;
+  flex-direction: column;
+}
