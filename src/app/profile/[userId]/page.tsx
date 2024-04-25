@@ -28,8 +28,8 @@ function Profile({ params }: { params: { userId: string } }) {
     const response = await axios.post("/api/upload", formData, {
       headers: { Authorization: `Bearer ${user?.token}` },
     });
-    console.log(response)
-    setImagePreview1(URL.createObjectURL(file));
+    console.log(response);
+    setImagePreview1(response.data.url);
   }, []);
 
   const onDrop2 = useCallback(async (acceptedFiles: File[]) => {
@@ -39,8 +39,8 @@ function Profile({ params }: { params: { userId: string } }) {
     const response = await axios.post("/api/upload", formData, {
       headers: { Authorization: `Bearer ${user?.token}` },
     });
-    console.log(response)
-    setImagePreview2(URL.createObjectURL(file));
+    console.log(response);
+    setImagePreview2(response.data.url);
   }, []);
 
   const { getRootProps: getRootProps1, getInputProps: getInputProps1 } =
@@ -127,7 +127,7 @@ function Profile({ params }: { params: { userId: string } }) {
           <div className={styles.boxInfoUserAvatar}>
             <Avatar
               className={styles.avatarIcon}
-              src="https://github.com/foultrip.png"
+              src={user?.avatar}
               round={true}
               size={"300"}
             />
@@ -135,16 +135,16 @@ function Profile({ params }: { params: { userId: string } }) {
 
           <div className={styles.boxInfoUser} {...getRootProps1()}>
             <input {...getInputProps1()} />
-            {imagePreview1 ? (
+            {imagePreview1 && imagePreview1 != "void" ? (
               <>
                 <Image
                   className={styles.avatarIcon}
                   src={imagePreview1}
                   alt="img01"
-                  width={300}
+                  width={200}
                   height={300}
                 />
-                {loadingUploadFront && <p>Cargando</p>}
+                <p className={styles.warninCC}>Cedula parte frontal</p>
               </>
             ) : (
               <p className={styles.textPreview}>
@@ -155,14 +155,17 @@ function Profile({ params }: { params: { userId: string } }) {
 
           <div className={styles.boxInfoUser} {...getRootProps2()}>
             <input {...getInputProps2()} />
-            {imagePreview2 ? (
-              <Image
-                className={styles.avatarIcon}
-                src={imagePreview2}
-                alt="img"
-                width={300}
-                height={300}
-              />
+            {imagePreview2 && imagePreview2 != "void" ? (
+              <>
+                <Image
+                  className={styles.avatarIcon}
+                  src={imagePreview2}
+                  alt="img"
+                  width={200}
+                  height={300}
+                />
+                <p className={styles.warninCC}>Cedula parte tracera</p>
+              </>
             ) : (
               <p className={styles.textPreview}>
                 Toma una foto clara de la parte trasera de tu cedula
@@ -171,19 +174,39 @@ function Profile({ params }: { params: { userId: string } }) {
           </div>
         </div>
 
-        <h1>Datos Personales</h1>
-        <div>
+        <h1 className={styles.datesBox}>Datos Personales</h1>
+        <div className={styles.boxPartInfo}>
           <p>Cedula de Ciudadania</p>
-          <input
-            type="text"
-            value={
-              numberCc !== null
-                ? numberCc
-                : (infoUser && infoUser[0] && infoUser[0].number) || ""
-            }
-            onChange={(e) => setNumberCc(e.target.value)}
-          />
-          <button>Guardar</button>
+          <div className={styles.partChange}>
+            <input
+              className={styles.inputCC}
+              type="text"
+              value={
+                numberCc !== null
+                  ? numberCc
+                  : (infoUser && infoUser[0] && infoUser[0].number) || ""
+              }
+              onChange={(e) => setNumberCc(e.target.value)}
+            />
+            <button>Guardar</button>
+          </div>
+        </div>
+
+        <div className={styles.boxPartInfo}>
+          <p>Nombre</p>
+          <div className={styles.partChange}>
+            <input
+              className={styles.inputCC}
+              type="text"
+              value={
+                numberCc !== null
+                  ? numberCc
+                  : (infoUser && infoUser[0] && infoUser[0].number) || ""
+              }
+              onChange={(e) => setNumberCc(e.target.value)}
+            />
+            <button>Guardar</button>
+          </div>
         </div>
       </main>
     </>

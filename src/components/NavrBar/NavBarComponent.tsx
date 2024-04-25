@@ -38,16 +38,25 @@ function NavBar() {
             <p className={styles.btnOpt}>Nosotros</p>
             <div
               className={styles.btnOptLogin}
-              onClick={() => router.push(`/profile/${user?.id}`)}
+              onClick={
+                user
+                  ? () => router.push(`/profile/${user?.id}`)
+                  : () => router.push(`/auth`)
+              }
             >
               <div className={styles.centerIconBtn}>
                 {user ? (
-                  <Avatar src={user.avatar} round={true} size="25" />
+                  <Avatar
+                    src={user.avatar}
+                    className={styles.avatar}
+                    round={true}
+                    size="25"
+                  />
                 ) : (
                   <TbUserCircle className={styles.iconBtn} size={25} />
                 )}
               </div>
-              {user ? <p>{user.name}</p> : <p>Cuenta</p>}
+              {user ? <p>{user.name.split(" ")[0]}</p> : <p>Cuenta</p>}
             </div>
           </div>
         </div>

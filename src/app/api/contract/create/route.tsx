@@ -1,0 +1,33 @@
+import LoanApplicationService from "@/classes/LoanApplicationServices";
+import { ScalarLoanApplication } from "@/types/User";
+import { NextResponse } from "next/server";
+
+export async function POST(req: Request) {
+  try {
+    const {
+      userId,
+      bankCurrentAccount,
+      bankSavingAccount,
+      bankNumberAccount,
+      entity,
+      ccNumber,
+      fundsOrigin,
+    }: ScalarLoanApplication = await req.json();
+
+    const response = await LoanApplicationService.create({
+      userId,
+      bankCurrentAccount,
+      bankSavingAccount,
+      bankNumberAccount,
+      entity,
+      ccNumber,
+      fundsOrigin,
+    });
+
+    return NextResponse.json({ success: true, data: response });
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ success: false, error: error.message });
+    }
+  }
+}

@@ -13,11 +13,11 @@ export type AuthUser = {
   avatar?: string;
   token: string;
   Document: Document[]; // Agregado según tu esquema
-  LoanApplication: LoanApplication[]; // Agregado según tu esquema
+  LoanApplication: ScalarLoanApplication[]; // Agregado según tu esquema
 };
 
 // Tipo para LoanApplication
-export type LoanApplication = {
+export type ScalarLoanApplication = {
   id?: string;
   userId: string;
   bankCurrentAccount: boolean;
@@ -25,11 +25,27 @@ export type LoanApplication = {
   bankNumberAccount: string;
   entity: string;
   fundsOrigin: string;
-  signature: string;
   ccNumber: string;
-  status: Status;
-  createdAt: Date;
-  updatedAt: Date;
+  status?: Status;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+export type ScalarPdfLoan = {
+  id?: string;
+  loanApplicationId: string;
+  headerTitle: string;
+  firstExplainText: string;
+  secondTitle: string;
+  optionAccount: Record<string, any>[];
+  threeTitle: string;
+  justifyText: string;
+  justifyUser: string;
+  numberOnce: string;
+  textOnce: string;
+  finalTitle: string;
+  subFinalText: string;
+  finalText: string;
 };
 
 // Tipo para Document

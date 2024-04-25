@@ -13,6 +13,11 @@
   border-radius: 8px;
 }
 
+.warninCC {
+  padding-top: 1em;
+  text-align: center;
+}
+
 .boxInfoUserAvatar {
   display: grid;
   place-content: center;
@@ -29,10 +34,10 @@
   place-content: center;
   flex-basis: 200px;
   flex-grow: 1;
-  background: var(--white-100);
-  border: 1px solid var(--white-300);
+  /* background: var(--white-100);
+  border: 1px solid var(--white-300); */
   padding: 20px;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
   border-radius: 8px;
 }
 
@@ -45,4 +50,26 @@
 .centerBoxInfoUser {
   display: flex;
   flex-direction: column;
+}
+
+.inputCC {
+  padding: 5px 10px;
+  outline: none;
+}
+
+.boxPartInfo {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.partChange {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.datesBox {
+  margin-top: 1em;
 }

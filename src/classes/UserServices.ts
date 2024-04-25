@@ -135,6 +135,15 @@ class UserService {
 
     return documents;
   }
+
+  // Método para obtener un documento por userId
+  static async getDocumentByUserId(userId: string): Promise<Document | null> {
+    const document = await prisma.document.findFirst({
+      where: { userId },
+    });
+
+    return document;
+  }
 }
 
 // Export the UserService class

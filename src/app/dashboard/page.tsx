@@ -8,6 +8,7 @@ import styles from "./page.module.css";
 import { TbFingerprint } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import Contract from "@/components/documents/Contract";
+import { ScalarLoanApplication } from "@/types/User";
 
 function Dashboard() {
   const router = useRouter();
@@ -15,6 +16,7 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [completeDocs, setCompleteDocs] = useState<boolean | null>(null);
   const [openContract, setOpenContract] = useState<boolean>(false);
+  const [Loans, setLoans] = useState<ScalarLoanApplication[] | null>(null);
 
   useEffect(() => {
     const documentsVerify = async () => {
@@ -34,6 +36,24 @@ function Dashboard() {
       setLoading(false);
     }
   }, [user?.id]);
+
+  useEffect(() => {
+    const getAllLoans = async () => {
+      const response = await axios.post(
+        "/api/user/loans",
+        {
+          userId: user?.id,
+        },
+        {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        }
+      );
+
+      setLoans(response.data.data);
+    };
+
+    getAllLoans();
+  }, [user?.id, user?.token]);
 
   const handleOpenContract = () => {
     setOpenContract(!openContract);
@@ -58,6 +78,12 @@ function Dashboard() {
               </div>
             )}
             {openContract && <Contract toggleContract={toggleContract} />}
+
+            {Loans?.map((loan) => (
+              <div key={loan.id}>
+                <p>{loan.entity}</p>
+              </div>
+            ))}
           </main>
         </>
       );
