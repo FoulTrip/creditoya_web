@@ -46,7 +46,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
     };
 
     getDocsPreview();
-  }, [user?.id]);
+  }, [user?.id, user?.token]);
 
   const handleStatusVerify = async () => {
     setSuccessVerify(true);

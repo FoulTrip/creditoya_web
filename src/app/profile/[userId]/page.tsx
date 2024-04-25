@@ -21,27 +21,33 @@ function Profile({ params }: { params: { userId: string } }) {
 
   const { user } = useGlobalContext();
 
-  const onDrop1 = useCallback(async (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await axios.post("/api/upload", formData, {
-      headers: { Authorization: `Bearer ${user?.token}` },
-    });
-    console.log(response);
-    setImagePreview1(response.data.url);
-  }, []);
+  const onDrop1 = useCallback(
+    async (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await axios.post("/api/upload", formData, {
+        headers: { Authorization: `Bearer ${user?.token}` },
+      });
+      console.log(response);
+      setImagePreview1(response.data.url);
+    },
+    [user?.token]
+  );
 
-  const onDrop2 = useCallback(async (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await axios.post("/api/upload", formData, {
-      headers: { Authorization: `Bearer ${user?.token}` },
-    });
-    console.log(response);
-    setImagePreview2(response.data.url);
-  }, []);
+  const onDrop2 = useCallback(
+    async (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await axios.post("/api/upload", formData, {
+        headers: { Authorization: `Bearer ${user?.token}` },
+      });
+      console.log(response);
+      setImagePreview2(response.data.url);
+    },
+    [user?.token]
+  );
 
   const { getRootProps: getRootProps1, getInputProps: getInputProps1 } =
     useDropzone({ onDrop: onDrop1 });

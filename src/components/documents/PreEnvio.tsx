@@ -10,7 +10,7 @@ interface PreEnvioProps {
   email: string;
   name: string;
   Success: () => void;
-  token: string
+  token: string;
 }
 
 function PreEnvio({ email, name, Success, token }: PreEnvioProps) {
@@ -24,11 +24,15 @@ function PreEnvio({ email, name, Success, token }: PreEnvioProps) {
   useEffect(() => {
     const sendCodeMail = async ({ code }: { code: string }) => {
       const numberCode = Number(code);
-      const response = await axios.post("/api/mail/2f", {
-        addressee: email,
-        name,
-        code: numberCode,
-      }, {headers: {Authorization: `Bearer ${token}`}});
+      const response = await axios.post(
+        "/api/mail/2f",
+        {
+          addressee: email,
+          name,
+          code: numberCode,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       console.log(response.data);
       setCodeSent(true);
     };
@@ -40,7 +44,7 @@ function PreEnvio({ email, name, Success, token }: PreEnvioProps) {
       setVerifyNumber(Array.from(String(newKey)));
       sendCodeMail({ code: newKey });
     }
-  }, [codeSent, email, name]);
+  }, [codeSent, email, name, token]);
 
   const handleChange =
     (position: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +61,7 @@ function PreEnvio({ email, name, Success, token }: PreEnvioProps) {
 
   const handleSubmit = () => {
     if (userInput.join("") === verifyNumber.join("")) {
-      Success()
+      Success();
       toast.success("Código correcto");
     } else {
       toast.error("Código incorrecto");

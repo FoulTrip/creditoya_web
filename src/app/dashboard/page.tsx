@@ -35,7 +35,7 @@ function Dashboard() {
     } else {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [user?.id, user?.token]);
 
   useEffect(() => {
     const getAllLoans = async () => {
