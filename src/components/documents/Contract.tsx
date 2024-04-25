@@ -1,7 +1,28 @@
-import React from "react";
+"use client";
+
+import React, { use, useState } from "react";
 import styles from "./Contract.module.css";
+import Modal from "../modal/Modal";
+import PreEnvio from "./PreEnvio";
+import { useGlobalContext } from "@/context/Auth";
 
 function Contract({ toggleContract }: { toggleContract: () => void }) {
+  const [openModel, setOpenModel] = useState<boolean>(false);
+  const [successVerify, setSuccessVerify] = useState<boolean>(false);
+  const [formData, setFormData] = useState<any>({
+    // Aquí se definen los valores iniciales para el JSON
+    numeroCuenta: "",
+    entidad: "",
+    tipoCuenta: "",
+    // Añade más campos según sea necesario
+  });
+  const { user } = useGlobalContext();
+
+  const handleStatusVerify = () => {
+    setSuccessVerify(true);
+    setOpenModel(false);
+  };
+
   return (
     <>
       <div className={styles.card}>
@@ -173,6 +194,25 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           caso el Cliente deberá pagar desde ese momento los honorarios que
           genere dicha gestión.
         </p>
+
+        <div>
+          <button onClick={() => setOpenModel(true)}>
+            Completar Solicitud
+          </button>
+        </div>
+
+        {openModel == true && (
+          <Modal isOpen onClose={() => setOpenModel(false)}>
+            <PreEnvio
+              email={user?.email as string}
+              name={user?.name as string}
+              Success={() => handleStatusVerify()}
+              token={user?.token as string}
+            />
+          </Modal>
+        )}
+
+        {successVerify && <p>Envio verificado</p>}
       </div>
     </>
   );

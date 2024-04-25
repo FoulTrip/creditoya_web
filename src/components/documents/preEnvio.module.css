@@ -1,0 +1,28 @@
+.containerSendCode {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputContainer {
+  display: grid;
+  place-content: center;
+}
+
+.centerInputNumbers {
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+  gap: 5px;
+}
+
+.inputContainer input {
+  width: 30px;
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.previewCorreo {
+  margin-bottom: 1em;
+}

@@ -27,11 +27,18 @@ function NavBar() {
         </div>
         <div className={styles.optsBox}>
           <div className={styles.centerOptsBox}>
-            {user && <p className={styles.btnOpt} onClick={() => router.push("/dashboard")}>Dashboard</p>}
+            {user && (
+              <p
+                className={styles.btnOpt}
+                onClick={() => router.push("/dashboard")}
+              >
+                Dashboard
+              </p>
+            )}
             <p className={styles.btnOpt}>Nosotros</p>
             <div
               className={styles.btnOptLogin}
-              onClick={() => router.push("/auth")}
+              onClick={() => router.push(`/profile/${user?.id}`)}
             >
               <div className={styles.centerIconBtn}>
                 {user ? (
