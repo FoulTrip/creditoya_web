@@ -78,7 +78,7 @@ function Dashboard() {
           <main className={styles.containerDashboard}>
             {!openContract && (
               <div className={styles.btnNew} onClick={handleOpenContract}>
-                <p>Solicitar nuevo prestamo</p>
+                <p>Solicitar Prestamo</p>
               </div>
             )}
             {openContract && <Contract toggleContract={toggleContract} />}

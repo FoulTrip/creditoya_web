@@ -30,6 +30,13 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
           </div>
         </div>
 
+        <div className={styles.containerValueBox}>
+          <div className={styles.centerValueBox}>
+            <h2 className={styles.titleCantity}>Cantidad</h2>
+            <p className={styles.textValueCantity}>2'300'000 COP</p>
+          </div>
+        </div>
+
         <div className={styles.barViewDetails}>
           <div className={styles.subBarView} onClick={toggleDetails}>
             <p className={styles.subTextBarView}>Detalles</p>
