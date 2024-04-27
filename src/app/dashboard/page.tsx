@@ -89,7 +89,7 @@ function Dashboard() {
                 {Loans?.length == 0 && <div>Sin Prestaciones</div>}
                 <div className={styles.listLoans}>
                   {Loans?.map((loan) => (
-                    <CardLoan loan={loan} />
+                    <CardLoan key={loan.id} loan={loan} />
                   ))}
                 </div>
               </>

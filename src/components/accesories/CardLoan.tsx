@@ -20,7 +20,7 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
 
   return (
     <>
-      <div key={loan.id} className={styles.cardLoan}>
+      <div className={styles.cardLoan}>
         <div className={styles.headerStatus}>
           <div className={styles.centerHeaderStatus}>
             <div className={styles.iconHeaderStatus}>
