@@ -1,15 +1,14 @@
 // Importar las declaraciones necesarias
 import { prisma } from "@/prisma/db";
 import { LoanApplication, pdfLoan } from "@prisma/client";
-import { ScalarLoanApplication, ScalarPdfLoan, Status } from "@/types/User";
+import { ScalarLoanApplication } from "@/types/User";
 
 // Clase para el servicio de LoanApplication
 class LoanApplicationService {
   // Método para crear una solicitud de préstamo
   static async create(data: ScalarLoanApplication): Promise<LoanApplication> {
     const loanApplicationData = {
-      ...data,
-      status: data.status ?? Status.PENDING,
+      ...data
     };
     return prisma.loanApplication.create({ data: loanApplicationData });
   }

@@ -1,3 +1,5 @@
+import { Status } from "@prisma/client";
+
 export type ScalarUser = {
   id?: string;
   name: string;
@@ -59,14 +61,13 @@ export type ScalarDocument = {
   updatedAt: Date;
 };
 
-// Enum para Estado
-export enum Status {
-  PENDIENTE = "PENDIENTE",
-  APROBADO = "APROBADO",
-  RECHAZADO = "RECHAZADO",
-  PAGADO = "PAGADO",
-  VENCIDO = "VENCIDO",
-  EN_MORA = "EN_MORA",
-  EN_PROCESO_DE_COBRO = "EN_PROCESO_DE_COBRO",
-  EN_NEGOCIACIÓN = "EN_NEGOCIACIÓN",
-}
+// // Enum para Estado
+// export type Status =
+//   | "PENDIENTE"
+//   | "APROBADO"
+//   | "RECHAZADO"
+//   | "PAGADO"
+//   | "VENCIDO"
+//   | "EN_MORA"
+//   | "EN_PROCESO_DE_COBRO"
+//   | "EN_NEGOCIACIÓN";
