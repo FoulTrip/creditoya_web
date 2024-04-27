@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import styles from "./auth.module.css";
 import axios from "axios";
 
-import { TbKey, TbMail } from "react-icons/tb";
+import { TbKey, TbLock, TbMail } from "react-icons/tb";
 import { useGlobalContext } from "@/context/Auth";
 import { AuthUser } from "@/types/User";
 
@@ -70,7 +70,7 @@ function Signin() {
           </div>
           <div className={styles.boxInput}>
             <div className={styles.subBoxIconInput}>
-              <TbKey className={styles.iconInput} size={20} />
+              <TbLock className={styles.iconInput} size={20} />
             </div>
             <input
               className={styles.input}
