@@ -139,11 +139,14 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
       <div className={styles.card}>
         <div className={styles.headerCard}>
           <h2 className={styles.firstTitle}>{JsonBasePDF.headerTitle}</h2>
-          <h4 onClick={toggleContract}>Cancelar</h4>
+          <div className={styles.BoxBtnCancel}>
+            <h4 onClick={toggleContract}>Cancelar</h4>
+          </div>
         </div>
         <p className={styles.groupText}>{JsonBasePDF.firstExplainText}</p>
         <h3 className={styles.secondTitle}>{JsonBasePDF.secondTitle}</h3>
         <div className={styles.barDates}>
+
           <div className={styles.boxTypeAccount}>
             <div className={styles.centerBoxTypeAccount}>
               {JsonBasePDF.optionAccount.map((opts) =>
@@ -179,6 +182,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
               onChange={handleEntidadChange}
             />
           </div>
+
         </div>
         <h3 className={styles.threeTitle}>{JsonBasePDF.threeTitle}</h3>
         <p className={styles.justification}>{JsonBasePDF.justifyText}</p>
@@ -197,8 +201,8 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
         <p className={styles.finalText}>{JsonBasePDF.subFinalText}</p>
         <p className={styles.finalText}>{JsonBasePDF.finalText}</p>
 
-        <div>
-          <button onClick={() => setOpenModel(true)}>
+        <div className={styles.containerBtnComplete}>
+          <button className={styles.btnComplete} onClick={() => setOpenModel(true)}>
             Completar Solicitud
           </button>
         </div>

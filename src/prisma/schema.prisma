@@ -29,7 +29,7 @@ model LoanApplication {
     entity             String // Entidad
     fundsOrigin        String // Origen de fondos
     ccNumber           String    @unique
-    status             Status
+    status             Status    @default(PENDIENTE)
     createdAt          DateTime  @default(now())
     updatedAt          DateTime  @updatedAt
     pdfLoan            pdfLoan[]
@@ -65,7 +65,12 @@ model Document {
 }
 
 enum Status {
-    PENDING
-    APPROVED
-    REJECTED
+    PENDIENTE
+    APROBADO
+    RECHAZADO
+    PAGADO
+    VENCIDO
+    EN_MORA
+    EN_PROCESO_DE_COBRO
+    EN_NEGOCIACION
 }

@@ -9,8 +9,9 @@
 
 .headerCard {
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap-reverse;
   justify-content: space-between;
+  gap: 10px;
 }
 
 .headerCard h4 {
@@ -35,6 +36,11 @@
 .firstTitle {
   text-align: start;
   font-weight: 500;
+  display: grid;
+  place-content: center;
+}
+
+.BoxBtnCancel {
   display: grid;
   place-content: center;
 }
@@ -115,4 +121,28 @@
 
 .finalText {
   text-align: start;
+}
+
+.containerBtnComplete {
+  margin-top: 2em;
+}
+
+.btnComplete {
+  padding: 10px 15px;
+  cursor: pointer;
+  outline: none;
+  background: transparent;
+  border: none;
+  font-weight: 600;
+}
+
+.btnComplete:hover {
+  background: var(--white-100);
+  border-radius: 8px;
+}
+
+@media screen and (max-width: 700px) {
+  .barDates {
+    gap: 20px;
+  }
 }

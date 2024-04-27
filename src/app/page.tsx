@@ -7,7 +7,6 @@ import { useGlobalContext } from "@/context/Auth";
 
 export default function Home() {
   const { user } = useGlobalContext()
-  console.log(user);
   return (
     <>
       <main className={styles.ContainerMain}>Hola</main>

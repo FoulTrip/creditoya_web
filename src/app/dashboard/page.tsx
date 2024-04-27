@@ -5,10 +5,14 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-import { TbFingerprint } from "react-icons/tb";
+import { TbChevronDown, TbChevronUp, TbFingerprint } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import Contract from "@/components/documents/Contract";
 import { ScalarLoanApplication } from "@/types/User";
+
+import { TbClockSearch } from "react-icons/tb";
+import EditInfo from "@/components/accesories/EditInfo";
+import CardLoan from "@/components/accesories/CardLoan";
 
 function Dashboard() {
   const router = useRouter();
@@ -21,11 +25,11 @@ function Dashboard() {
   useEffect(() => {
     const documentsVerify = async () => {
       const response = await axios.post(
-        "http://localhost:3000/api/user/docs_exist",
+        "/api/user/docs_exist",
         { userId: user?.id },
         { headers: { Authorization: `Bearer ${user?.token}` } }
       );
-      console.log(response.data);
+      // console.log(response.data);
       setCompleteDocs(response.data.data);
       setLoading(false);
     };
@@ -74,16 +78,22 @@ function Dashboard() {
           <main className={styles.containerDashboard}>
             {!openContract && (
               <div className={styles.btnNew} onClick={handleOpenContract}>
-                <p>Crear nuevo prestamo</p>
+                <p>Solicitar nuevo prestamo</p>
               </div>
             )}
             {openContract && <Contract toggleContract={toggleContract} />}
 
-            {Loans?.map((loan) => (
-              <div key={loan.id}>
-                <p>{loan.entity}</p>
-              </div>
-            ))}
+            {!openContract && (
+              <>
+                <h1 className={styles.titleLoan}>Tus Prestamos</h1>
+                {Loans?.length == 0 && <div>Sin Prestaciones</div>}
+                <div className={styles.listLoans}>
+                  {Loans?.map((loan) => (
+                    <CardLoan loan={loan} />
+                  ))}
+                </div>
+              </>
+            )}
           </main>
         </>
       );

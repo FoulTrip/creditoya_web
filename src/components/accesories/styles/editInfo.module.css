@@ -1,0 +1,72 @@
+.containerEditInfo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
+  background: var(--blue-50);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  border: 1px solid var(--white-200);
+}
+
+.infoLabel {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.centerInfoLabel {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.boxIconLabel {
+  display: grid;
+  place-content: center;
+}
+
+.iconDetail {
+  color: var(--blue-400);
+  filter: drop-shadow(0px 0px 10px #4c4c4c);
+}
+
+.textLabel {
+  display: grid;
+  place-content: center;
+  font-weight: 500;
+  color: var(--blue-400);
+}
+
+.optsLabel {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.centerOptsLabel {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.btnOptSelect {
+  color: var(--white-600);
+  cursor: pointer;
+}
+
+.btnOptSelect:hover {
+  filter: drop-shadow(0px 0px 10px #000000);
+}
+
+.boxIconLabelOpts {
+  display: grid;
+  place-content: center;
+  padding: 5px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.boxIconLabelOpts:hover {
+  background: var(--blue-100);
+  border: 1px solid var(--white-200);
+}
