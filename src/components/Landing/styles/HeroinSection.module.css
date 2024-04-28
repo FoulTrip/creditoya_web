@@ -35,6 +35,7 @@
   width: 700px;
   height: auto;
   image-rendering: pixelated;
+  z-index: -1;
 }
 
 .title {

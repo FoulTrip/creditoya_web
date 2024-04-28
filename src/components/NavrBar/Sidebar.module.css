@@ -1,0 +1,8 @@
+.boxIconMenu {
+  display: grid;
+  place-content: center;
+}
+
+.iconMenu {
+    color: var(--white-600);
+}

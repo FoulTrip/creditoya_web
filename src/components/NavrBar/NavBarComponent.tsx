@@ -9,10 +9,13 @@ import { TbUserCircle } from "react-icons/tb";
 import { useGlobalContext } from "@/context/Auth";
 import Avatar from "react-avatar";
 import { useRouter } from "next/navigation";
+import { useMediaQuery } from "react-responsive";
+import SideBar from "./SideBar";
 
 function NavBar() {
   const { user } = useGlobalContext();
   const router = useRouter();
+  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 800px)" });
   // console.log(user)
   return (
     <>
@@ -25,41 +28,47 @@ function NavBar() {
             onClick={() => router.push("/")}
           />
         </div>
-        <div className={styles.optsBox}>
-          <div className={styles.centerOptsBox}>
-            {user && (
-              <p
-                className={styles.btnOpt}
-                onClick={() => router.push("/dashboard")}
-              >
-                Dashboard
-              </p>
-            )}
-            <p className={styles.btnOpt}>Nosotros</p>
-            <div
-              className={styles.btnOptLogin}
-              onClick={
-                user
-                  ? () => router.push(`/profile/${user?.id}`)
-                  : () => router.push(`/auth`)
-              }
-            >
-              <div className={styles.centerIconBtn}>
-                {user ? (
-                  <Avatar
-                    src={user.avatar}
-                    className={styles.avatar}
-                    round={true}
-                    size="25"
-                  />
-                ) : (
-                  <TbUserCircle className={styles.iconBtn} size={25} />
+        {isTabletOrMobile ? (
+          <SideBar />
+        ) : (
+          <>
+            <div className={styles.optsBox}>
+              <div className={styles.centerOptsBox}>
+                {user && (
+                  <p
+                    className={styles.btnOpt}
+                    onClick={() => router.push("/dashboard")}
+                  >
+                    Dashboard
+                  </p>
                 )}
+                <p className={styles.btnOpt}>Nosotros</p>
+                <div
+                  className={styles.btnOptLogin}
+                  onClick={
+                    user
+                      ? () => router.push(`/profile/${user?.id}`)
+                      : () => router.push(`/auth`)
+                  }
+                >
+                  <div className={styles.centerIconBtn}>
+                    {user ? (
+                      <Avatar
+                        src={user.avatar}
+                        className={styles.avatar}
+                        round={true}
+                        size="25"
+                      />
+                    ) : (
+                      <TbUserCircle className={styles.iconBtn} size={25} />
+                    )}
+                  </div>
+                  {user ? <p>{user.name.split(" ")[0]}</p> : <p>Cuenta</p>}
+                </div>
               </div>
-              {user ? <p>{user.name.split(" ")[0]}</p> : <p>Cuenta</p>}
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </nav>
     </>
   );
