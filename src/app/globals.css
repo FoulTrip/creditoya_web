@@ -35,6 +35,18 @@
   --red-800: #961b3c;
   --red-900: #811a39;
   --red-950: #48091a;
+
+  --green-50: #e9ffe4;
+  --green-100: #ccffc4;
+  --green-200: #9eff90;
+  --green-300: #5fff50;
+  --green-400: #29fe1d;
+  --green-500: #07e500;
+  --green-600: #00b800;
+  --green-700: #008000;
+  --green-800: #076d08;
+  --green-900: #0b5c0d;
+  --green-950: #003404;
 }
 
 * {

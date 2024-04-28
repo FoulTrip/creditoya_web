@@ -1,0 +1,141 @@
+.ContainerMain {
+  background-image: linear-gradient(
+    to right top,
+    #ffffff,
+    #f7f7ff,
+    #eef0ff,
+    #e2eaff,
+    #d5e4ff
+  );
+  z-index: -1;
+  min-height: 100dvh;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0px 60px;
+  gap: 10px;
+}
+
+.Boxtexts {
+  flex-basis: 400px;
+  flex-grow: 1;
+  display: grid;
+  place-content: center;
+}
+
+.ilustrationContent {
+  flex-basis: 400px;
+  flex-grow: 1;
+  display: grid;
+  place-content: center;
+  position: sticky;
+  /* z-index: -1; */
+}
+
+.ilustrationGif {
+  filter: drop-shadow(5px 5px 10px #000000);
+  width: 700px;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.title {
+  font-weight: 500;
+  /* color: var(--blue-600); */
+  font-size: 40px;
+  text-align: center;
+}
+
+.cardTestLoan {
+  margin-top: 2em;
+  padding: 0px 100px;
+  /* display: grid;
+  place-content: center; */
+}
+
+.centerCardTestLoan {
+  border-radius: 8px;
+  background: var(--white-50);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.boxReq {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.inputReq {
+  padding: 10px;
+  flex: 1;
+  border: 1px solid transparent;
+  outline: none;
+  font-size: 16px;
+}
+
+.boxIcon {
+  display: grid;
+  place-content: center;
+}
+
+.nameWeb {
+  font-weight: 500;
+  color: var(--red-600);
+  filter: drop-shadow(0px 0px 10px var(--red-400));
+}
+
+.btnGetStarted {
+  display: grid;
+  place-content: center;
+  background: var(--blue-600);
+  border-radius: 0px 0px 8px 8px;
+  padding: 20px;
+  cursor: pointer;
+  border: 1px solid var(--white-300);
+}
+
+.centerBtn {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.textBtn {
+  color: var(--white-50);
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.boxIconBtn {
+  display: grid;
+  place-content: center;
+}
+
+.iconBtn {
+  color: var(--white-50);
+}
+
+.iconCheck {
+  color: var(--green-200);
+}
+
+.iconCheckActive {
+  color: var(--green-600);
+}
+
+@media screen and (max-width: 700px) {
+  .ContainerMain {
+    padding: 6em 30px;
+  }
+
+  .ilustrationGif {
+    width: 100%;
+    height: auto;
+  }
+
+  .cardTestLoan {
+    padding: 0;
+  }
+}
