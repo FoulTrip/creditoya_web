@@ -1,5 +1,7 @@
 .containerPerfil {
-  margin: 7em 60px;
+  width: 90%;
+  margin-left: 5%;
+  margin-top: 7em;
 }
 
 .boxImagePerfil {
@@ -11,17 +13,14 @@
 .avatarIcon {
   filter: drop-shadow(5px 5px 10px #818181);
   border-radius: 8px;
-}
-
-.warninCC {
-  padding-top: 1em;
-  text-align: center;
+  width: 200px;
+  height: auto;
 }
 
 .boxInfoUserAvatar {
   display: grid;
   place-content: center;
-  flex-basis: 200px;
+  flex-basis: 400px;
   flex-grow: 1;
   /* background: var(--white-100); */
   padding: 20px;
@@ -29,22 +28,44 @@
   border-radius: 8px;
 }
 
-.boxInfoUser {
+.boxInputsInfo {
+  flex-basis: 400px;
+  flex-grow: 1;
   display: grid;
   place-content: center;
-  flex-basis: 200px;
-  flex-grow: 1;
-  /* background: var(--white-100);
-  border: 1px solid var(--white-300); */
-  padding: 20px;
-  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
-  border-radius: 8px;
+}
+
+.centerBoxInputsInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  /* background: var(--white-300); */
+}
+
+.partCenter {
+  flex: 1;
+}
+
+.boxInfoUser {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .textPreview {
   display: grid;
   place-content: center;
   text-align: center;
+  padding: 5px 10px;
+  background: var(--white-50);
+  border: 1px solid var(--white-300);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.textPreview:hover {
+  scale: 1.01;
 }
 
 .centerBoxInfoUser {
@@ -55,6 +76,11 @@
 .inputCC {
   padding: 5px 10px;
   outline: none;
+  flex: 1;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--white-300);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .boxPartInfo {
@@ -64,12 +90,105 @@
   gap: 5px;
 }
 
+.btnSaveInfo {
+  background: var(--white-200);
+  border-radius: 8px;
+  border: 1px solid var(--white-300);
+  cursor: pointer;
+  padding: 5px 10px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
 .partChange {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   gap: 10px;
 }
 
 .datesBox {
   margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.containerDocumentsImgs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.onlyImgsDocs {
+  flex-basis: 400px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.barStatusDocs {
+  display: flex;
+  flex-direction: row;
+  padding: 10px 15px;
+  background: var(--white-50);
+  gap: 10px;
+  border-radius: 16px;
+  /* border: 1px solid var(--white-200); */
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+}
+
+.boxIconStatus {
+  display: grid;
+  place-content: center;
+}
+
+.warninCC {
+  display: grid;
+  place-content: center;
+  font-weight: 500;
+}
+
+.boxIconsStatus {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.boxIcon {
+  display: grid;
+  place-content: center;
+  padding: 5px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.viewIcon {
+  color: var(--white-600);
+}
+
+.trashIcon {
+  color: var(--red-600);
+}
+
+.headerCardStatus {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.boxIcon:hover {
+  background: var(--white-100);
+  border: 1px solid var(--white-200);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.iconCheck {
+  color: green;
+  filter: drop-shadow(0px 0px 10px #000000);
+}
+
+.cardLaboral {
+  flex-basis: 400px;
+  flex-grow: 1;
 }
