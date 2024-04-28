@@ -10,6 +10,7 @@ import axios from "axios";
 import { ScalarDocument } from "@/types/User";
 import { toast } from "sonner";
 import { useGlobalContext } from "@/context/Auth";
+import { RemoveImage } from "@/handlers/removeBackground";
 
 function Profile({ params }: { params: { userId: string } }) {
   const [imagePreview1, setImagePreview1] = useState("");
@@ -18,19 +19,33 @@ function Profile({ params }: { params: { userId: string } }) {
   const [loadingUploadFront, setLoadingUploadFront] = useState<boolean>(false);
   const [loadingUploadBack, setLoadingUploadBack] = useState<boolean>(false);
   const [numberCc, setNumberCc] = useState<string | null>(null);
+  const [name, setName] = useState<string | null>(null);
+  const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
+  const [loadingProccessImg02, setLoadingProccessImg02] = useState(false);
 
   const { user } = useGlobalContext();
 
   const onDrop1 = useCallback(
     async (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
-      const formData = new FormData();
-      formData.append("file", file);
-      const response = await axios.post("/api/upload", formData, {
-        headers: { Authorization: `Bearer ${user?.token}` },
-      });
-      console.log(response);
-      setImagePreview1(response.data.url);
+      setLoadingProccessImg01(true);
+      const ProccessedFile = await RemoveImage(file);
+      if (ProccessedFile) {
+        const formData = new FormData();
+        formData.append("file", ProccessedFile);
+        const formDataArray = Array.from(formData.entries());
+        console.log(formDataArray);
+        console.log(formData);
+        const response = await axios.post("/api/upload", formData, {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        });
+        await handleSubmitImageFront({
+          image: response.data,
+        });
+        console.log(response);
+        console.log("url: ", response.data);
+        setImagePreview1(response.data);
+      }
     },
     [user?.token]
   );
@@ -38,13 +53,21 @@ function Profile({ params }: { params: { userId: string } }) {
   const onDrop2 = useCallback(
     async (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
-      const formData = new FormData();
-      formData.append("file", file);
-      const response = await axios.post("/api/upload", formData, {
-        headers: { Authorization: `Bearer ${user?.token}` },
-      });
-      console.log(response);
-      setImagePreview2(response.data.url);
+      setLoadingProccessImg02(true);
+      const ProccessedFile = await RemoveImage(file);
+      if (ProccessedFile) {
+        const formData = new FormData();
+        formData.append("file", ProccessedFile as File);
+        const response = await axios.post("/api/upload", formData, {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        });
+        await handleSubmitImageBack({
+          image: response.data,
+        });
+        console.log(response);
+        setLoadingProccessImg02(false);
+        setImagePreview2(response.data.url);
+      }
     },
     [user?.token]
   );
@@ -64,12 +87,13 @@ function Profile({ params }: { params: { userId: string } }) {
       },
       { headers: { Authorization: `Bearer ${user?.token}` } }
     );
-
     console.log(response);
 
     if (response.data.success == true) {
       setLoadingUploadFront(false);
       toast.success("Parte frontal actualizada");
+    } else {
+      toast.error("la parte frontal no pudo actualizarse");
     }
   };
 
@@ -154,7 +178,9 @@ function Profile({ params }: { params: { userId: string } }) {
               </>
             ) : (
               <p className={styles.textPreview}>
-                Toma una foto clara de la parte frontal de tu cedula
+                {loadingProccessImg01 && "Processando tu documento"}
+                {!loadingProccessImg01 &&
+                  "Toma una foto clara de la parte frontal de tu cedula"}
               </p>
             )}
           </div>
@@ -174,7 +200,9 @@ function Profile({ params }: { params: { userId: string } }) {
               </>
             ) : (
               <p className={styles.textPreview}>
-                Toma una foto clara de la parte trasera de tu cedula
+                {loadingProccessImg02 && "Processando tu documento"}
+                {!loadingProccessImg02 &&
+                  "Toma una foto clara de la parte trasera de tu cedula"}
               </p>
             )}
           </div>
@@ -194,7 +222,7 @@ function Profile({ params }: { params: { userId: string } }) {
               }
               onChange={(e) => setNumberCc(e.target.value)}
             />
-            <button>Guardar</button>
+            <button onClick={handleSubmitNumberCc}>Guardar</button>
           </div>
         </div>
 

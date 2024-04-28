@@ -5,13 +5,11 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-import { TbChevronDown, TbChevronUp, TbFingerprint } from "react-icons/tb";
+import { TbFingerprint } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import Contract from "@/components/documents/Contract";
 import { ScalarLoanApplication } from "@/types/User";
 
-import { TbClockSearch } from "react-icons/tb";
-import EditInfo from "@/components/accesories/EditInfo";
 import CardLoan from "@/components/accesories/CardLoan";
 
 function Dashboard() {

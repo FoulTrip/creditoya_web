@@ -32,8 +32,12 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
 
         <div className={styles.containerValueBox}>
           <div className={styles.centerValueBox}>
-            <h2 className={styles.titleCantity}>Cantidad</h2>
+            <h3 className={styles.titleCantity}>Cantidad</h3>
             <p className={styles.textValueCantity}>2'300'000 COP</p>
+          </div>
+          <div className={styles.centerValueBox}>
+            <h3 className={styles.titleCantity}>Plazo de pago</h3>
+            <p className={styles.textValueCantity}>30 dias</p>
           </div>
         </div>
 

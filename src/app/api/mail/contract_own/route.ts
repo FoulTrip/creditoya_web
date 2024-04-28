@@ -1,9 +1,7 @@
+import { transporter } from "@/app/lib/NodeMailer";
 import TokenService from "@/classes/TokenServices";
-import { EmailTemplate } from "@/components/mail/Template";
+// import { EmailTemplate } from "@/components/mail/Template";
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API);
 
 export async function POST(req: Request) {
   const {
@@ -32,12 +30,13 @@ export async function POST(req: Request) {
     if (!decodedToken) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
-    const data = await resend.emails.send({
-      from: "Credito Ya <onboarding@resend.dev>",
-      to: [addressee],
-      subject: "Nueva Peticion de prestamo",
-      text: "it Works",
-      react: EmailTemplate({ firstName: name, code: code }),
+
+    const data = await transporter.sendMail({
+      from: `"Credito ya" ${process.env.GOOGLE_EMAIL} `,
+      to: addressee,
+      subject: "🔒 Tu código de confirmación de préstamo",
+      text: "¡Funciona!",
+      html: `<b>Hola ${name}, tu codigo es: ${code}</b>`,
     });
 
     return NextResponse.json(data);

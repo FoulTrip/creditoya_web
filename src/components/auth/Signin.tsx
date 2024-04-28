@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import styles from "./auth.module.css";
 import axios from "axios";
 
-import { TbKey, TbLock, TbMail } from "react-icons/tb";
+import { TbLock, TbMail } from "react-icons/tb";
 import { useGlobalContext } from "@/context/Auth";
 import { AuthUser } from "@/types/User";
 

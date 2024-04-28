@@ -33,6 +33,8 @@ export async function POST(req: Request) {
       documentBack as string,
       number
     );
+    
+    console.log(response)
 
     return NextResponse.json({ success: true, data: response });
   } catch (error) {

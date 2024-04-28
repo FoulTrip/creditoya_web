@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./styles/editInfo.module.css";
 
 import {
@@ -11,6 +11,12 @@ import {
 } from "react-icons/tb";
 
 function EditInfo({ label, text }: { label: string; text: string }) {
+  const [iconEye, setIconEye] = useState<boolean>(true);
+
+  const handleOcultText = () => {
+    setIconEye(!iconEye);
+  };
+
   return (
     <>
       <div className={styles.containerEditInfo}>
@@ -29,12 +35,25 @@ function EditInfo({ label, text }: { label: string; text: string }) {
             </div>
             <p className={styles.textLabel}>{label}</p>
           </div>
-          <p>{text}</p>
+          <p>{!iconEye ? text : "**********"}</p>
         </div>
         <div className={styles.optsLabel}>
           <div className={styles.centerOptsLabel}>
             <div className={styles.boxIconLabelOpts}>
-              <TbEyeClosed size={18} className={styles.btnOptSelect} />
+              {!iconEye && (
+                <TbEyeClosed
+                  size={18}
+                  className={styles.btnOptSelect}
+                  onClick={handleOcultText}
+                />
+              )}
+              {iconEye && (
+                <TbEye
+                  size={18}
+                  className={styles.btnOptSelect}
+                  onClick={handleOcultText}
+                />
+              )}
             </div>
             <div className={styles.boxIconLabelOpts}>
               <TbPencil size={18} className={styles.btnOptSelect} />

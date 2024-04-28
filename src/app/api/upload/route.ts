@@ -52,6 +52,8 @@ export async function POST(req: Request) {
 
     const response = await cloudinary.uploader.upload(filePath);
 
+    console.log(response)
+
     const url = response.secure_url;
 
     return NextResponse.json(url);
