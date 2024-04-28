@@ -42,8 +42,8 @@ function Profile({ params }: { params: { userId: string } }) {
         await handleSubmitImageFront({
           image: response.data,
         });
-        console.log(response);
-        console.log("url: ", response.data);
+        // console.log(response);
+        // console.log("url: ", response.data);
         setImagePreview1(response.data);
       }
     },
@@ -64,9 +64,9 @@ function Profile({ params }: { params: { userId: string } }) {
         await handleSubmitImageBack({
           image: response.data,
         });
-        console.log(response);
+        // console.log(response);
         setLoadingProccessImg02(false);
-        setImagePreview2(response.data.url);
+        setImagePreview2(response.data);
       }
     },
     [user?.token]
