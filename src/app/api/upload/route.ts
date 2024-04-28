@@ -46,13 +46,16 @@ export async function POST(req: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const filePath = path.join(process.cwd(), "public", file.name);
+    const base64String = buffer.toString("base64");
 
-    await fs.promises.writeFile(filePath, buffer);
+    const response = await cloudinary.uploader.upload(
+      `data:image/png;base64,${base64String}`,
+      {
+        public_id: file.name,
+      }
+    );
 
-    const response = await cloudinary.uploader.upload(filePath);
-
-    console.log(response)
+    console.log(response);
 
     const url = response.secure_url;
 
