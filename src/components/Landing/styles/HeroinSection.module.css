@@ -7,7 +7,6 @@
     #e2eaff,
     #d5e4ff
   );
-  z-index: -1;
   min-height: 100dvh;
   display: flex;
   flex-wrap: wrap;
@@ -125,6 +124,39 @@
   color: var(--green-600);
 }
 
+.failures {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0px 30px;
+  gap: 5px;
+}
+
+.boxFailure {
+  display: flex;
+  flex-direction: row;
+  padding: 10px 20px;
+  gap: 10px;
+  /* border: 1px solid var(--white-300); */
+  /* background: var(--blue-100); */
+  border-radius: 8px;
+  margin-top: 2em;
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+}
+
+.boxIconFailure,
+.boxFailure p {
+  display: grid;
+  place-content: center;
+  text-align: start;
+  color: var(--white-600);
+  text-align: center;
+}
+
+.iconFailure {
+  filter: drop-shadow(0px 0px 10px #000000);
+}
+
 @media screen and (max-width: 700px) {
   .ContainerMain {
     padding: 6em 30px;
@@ -137,5 +169,11 @@
 
   .cardTestLoan {
     padding: 0;
+  }
+
+  .failures {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
   }
 }

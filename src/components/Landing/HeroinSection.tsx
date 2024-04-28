@@ -2,13 +2,22 @@ import React, { useState } from "react";
 import styles from "./styles/HeroinSection.module.css";
 import Image from "next/image";
 import ImageGif from "@/assets/ilustrationHeroinSection.png";
-import { TbArrowNarrowRight, TbCircleCheckFilled } from "react-icons/tb";
+import {
+  TbArrowNarrowRight,
+  TbCircleCheckFilled,
+  TbClockBolt,
+  TbCreditCardRefund,
+  TbShieldCheck,
+} from "react-icons/tb";
+import { useRouter } from "next/navigation";
 
 function HeroinSection() {
   const [text01, setText01] = useState<boolean>(false);
   const [text02, setText02] = useState<boolean>(false);
   const [text03, setText03] = useState<boolean>(false);
   const [text04, setText04] = useState<boolean>(false);
+
+  const router = useRouter();
 
   return (
     <>
@@ -56,7 +65,9 @@ function HeroinSection() {
                   />
                   <div className={styles.boxIcon}>
                     <TbCircleCheckFilled
-                      className={styles.iconCheck}
+                      className={
+                        text02 ? styles.iconCheckActive : styles.iconCheck
+                      }
                       size={20}
                     />
                   </div>
@@ -74,7 +85,9 @@ function HeroinSection() {
                   />
                   <div className={styles.boxIcon}>
                     <TbCircleCheckFilled
-                      className={styles.iconCheck}
+                      className={
+                        text03 ? styles.iconCheckActive : styles.iconCheck
+                      }
                       size={20}
                     />
                   </div>
@@ -92,13 +105,18 @@ function HeroinSection() {
                   />
                   <div className={styles.boxIcon}>
                     <TbCircleCheckFilled
-                      className={styles.iconCheck}
+                      className={
+                        text04 ? styles.iconCheckActive : styles.iconCheck
+                      }
                       size={20}
                     />
                   </div>
                 </div>
 
-                <button className={styles.btnGetStarted}>
+                <button
+                  className={styles.btnGetStarted}
+                  onClick={() => router.push("/dashboard")}
+                >
                   <div className={styles.centerBtn}>
                     <p className={styles.textBtn}>Empieza ahora</p>
                     <div className={styles.boxIconBtn}>
@@ -109,6 +127,32 @@ function HeroinSection() {
                     </div>
                   </div>
                 </button>
+              </div>
+            </div>
+
+            <div className={styles.failures}>
+              <div className={styles.boxFailure}>
+                <div className={styles.boxIconFailure}>
+                  <TbShieldCheck size={25}  />
+                </div>
+                <p>100% Seguro y legal</p>
+              </div>
+
+              <div className={styles.boxFailure}>
+                <div className={styles.boxIconFailure}>
+                  <TbClockBolt size={25} className={styles.iconFailure} />
+                </div>
+                <p>3-2 minutos de proceso</p>
+              </div>
+
+              <div className={styles.boxFailure}>
+                <div className={styles.boxIconFailure}>
+                  <TbCreditCardRefund
+                    className={styles.iconFailure}
+                    size={25}
+                  />
+                </div>
+                <p>fondos al siguiente día hábil</p>
               </div>
             </div>
           </div>
