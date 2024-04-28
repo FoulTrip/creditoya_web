@@ -15,6 +15,7 @@
   border-radius: 8px;
   width: 200px;
   height: auto;
+  z-index: -1;
 }
 
 .boxInfoUserAvatar {

@@ -11,6 +11,7 @@ import Contract from "@/components/documents/Contract";
 import { ScalarLoanApplication } from "@/types/User";
 
 import CardLoan from "@/components/accesories/CardLoan";
+import LoadingPage from "@/components/Loaders/LoadingPage";
 
 function Dashboard() {
   const router = useRouter();
@@ -66,7 +67,7 @@ function Dashboard() {
   };
 
   if (loading) {
-    return <div>Cargando...</div>; // Aquí puedes reemplazar con tu componente de carga
+    return <LoadingPage />; // Aquí puedes reemplazar con tu componente de carga
   }
 
   if (user) {
