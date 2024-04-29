@@ -36,6 +36,7 @@ function Profile({ params }: { params: { userId: string } }) {
 
   const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
   const [loadingProccessImg02, setLoadingProccessImg02] = useState(false);
+  const [loadingProccessImg03, setLoadingProccessImg03] = useState(false);
   const router = useRouter();
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
@@ -92,7 +93,7 @@ function Profile({ params }: { params: { userId: string } }) {
   const onDrop3 = useCallback(
     async (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
-      setLoadingProccessImg02(true);
+      setLoadingProccessImg03(true);
       const ProccessedFile = await RemoveImage(file);
       if (ProccessedFile) {
         const formData = new FormData();
@@ -104,7 +105,7 @@ function Profile({ params }: { params: { userId: string } }) {
           image: response.data,
         });
         // console.log(response);
-        setLoadingProccessImg02(false);
+        setLoadingProccessImg03(false);
         setImagePreview2(response.data);
       }
     },
@@ -407,8 +408,8 @@ function Profile({ params }: { params: { userId: string } }) {
                       <TbLicense className={styles.iconPreview} size={60} />
                     </div>
                     <p className={styles.textPreview}>
-                      {loadingProccessImg02 && "Processando tu documento"}
-                      {!loadingProccessImg02 &&
+                      {loadingProccessImg03 && "Processando tu documento"}
+                      {!loadingProccessImg03 &&
                         "Sube tu carta laboral actualizada"}
                     </p>
                   </div>
