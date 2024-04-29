@@ -4,6 +4,7 @@ import "./globals.css";
 import { GlobalProvider } from "@/context/Auth";
 import NavBar from "@/components/NavrBar/NavBarComponent";
 import { Toaster } from "sonner";
+import IntFooter from "@/components/footer/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
           <Toaster richColors />
           <NavBar />
           {children}
+          <IntFooter />
         </GlobalProvider>
       </body>
     </html>

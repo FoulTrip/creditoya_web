@@ -16,8 +16,11 @@ import { useMediaQuery } from "react-responsive";
 
 import {
   TbCircleCheckFilled,
+  TbFaceId,
   TbFileSearch,
+  TbLicense,
   TbPhotoSearch,
+  TbTextScan2,
   TbTrash,
 } from "react-icons/tb";
 import LoadingPage from "@/components/Loaders/LoadingPage";
@@ -214,30 +217,28 @@ function Profile({ params }: { params: { userId: string } }) {
             </div>
 
             <div className={styles.boxInputsInfo}>
-              <h1>Datos Personales</h1>
               <div className={styles.centerBoxInputsInfo}>
+                <h1>Datos Personales</h1>
                 <div className={styles.partCenter}>
-                  <div className={styles.boxPartInfo}>
-                    <p>Cedula de Ciudadania</p>
-                    <div className={styles.partChange}>
-                      <input
-                        className={styles.inputCC}
-                        type="text"
-                        value={
-                          numberCc !== null
-                            ? numberCc
-                            : (infoUser && infoUser[0] && infoUser[0].number) ||
-                              ""
-                        }
-                        onChange={(e) => setNumberCc(e.target.value)}
-                      />
-                      <button
-                        className={styles.btnSaveInfo}
-                        onClick={handleSubmitNumberCc}
-                      >
-                        Guardar
-                      </button>
-                    </div>
+                  <p>Cedula de Ciudadania</p>
+                  <div className={styles.partChange}>
+                    <input
+                      className={styles.inputCC}
+                      type="text"
+                      value={
+                        numberCc !== null
+                          ? numberCc
+                          : (infoUser && infoUser[0] && infoUser[0].number) ||
+                            ""
+                      }
+                      onChange={(e) => setNumberCc(e.target.value)}
+                    />
+                    <button
+                      className={styles.btnSaveInfo}
+                      onClick={handleSubmitNumberCc}
+                    >
+                      Guardar
+                    </button>
                   </div>
 
                   <div className={styles.boxPartInfo}>
@@ -268,67 +269,6 @@ function Profile({ params }: { params: { userId: string } }) {
                     </div>
                   </div>
                 </div>
-
-                {/* <div className={styles.partCenter}>
-                  <div className={styles.boxPartInfo}>
-                    <p>Cedula de Ciudadania</p>
-                    <div className={styles.partChange}>
-                      <input
-                        className={styles.inputCC}
-                        type="text"
-                        value={
-                          numberCc !== null
-                            ? numberCc
-                            : (infoUser && infoUser[0] && infoUser[0].number) ||
-                              ""
-                        }
-                        onChange={(e) => setNumberCc(e.target.value)}
-                      />
-                      <button
-                        className={styles.btnSaveInfo}
-                        onClick={handleSubmitNumberCc}
-                      >
-                        Guardar
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className={styles.boxPartInfo}>
-                    <p>Nombre</p>
-                    <div className={styles.partChange}>
-                      <input
-                        className={styles.inputCC}
-                        type="text"
-                        value={
-                          numberCc !== null
-                            ? numberCc
-                            : (infoUser && infoUser[0] && infoUser[0].number) ||
-                              ""
-                        }
-                        onChange={(e) => setNumberCc(e.target.value)}
-                      />
-                      <button className={styles.btnSaveInfo}>Guardar</button>
-                    </div>
-                  </div>
-
-                  <div className={styles.boxPartInfo}>
-                    <p>Email</p>
-                    <div className={styles.partChange}>
-                      <input
-                        className={styles.inputCC}
-                        type="text"
-                        value={
-                          numberCc !== null
-                            ? numberCc
-                            : (infoUser && infoUser[0] && infoUser[0].number) ||
-                              ""
-                        }
-                        onChange={(e) => setNumberCc(e.target.value)}
-                      />
-                      <button className={styles.btnSaveInfo}>Guardar</button>
-                    </div>
-                  </div>
-                </div> */}
               </div>
             </div>
           </div>
@@ -371,11 +311,16 @@ function Profile({ params }: { params: { userId: string } }) {
                     </div>
                   </>
                 ) : (
-                  <p className={styles.textPreview}>
-                    {loadingProccessImg01 && "Processando tu documento"}
-                    {!loadingProccessImg01 &&
-                      "Toma una foto clara de la parte frontal de tu cedula"}
-                  </p>
+                  <div className={styles.containerDropDocuments}>
+                    <div className={styles.boxIconPreview}>
+                      <TbFaceId className={styles.iconPreview} size={60} />
+                    </div>
+                    <p className={styles.textPreview}>
+                      {loadingProccessImg01 && "Processando tu documento..."}
+                      {!loadingProccessImg01 &&
+                        "Toma una foto clara de la parte frontal de tu cedula"}
+                    </p>
+                  </div>
                 )}
               </div>
 
@@ -413,11 +358,16 @@ function Profile({ params }: { params: { userId: string } }) {
                     </div>
                   </>
                 ) : (
-                  <p className={styles.textPreview}>
-                    {loadingProccessImg02 && "Processando tu documento"}
-                    {!loadingProccessImg02 &&
-                      "Toma una foto clara de la parte trasera de tu cedula"}
-                  </p>
+                  <div className={styles.containerDropDocuments}>
+                    <div className={styles.boxIconPreview}>
+                      <TbTextScan2 className={styles.iconPreview} size={60} />
+                    </div>
+                    <p className={styles.textPreview}>
+                      {loadingProccessImg02 && "Processando tu documento..."}
+                      {!loadingProccessImg02 &&
+                        "Toma una foto clara de la parte trasera de tu cedula"}
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
@@ -452,11 +402,16 @@ function Profile({ params }: { params: { userId: string } }) {
                     </div>
                   </>
                 ) : (
-                  <p className={styles.textPreview}>
-                    {loadingProccessImg02 && "Processando tu documento"}
-                    {!loadingProccessImg02 &&
-                      "Sube tu carta laboral actualizada"}
-                  </p>
+                  <div className={styles.containerDropDocuments}>
+                    <div className={styles.boxIconPreview}>
+                      <TbLicense className={styles.iconPreview} size={60} />
+                    </div>
+                    <p className={styles.textPreview}>
+                      {loadingProccessImg02 && "Processando tu documento"}
+                      {!loadingProccessImg02 &&
+                        "Sube tu carta laboral actualizada"}
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
