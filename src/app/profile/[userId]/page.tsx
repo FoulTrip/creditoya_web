@@ -28,6 +28,7 @@ import LoadingPage from "@/components/Loaders/LoadingPage";
 function Profile({ params }: { params: { userId: string } }) {
   const [imagePreview1, setImagePreview1] = useState("");
   const [imagePreview2, setImagePreview2] = useState("");
+  const [imagePreview3, setImagePreview3] = useState("");
   const [infoUser, setInfoUser] = useState<ScalarDocument[]>();
   const [loading, setLoading] = useState(true);
   const [numberCc, setNumberCc] = useState<string | null>(null);
@@ -106,7 +107,7 @@ function Profile({ params }: { params: { userId: string } }) {
         });
         // console.log(response);
         setLoadingProccessImg03(false);
-        setImagePreview2(response.data);
+        setImagePreview3(response.data);
       }
     },
     [user?.token]
@@ -376,7 +377,7 @@ function Profile({ params }: { params: { userId: string } }) {
               {/* <h2>Ingresa tu carta laboral actualizada</h2> */}
               <div className={styles.boxInfoUser} {...getRootProps3()}>
                 <input {...getInputProps3()} />
-                {imagePreview2 && imagePreview2 != "void" ? (
+                {imagePreview3 && imagePreview3 != "void" ? (
                   <>
                     {/* <Image
                       className={styles.avatarIcon}
