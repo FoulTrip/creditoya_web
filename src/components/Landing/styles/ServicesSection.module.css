@@ -8,4 +8,7 @@
     #f7f7ff,
     #ffffff
   );
+
+  display: grid;
+  place-content: center;
 }

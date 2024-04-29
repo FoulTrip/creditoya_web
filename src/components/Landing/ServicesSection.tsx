@@ -4,7 +4,9 @@ import styles from "./styles/ServicesSection.module.css";
 function ServicesSection() {
   return (
     <>
-      <main className={styles.mainServices}>Services Section</main>
+      <main className={styles.mainServices}>
+        <p>Services Section</p>
+      </main>
     </>
   );
 }
