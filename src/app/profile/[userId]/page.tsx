@@ -7,7 +7,7 @@ import CopyText from "@/components/accesories/CopyText";
 import Avatar from "react-avatar";
 import Image from "next/image";
 import axios from "axios";
-import { ScalarDocument } from "@/types/User";
+import { ScalarDocument, ScalarUser } from "@/types/User";
 import { toast } from "sonner";
 import { useGlobalContext } from "@/context/Auth";
 import { RemoveImage } from "@/handlers/removeBackground";
@@ -31,18 +31,77 @@ function Profile({ params }: { params: { userId: string } }) {
   const [imagePreview3, setImagePreview3] = useState("");
   const [infoUser, setInfoUser] = useState<ScalarDocument[]>();
   const [loading, setLoading] = useState(true);
+  const [completeInfoUser, setCompleteInfoUser] = useState<ScalarUser | null>(
+    null
+  );
+
   const [numberCc, setNumberCc] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
   const [detailEmail, setDetailEmail] = useState<string | null>(null);
+  const [celPhone, setCelPhone] = useState<string | null>(null);
+  const [firstLastName, setFirstLastName] = useState<string | null>(null);
+  const [secondLastName, setSecondLastName] = useState<string | null>(null);
+  const [residenceNumber, setResidenceNumber] = useState<string | null>(null);
+  const [genre, setGenre] = useState<string | null>(null);
+  const [celPhoneWs, setCelPhoneWs] = useState<string | null>(null);
+  const [birthday, setBirthday] = useState<Date | null>(null);
+  const [placeBirthday, setPlaceBirthday] = useState<string | null>(null);
+  const [addressResidence, setAddressResidence] = useState<string | null>(null);
+  const [cityResidence, setCityResidence] = useState<string | null>(null);
 
   const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
   const [loadingProccessImg02, setLoadingProccessImg02] = useState(false);
   const [loadingProccessImg03, setLoadingProccessImg03] = useState(false);
   const router = useRouter();
+  const { user } = useGlobalContext();
+
+  useEffect(() => {
+    const getInfoUserDocs = async () => {
+      const response = await axios.post(
+        "/api/user/list_docs",
+        {
+          userId: params.userId,
+        },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+      console.log(response.data);
+      setInfoUser(response.data.data);
+      if (response.data && response.data.data && response.data.data[0]) {
+        setImagePreview1(response.data.data[0].documentFront);
+        setImagePreview2(response.data.data[0].documentBack);
+      }
+      setLoading(false);
+    };
+
+    const getInfoUser = async () => {
+      const response = await axios.post(
+        "/api/user/id",
+        {
+          userId: params.userId,
+        },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+      console.log(response);
+      const data: ScalarUser = response.data.data;
+      console.log(data);
+      setName(data.names);
+      setFirstLastName(data.firstLastName);
+      setSecondLastName(data.secondLastName);
+      setCelPhone(data.phone as string);
+      setResidenceNumber(data.residence_phone_number as string);
+      setGenre(data.genre as string);
+      setCelPhoneWs(data.phone_whatsapp as string);
+      setBirthday(new Date(data.birth_day as Date));
+      setCityResidence(data.city as string);
+      setCompleteInfoUser(data);
+    };
+
+    getInfoUserDocs();
+    getInfoUser();
+  }, [params.userId, user?.token]);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
-
-  const { user } = useGlobalContext();
+  console.log(birthday);
 
   const onDrop1 = useCallback(
     async (acceptedFiles: File[]) => {
@@ -139,6 +198,50 @@ function Profile({ params }: { params: { userId: string } }) {
     }
   };
 
+  const handleUpdatePreviewLoads = async (
+    updateData: Partial<Omit<ScalarUser, "password">>
+  ): Promise<void> => {
+    try {
+      console.log(updateData);
+
+      // Filtrar las propiedades de updateData que no sean "password" y sean de tipo string
+      const filteredUpdateData: Partial<Omit<ScalarUser, "password">> =
+        Object.fromEntries(
+          Object.entries(updateData).filter(
+            ([key, value]) =>
+              key !== "password" &&
+              (typeof value === "string" || value instanceof Date)
+          )
+        );
+
+      console.log(filteredUpdateData);
+
+      // Enviar solo las propiedades definidas en updateData
+      const response = await axios.put(
+        "/api/loan/update",
+        {
+          userId: user?.id as string,
+          data: filteredUpdateData,
+        },
+        {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        }
+      );
+
+      console.log(response.data.error);
+
+      if (response.data.success === true) {
+        toast.success("Dato actualizado");
+      } else if (response.data.success === false) {
+        throw new Error("Error al actualizar dato");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
+
   const handleSubmitImageBack = async ({ image }: { image: string }) => {
     const response = await axios.post(
       "/api/user/docs_update",
@@ -171,27 +274,6 @@ function Profile({ params }: { params: { userId: string } }) {
     // console.log(response);
   };
 
-  useEffect(() => {
-    const getInfoUser = async () => {
-      const response = await axios.post(
-        "/api/user/list_docs",
-        {
-          userId: params.userId,
-        },
-        { headers: { Authorization: `Bearer ${user?.token}` } }
-      );
-      // console.log(response.data);
-      setInfoUser(response.data.data);
-      if (response.data && response.data.data && response.data.data[0]) {
-        setImagePreview1(response.data.data[0].documentFront);
-        setImagePreview2(response.data.data[0].documentBack);
-      }
-      setLoading(false);
-    };
-
-    getInfoUser();
-  }, [params.userId, user?.token]);
-
   if (loading) {
     return <LoadingPage />; // Aquí puedes reemplazar con tu componente de carga
   }
@@ -208,6 +290,7 @@ function Profile({ params }: { params: { userId: string } }) {
         <main className={styles.containerPerfil}>
           <CopyText text={params.userId} copy={true} />
           <h1>Identificacion</h1>
+
           <div className={styles.boxImagePerfil}>
             <div className={styles.boxInfoUserAvatar}>
               <Avatar
@@ -221,53 +304,313 @@ function Profile({ params }: { params: { userId: string } }) {
             <div className={styles.boxInputsInfo}>
               <div className={styles.centerBoxInputsInfo}>
                 <h1>Datos Personales</h1>
-                <div className={styles.partCenter}>
-                  <p>Cedula de Ciudadania</p>
-                  <div className={styles.partChange}>
-                    <input
-                      className={styles.inputCC}
-                      type="text"
-                      value={
-                        numberCc !== null
-                          ? numberCc
-                          : (infoUser && infoUser[0] && infoUser[0].number) ||
-                            ""
-                      }
-                      onChange={(e) => setNumberCc(e.target.value)}
-                    />
-                    <button
-                      className={styles.btnSaveInfo}
-                      onClick={handleSubmitNumberCc}
-                    >
-                      Guardar
-                    </button>
-                  </div>
+                <div className={styles.supraPartCenter}>
+                  <div className={styles.partCenter}>
+                    <div className={styles.boxPartInfo}>
+                      <p>Genero</p>
+                      <div className={styles.partChange}>
+                        <input
+                          className={styles.inputCC}
+                          type="text"
+                          value={
+                            genre !== null
+                              ? genre
+                              : completeInfoUser?.genre || ""
+                          }
+                          onChange={(e) => setGenre(e.target.value)}
+                        />
+                        <button
+                          onClick={() =>
+                            handleUpdatePreviewLoads({ genre: genre as string })
+                          }
+                          className={styles.btnSaveInfo}
+                        >
+                          Guardar
+                        </button>
+                      </div>
+                    </div>
 
-                  <div className={styles.boxPartInfo}>
-                    <p>Nombre</p>
-                    <div className={styles.partChange}>
-                      <input
-                        className={styles.inputCC}
-                        type="text"
-                        value={name !== null ? name : user.name || ""}
-                        onChange={(e) => setName(e.target.value)}
-                      />
-                      <button className={styles.btnSaveInfo}>Guardar</button>
+                    <div className={styles.boxPartInfo}>
+                      <p>Nombre(s)</p>
+                      <div className={styles.partChange}>
+                        <input
+                          className={styles.inputCC}
+                          type="text"
+                          value={name !== null ? name : user.names || ""}
+                          onChange={(e) => setName(e.target.value)}
+                        />
+                        <button
+                          className={styles.btnSaveInfo}
+                          onClick={() =>
+                            handleUpdatePreviewLoads({ names: name as string })
+                          }
+                        >
+                          Guardar
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className={styles.boxPartInfo}>
+                      <p>Primer Apellido</p>
+                      <div className={styles.partChange}>
+                        <input
+                          className={styles.inputCC}
+                          type="text"
+                          value={
+                            firstLastName !== null
+                              ? firstLastName
+                              : completeInfoUser?.firstLastName || ""
+                          }
+                          onChange={(e) => setFirstLastName(e.target.value)}
+                        />
+                        <button
+                          className={styles.btnSaveInfo}
+                          onClick={() =>
+                            handleUpdatePreviewLoads({
+                              firstLastName: firstLastName as string,
+                            })
+                          }
+                        >
+                          Guardar
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className={styles.boxPartInfo}>
+                      <p>Segundo Apellido</p>
+                      <div className={styles.partChange}>
+                        <input
+                          className={styles.inputCC}
+                          type="text"
+                          value={
+                            secondLastName !== null
+                              ? secondLastName
+                              : completeInfoUser?.secondLastName || ""
+                          }
+                          onChange={(e) => setSecondLastName(e.target.value)}
+                        />
+                        <button
+                          className={styles.btnSaveInfo}
+                          onClick={() =>
+                            handleUpdatePreviewLoads({
+                              secondLastName: secondLastName as string,
+                            })
+                          }
+                        >
+                          Guardar
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className={styles.boxPartInfo}>
+                      <p>Fecha de nacimiento</p>
+                      <div className={styles.partChange}>
+                        <input
+                          className={styles.inputCC}
+                          type="date"
+                          value={
+                            birthday ? birthday.toISOString().split("T")[0] : ""
+                          }
+                          onChange={(e) =>
+                            setBirthday(new Date(e.target.value))
+                          }
+                        />
+                        <button
+                          className={styles.btnSaveInfo}
+                          onClick={() =>
+                            handleUpdatePreviewLoads({
+                              birth_day: birthday as Date,
+                            })
+                          }
+                        >
+                          Guardar
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className={styles.boxPartInfo}>
+                      <p>Lugar de nacimiento</p>
+                      <div className={styles.partChange}>
+                        <input
+                          className={styles.inputCC}
+                          type="text"
+                          value={
+                            placeBirthday !== null
+                              ? placeBirthday
+                              : completeInfoUser?.place_of_birth || ""
+                          }
+                          onChange={(e) => setPlaceBirthday(e.target.value)}
+                        />
+                        <button
+                          className={styles.btnSaveInfo}
+                          onClick={() =>
+                            handleUpdatePreviewLoads({
+                              place_of_birth: placeBirthday as string,
+                            })
+                          }
+                        >
+                          Guardar
+                        </button>
+                      </div>
                     </div>
                   </div>
 
-                  <div className={styles.boxPartInfo}>
-                    <p>Email</p>
-                    <div className={styles.partChange}>
-                      <input
-                        className={styles.inputCC}
-                        type="text"
-                        value={
-                          detailEmail !== null ? detailEmail : user.email || ""
-                        }
-                        onChange={(e) => setDetailEmail(e.target.value)}
-                      />
-                      <button className={styles.btnSaveInfo}>Guardar</button>
+                  <div className={styles.partCenter}>
+                    <div className={styles.boxPartInfo}>
+                      <p>Email</p>
+                      <div className={styles.partChange}>
+                        <input
+                          className={styles.inputCC}
+                          type="text"
+                          value={
+                            detailEmail !== null
+                              ? detailEmail
+                              : user.email || ""
+                          }
+                          onChange={(e) => setDetailEmail(e.target.value)}
+                        />
+                        <button
+                          className={styles.btnSaveInfo}
+                          onClick={() =>
+                            handleUpdatePreviewLoads({
+                              email: detailEmail as string,
+                            })
+                          }
+                        >
+                          Guardar
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className={styles.boxPartInfo}>
+                      <p>Numero celular</p>
+                      <div className={styles.partChange}>
+                        <input
+                          className={styles.inputCC}
+                          type="text"
+                          value={
+                            celPhone !== null
+                              ? celPhone
+                              : completeInfoUser?.phone || ""
+                          }
+                          onChange={(e) => setCelPhone(e.target.value)}
+                        />
+                        <button
+                          onClick={() =>
+                            handleUpdatePreviewLoads({
+                              phone: celPhone as string,
+                            })
+                          }
+                          className={styles.btnSaveInfo}
+                        >
+                          Guardar
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className={styles.boxPartInfo}>
+                      <p>Telefono residencia</p>
+                      <div className={styles.partChange}>
+                        <input
+                          className={styles.inputCC}
+                          type="text"
+                          value={
+                            residenceNumber !== null
+                              ? residenceNumber
+                              : completeInfoUser?.residence_phone_number || ""
+                          }
+                          onChange={(e) => setResidenceNumber(e.target.value)}
+                        />
+                        <button
+                          className={styles.btnSaveInfo}
+                          onClick={() =>
+                            handleUpdatePreviewLoads({
+                              residence_phone_number: residenceNumber as string,
+                            })
+                          }
+                        >
+                          Guardar
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className={styles.boxPartInfo}>
+                      <p>Numero Whatsapp</p>
+                      <div className={styles.partChange}>
+                        <input
+                          className={styles.inputCC}
+                          type="text"
+                          value={
+                            celPhoneWs !== null
+                              ? celPhoneWs
+                              : completeInfoUser?.phone_whatsapp || ""
+                          }
+                          onChange={(e) => setCelPhoneWs(e.target.value)}
+                        />
+                        <button
+                          className={styles.btnSaveInfo}
+                          onClick={() =>
+                            handleUpdatePreviewLoads({
+                              phone_is_wp: true,
+                              phone_whatsapp: celPhoneWs as string,
+                            })
+                          }
+                        >
+                          Guardar
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className={styles.boxPartInfo}>
+                      <p>Direccion de residencia</p>
+                      <div className={styles.partChange}>
+                        <input
+                          className={styles.inputCC}
+                          type="text"
+                          value={
+                            addressResidence !== null
+                              ? addressResidence
+                              : completeInfoUser?.residence_address || ""
+                          }
+                          onChange={(e) => setAddressResidence(e.target.value)}
+                        />
+                        <button
+                          className={styles.btnSaveInfo}
+                          onClick={() =>
+                            handleUpdatePreviewLoads({
+                              residence_address: addressResidence as string,
+                            })
+                          }
+                        >
+                          Guardar
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className={styles.boxPartInfo}>
+                      <p>Ciudad de residencia</p>
+                      <div className={styles.partChange}>
+                        <input
+                          className={styles.inputCC}
+                          type="text"
+                          value={
+                            cityResidence !== null
+                              ? cityResidence
+                              : completeInfoUser?.city || ""
+                          }
+                          onChange={(e) => setCityResidence(e.target.value)}
+                        />
+                        <button
+                          className={styles.btnSaveInfo}
+                          onClick={() =>
+                            handleUpdatePreviewLoads({
+                              city: cityResidence as string,
+                            })
+                          }
+                        >
+                          Guardar
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -275,13 +618,37 @@ function Profile({ params }: { params: { userId: string } }) {
             </div>
           </div>
 
-          <h1 className={styles.datesBox}>Datos Personales</h1>
+          <h1 className={styles.datesBox}>Documentos</h1>
+
+          <div>
+            <div className={styles.boxPartInfo}>
+              <p>Cedula de Ciudadania</p>
+              <div className={styles.partChange}>
+                <input
+                  className={styles.inputCC}
+                  type="text"
+                  value={
+                    numberCc !== null
+                      ? numberCc
+                      : (infoUser && infoUser[0] && infoUser[0].number) || ""
+                  }
+                  onChange={(e) => setNumberCc(e.target.value)}
+                />
+                <button
+                  onClick={handleSubmitNumberCc}
+                  className={styles.btnSaveInfo}
+                >
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </div>
 
           <div className={styles.containerDocumentsImgs}>
             <div className={styles.onlyImgsDocs}>
               <div className={styles.boxInfoUser} {...getRootProps1()}>
                 <input {...getInputProps1()} />
-                {imagePreview1 && imagePreview1 != "void" ? (
+                {imagePreview1 && imagePreview1 != "No definido" ? (
                   <>
                     {/* <Image
                       className={styles.avatarIcon}
@@ -328,7 +695,7 @@ function Profile({ params }: { params: { userId: string } }) {
 
               <div className={styles.boxInfoUser} {...getRootProps2()}>
                 <input {...getInputProps2()} />
-                {imagePreview2 && imagePreview2 != "void" ? (
+                {imagePreview2 && imagePreview2 != "No definido" ? (
                   <>
                     {/* <Image
                       className={styles.avatarIcon}
@@ -373,11 +740,12 @@ function Profile({ params }: { params: { userId: string } }) {
                 )}
               </div>
             </div>
+
             <div className={styles.cardLaboral}>
               {/* <h2>Ingresa tu carta laboral actualizada</h2> */}
               <div className={styles.boxInfoUser} {...getRootProps3()}>
                 <input {...getInputProps3()} />
-                {imagePreview3 && imagePreview3 != "void" ? (
+                {imagePreview3 && imagePreview3 != "No definido" ? (
                   <>
                     {/* <Image
                       className={styles.avatarIcon}

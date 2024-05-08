@@ -8,31 +8,135 @@ datasource db {
 }
 
 model User {
-    id              String            @id @default(uuid()) @map("_id")
-    password        String
-    email           String            @unique
-    name            String
-    avatar          String?
-    Document        Document[]
-    createdAt       DateTime          @default(now())
-    updatedAt       DateTime          @updatedAt
-    LoanApplication LoanApplication[]
+    id                     String            @id @default(uuid()) @map("_id")
+    password               String
+    email                  String            @unique
+    names                  String
+    firstLastName          String
+    secondLastName         String
+    avatar                 String            @default("No definido")
+    phone                  String            @unique @default("No definido")
+    residence_phone_number String            @default("No definido")
+    phone_is_wp            Boolean           @default(false)
+    phone_whatsapp         String            @default("No definido")
+    birth_day              DateTime?
+    place_of_birth         String            @default("No definido")
+    genre                  String            @default("No definido")
+    residence_address      String            @default("No definidos")
+    city                   String            @default("No definidos")
+    housing_type           HousingType?
+    social                 SocialNetworks[]
+    Document               Document[]
+    createdAt              DateTime          @default(now())
+    updatedAt              DateTime          @updatedAt
+    LoanApplication        LoanApplication[]
+}
+
+model SocialNetworks {
+    id         String @id @default(uuid()) @map("_id")
+    nameSocial String
+    userId     String
+    User       User?  @relation(fields: [userId], references: [id])
 }
 
 model LoanApplication {
-    id                 String    @id @default(uuid()) @map("_id")
-    user               User      @relation(fields: [userId], references: [id])
-    userId             String
-    bankCurrentAccount Boolean   @default(false) // Cuenta corriente
-    bankSavingAccount  Boolean   @default(false) // Ahorros
-    bankNumberAccount  String // Nro. de cuenta
-    entity             String // Entidad
-    fundsOrigin        String // Origen de fondos
-    ccNumber           String    @unique
-    status             Status    @default(PENDIENTE)
-    createdAt          DateTime  @default(now())
-    updatedAt          DateTime  @updatedAt
-    pdfLoan            pdfLoan[]
+    id                                   String        @id @default(uuid()) @map("_id")
+    user                                 User          @relation(fields: [userId], references: [id])
+    userId                               String
+    email                                String
+    principal_debtor                     String
+    co_debtor                            String
+    affiliated_company                   String
+    nit                                  String
+    requested_amount                     String
+    deadline                             Int
+    payment                              typePayment
+    quota_value                          Int
+    current_loans                        ifOrNot
+    firtLastName                         String
+    secondLastName                       String
+    names                                String
+    occupation                           String
+    typeDocument                         TypesDocument
+    numberDocument                       String
+    persons_in_charge                    String
+    birthDate                            String
+    place_birth                          String
+    genre                                String
+    marital_status                       String
+    cellPhone                            String
+    length_service                       String
+    destination_resources                String
+    city                                 String
+    residence_address                    String
+    residence_phone                      String
+    vehicle                              ifOrNot
+    vehicleType                          String?
+    housing_type                         HousingType
+    whatsapp_number                      String
+    pignorado                            String
+    in_favor_pignorado                   String?
+    commercial_value                     String
+    other_personal_assets                String
+    other_personal_commercial_value      String
+    family_members_in_company_agreement  ifOrNot
+    is_currently_codebtor                ifOrNot
+    codebtor_in_creditoya                ifOrNot?
+    codebtor_origin_creditoya            String?
+    other_entity                         ifOrNot
+    name_other_entity                    String?
+    amount_in_the_other_entity           Int?
+    complete_name_spouse                 String?
+    number_document_spouse               String?
+    phone_spouse                         String?
+    name_company_spouse                  String?
+    phone_company_spoue                  String?
+    total_monthly_income                 Int
+    total_monthly_revenues               Int
+    total_assets                         String
+    total_liabilities                    String
+    patrimony                            String
+    court                                DateTime
+    number_employees                     String
+    other_income_other_principal         ifOrNot
+    which_other_income                   String?
+    monthly_income                       String?
+    monthly_expenses                     String
+    personal_reference_name              String
+    personal_reference_work_company_name String
+    personal_reference_city              String
+    personal_reference_address           String
+    personal_reference_number_residence  String?
+    family_reference_name                String
+    family_reference_work_company_name   String
+    family_reference_city                String
+    family_reference_address             String
+    family_reference_number_residence    String?
+    remarks                              String?
+    status                               Status        @default(Pendiente)
+    contract_type_fixed_term             ifOrNot
+    contract_type_work                   ifOrNot
+    date_relationship                    DateTime
+    labor_seniority                      String
+    contract_termination_date            String?
+    indefinite_term                      ifOrNot
+    average_variable_salary              Int
+    total_monthly_income_final           Int
+    monthly_discounts                    Int
+    current_loans_affecting              ifOrNot
+    affecting_loan_entity_name           String?
+    affecting_loan_balance               Int?
+    affecting_loan_quota_value           Int?
+    bankCurrentAccount                   Boolean       @default(false) // Cuenta corriente
+    bankSavingAccount                    Boolean       @default(false) // Ahorros
+    bankNumberAccount                    String // Nro. de cuenta
+    entity                               String // Entidad
+    fundsOrigin                          String // Origen de fondos
+    ccNumber                             String        @unique
+    pdfLoan                              pdfLoan[]
+    terms_and_conditions                 Boolean       @default(false)
+    createdAt                            DateTime      @default(now())
+    updatedAt                            DateTime      @updatedAt
 }
 
 model pdfLoan {
@@ -54,23 +158,69 @@ model pdfLoan {
 }
 
 model Document {
-    id            String   @id @default(uuid()) @map("_id")
-    user          User     @relation(fields: [userId], references: [id])
+    id            String        @id @default(uuid()) @map("_id")
+    user          User          @relation(fields: [userId], references: [id])
     userId        String
-    documentFront String   @default("void")
-    documentBack  String   @default("void")
-    number        String   @default("void")
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
+    documentFront String        @default("No definido")
+    documentBack  String        @default("No definido")
+    typeDocument  TypesDocument @default(CC)
+    number        String        @default("No definido")
+    createdAt     DateTime      @default(now())
+    updatedAt     DateTime      @updatedAt
 }
 
 enum Status {
-    PENDIENTE
-    APROBADO
-    RECHAZADO
-    PAGADO
-    VENCIDO
-    EN_MORA
-    EN_PROCESO_DE_COBRO
-    EN_NEGOCIACION
+    Pendiente
+    Aprobado
+    Rechazado
+    Borrador
+    Pagado
+    Vencido
+    En_mora
+    En_proceso_de_cobro
+    En_negociacion
+}
+
+enum namesSocial {
+    Facebook
+    Instagram
+    X
+    Linkedin
+}
+
+enum TypesDocument {
+    CC
+    CE
+    PASAPORTE
+}
+
+enum typePayment {
+    Semanal
+    Quincenal
+    Mensual
+}
+
+enum ifOrNot {
+    Si
+    No
+}
+
+enum MaritalStatus {
+    Casado
+    Casada
+    Soltero
+    Soltera
+    Separado
+    Separada
+    Divorciado
+    Divorciada
+    Union_libre
+    viudo
+    viuda
+}
+
+enum HousingType {
+    Familiar
+    Propia
+    Arrendada
 }

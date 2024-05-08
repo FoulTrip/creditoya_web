@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       throw new Error("userId is required");
     }
 
-    const response = UserService.get(userId);
+    const response = await UserService.get(userId);
     return NextResponse.json({ success: true, data: response });
   } catch (error) {
     if (error instanceof Error) {

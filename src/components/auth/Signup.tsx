@@ -11,7 +11,9 @@ import { TbKey, TbMail, TbUserCog } from "react-icons/tb";
 // import AvatarUpload from "../AvatarChange";
 
 interface UserTypes {
-  name: string;
+  names: string;
+  firstLastName: string;
+  secondLastName: string;
   avatar?: string;
   password: string;
   email: string;
@@ -22,8 +24,9 @@ function Signup() {
   const route = useRouter();
 
   const [data, setData] = useState<UserTypes>({
-    name: "",
-    avatar: "", // Inicialmente, no hay avatar
+    names: "",
+    firstLastName: "",
+    secondLastName: "",
     password: "",
     email: "",
   });
@@ -49,24 +52,25 @@ function Signup() {
     e.preventDefault();
 
     try {
-      // Sube la imagen a /api/avatar y obtén el URL resultante
-      let avatarUrl = "";
-      if (imageFile) {
-        const imageFormData = new FormData();
-        imageFormData.append("file", imageFile);
+      // // Sube la imagen a /api/avatar y obtén el URL resultante
+      // let avatarUrl = "";
+      // if (imageFile) {
+      //   const imageFormData = new FormData();
+      //   imageFormData.append("file", imageFile);
 
-        const imageResponse = await axios.post("/api/avatar", imageFormData);
-        avatarUrl = imageResponse.data;
-        console.log(imageResponse);
-      }
+      //   const imageResponse = await axios.post("/api/avatar", imageFormData);
+      //   avatarUrl = imageResponse.data;
+      //   console.log(imageResponse);
+      // }
+
+      console.log(data);
 
       // Incluye el avatarUrl en el cuerpo de la solicitud para crear el usuario
-      const response = await axios.post("/api/user/create", {
-        ...data,
-        avatar: avatarUrl,
-      });
+      const response = await axios.post("/api/user/create", data);
 
-      if (response) {
+      console.log(response);
+
+      if (response.data.success == true) {
         console.log(response.data);
 
         const bodySignin = {
@@ -75,7 +79,7 @@ function Signup() {
         };
 
         const signinRes = await axios.post("/api/user/signin", bodySignin);
-        console.log(signinRes)
+        console.log(signinRes);
         const authSession: AuthUser = signinRes.data.data;
         setUserData(authSession);
 
@@ -98,6 +102,19 @@ function Signup() {
     <>
       <Toaster richColors />
       <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.boxInput}>
+          <div className={styles.subBoxIconInput}>
+            <TbUserCog className={styles.iconInput} size={20} />
+          </div>
+          <input
+            className={styles.input}
+            type="text"
+            name="names"
+            placeholder="Nombre(s)"
+            onChange={handleChange}
+            value={data.names}
+          />
+        </div>
 
         <div className={styles.boxInput}>
           <div className={styles.subBoxIconInput}>
@@ -106,10 +123,24 @@ function Signup() {
           <input
             className={styles.input}
             type="text"
-            name="name"
-            placeholder="Nombre Completo"
+            name="firstLastName"
+            placeholder="Primer Apellido"
             onChange={handleChange}
-            value={data.name}
+            value={data.firstLastName}
+          />
+        </div>
+
+        <div className={styles.boxInput}>
+          <div className={styles.subBoxIconInput}>
+            <TbUserCog className={styles.iconInput} size={20} />
+          </div>
+          <input
+            className={styles.input}
+            type="text"
+            name="secondLastName"
+            placeholder="Segundo Apellido"
+            onChange={handleChange}
+            value={data.secondLastName}
           />
         </div>
 

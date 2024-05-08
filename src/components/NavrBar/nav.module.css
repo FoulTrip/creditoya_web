@@ -51,9 +51,10 @@
 }
 
 .logoNav {
-  width: 40px;
+  width: 26%;
   height: auto;
   filter: drop-shadow(0px 0px 10px #484848);
+  cursor: pointer;
 }
 
 .optsBox {
@@ -79,20 +80,20 @@
   display: flex;
   flex-direction: row;
   gap: 8px;
-  padding: 0px 10px;
+  padding: 10px;
   /* background: var(--white-200); */
   border-radius: 16px;
   font-weight: 400;
   cursor: pointer;
   color: var(--blue-400);
-  border: 1px solid var(--blue-100);
-  background: var(--blue-50);
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid transparent;
 }
 
 .btnOptLogin:hover {
   transition: background 0.4s;
-  border: 1px solid var(--blue-200);
+  border: 1px solid var(--blue-100);
+  background: var(--blue-50);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .iconBtn {
@@ -123,4 +124,8 @@
   .containerNav {
     padding-top: 23px;
   }
+
+  .logoNav {
+    width: 65%;
+  } 
 }

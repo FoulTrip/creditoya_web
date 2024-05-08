@@ -35,11 +35,15 @@ class UserService {
   }
 
   // Update user method
-  static async update(
-    id: string,
-    data: Omit<ScalarUser, "password">
-  ): Promise<User> {
-    return await prisma.user.update({ where: { id }, data });
+  static async update({
+    id,
+    data,
+  }: {
+    id: string;
+    data: Omit<ScalarUser, "password">;
+  }) {
+    const { id: userId, ...userData } = data;
+    return await prisma.user.update({ where: { id }, data: userData });
   }
 
   // Update user password method
@@ -81,9 +85,9 @@ class UserService {
     // Comprueba si el usuario tiene documentos y si los campos son diferentes de "void"
     return user.Document.some(
       (document) =>
-        document.documentFront !== "void" &&
-        document.documentBack !== "void" &&
-        document.number !== "void"
+        document.documentFront !== "No definido" &&
+        document.documentBack !== "No definido" &&
+        document.number !== "No definido"
     );
   }
 

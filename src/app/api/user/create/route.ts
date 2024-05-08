@@ -12,15 +12,26 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     // Desestructuramos los campos necesarios del cuerpo de la solicitud
-    const { name, email, password, avatar }: ScalarUser = await req.json();
+    const {
+      names,
+      firstLastName,
+      secondLastName,
+      email,
+      password,
+    }: ScalarUser = await req.json();
+
+    console.log(names, firstLastName, secondLastName, email, password)
 
     // Creamos un nuevo usuario utilizando el servicio de usuario
     const newUser = await UserService.create({
-        name,
-        email,
-        password,
-        avatar,
+      names,
+      firstLastName,
+      secondLastName,
+      email,
+      password,
     });
+
+    console.log(newUser)
 
     // Si todo va bien, devolvemos una respuesta con el nuevo usuario en formato JSON
     return NextResponse.json({ success: true, data: newUser });

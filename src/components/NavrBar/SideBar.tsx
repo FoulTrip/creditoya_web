@@ -41,7 +41,7 @@ function SideBar() {
                 <TbUserCircle className={styles.iconBtn} size={25} />
               )}
             </div>
-            {user ? <p>{user.name.split(" ")[0]}</p> : <p>Cuenta</p>}
+            {user ? <p>{user.names.split(" ")[0]}</p> : <p>Cuenta</p>}
           </div>
           <div className={styles.boxIconMenu}>
             <TbMenuDeep

@@ -6,7 +6,7 @@
 
 .boxImagePerfil {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
 }
 
@@ -42,6 +42,12 @@
   flex-direction: column;
   gap: 10px;
   /* background: var(--white-300); */
+}
+
+.supraPartCenter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px
 }
 
 .partCenter {

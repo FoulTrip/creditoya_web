@@ -1,148 +1,81 @@
-.card {
-  width: 90%;
-  margin-left: 5%;
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-  margin-bottom: 7em;
+.containerContract {
+  min-height: 100dvh;
 }
 
-.headerCard {
+.barContract {
   display: flex;
-  flex-wrap: wrap-reverse;
-  justify-content: space-between;
+  flex-direction: row;
+  margin-bottom: 1em;
+}
+
+.titleActions {
+  flex-basis: 400px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
   gap: 10px;
 }
 
-.headerCard h4 {
-  padding: 10px;
+.centerTitleAction {
   display: grid;
   place-content: center;
-  background: var(--red-200);
+}
+
+.boxIconClose {
+  display: grid;
+  place-content: center;
+  background: var(--red-600);
+  padding: 5px 10px;
   border-radius: 8px;
-  color: var(--white-800);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   cursor: pointer;
 }
 
-.headerCard h4:hover {
-  background: var(--red-600);
-  color: var(--white-50);
+.iconClose {
+  color: var(--white-100);
+  filter: drop-shadow(5px 5px 10px #000000);
 }
 
-.groupText {
-  text-align: start;
-}
-
-.firstTitle {
-  text-align: start;
-  font-weight: 500;
-  display: grid;
-  place-content: center;
-}
-
-.BoxBtnCancel {
-  display: grid;
-  place-content: center;
-}
-
-.secondTitle {
-  text-align: start;
-  font-weight: 500;
-}
-
-.barDates {
+.listParts {
   display: flex;
-  flex-wrap: wrap;
-  gap: 50px;
-}
-
-.boxDate {
-  flex-basis: 200px;
-  flex-grow: 1;
-}
-
-.boxTypeAccount {
-  flex-basis: 200px;
-  flex-grow: 1;
-  display: grid;
-  place-content: center;
-}
-
-.centerBoxTypeAccount {
-  display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 10px;
 }
 
-.supraCenterTA {
+.containerInputs {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 15px;
+  padding: 5px 10px;
+}
+
+.boxInput {
+  display: flex;
+  flex-direction: column;
   gap: 5px;
 }
 
-.supraCenterTA p {
+.boxSelect {
+  padding: 10px;
+  outline: none;
+}
+
+.headerInputInfo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.headerInputInfo p,
+.boxIconInfo {
   display: grid;
   place-content: center;
 }
 
-.boxDate input {
-  width: 100%;
-  font-size: 16px;
-  padding: 5px 10px;
+.inputInfo {
+  padding: 10px;
   outline: none;
-}
-
-.threeTitle {
-  text-align: start;
-  font-weight: 500;
-}
-
-.justification {
-  text-align: start;
-}
-
-.textJustification {
-  padding: 5px 10px;
-  font-size: 16px;
-}
-
-.threBoxTexts {
-  text-align: start;
-}
-
-.threBoxTextsNumber {
-  font-weight: 500;
-}
-
-.fourTitle {
-  text-align: start;
-  font-weight: 500;
-}
-
-.finalText {
-  text-align: start;
-}
-
-.containerBtnComplete {
-  margin-top: 2em;
-}
-
-.btnComplete {
-  padding: 10px 15px;
-  cursor: pointer;
-  outline: none;
-  background: transparent;
-  border: none;
-  font-weight: 600;
-}
-
-.btnComplete:hover {
-  background: var(--white-100);
   border-radius: 8px;
-}
-
-@media screen and (max-width: 700px) {
-  .barDates {
-    gap: 20px;
-  }
+  border: 1px solid var(--white-300);
+  font-size: 16px;
 }
