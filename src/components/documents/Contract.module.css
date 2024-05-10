@@ -5,7 +5,7 @@
 .barContract {
   display: flex;
   flex-direction: row;
-  margin-bottom: 1em;
+  margin-bottom: 2em;
 }
 
 .titleActions {
@@ -16,6 +16,11 @@
   gap: 10px;
 }
 
+.titleContract {
+  font-weight: 700;
+  color: var(--white-800);
+}
+
 .centerTitleAction {
   display: grid;
   place-content: center;
@@ -24,11 +29,18 @@
 .boxIconClose {
   display: grid;
   place-content: center;
-  background: var(--red-600);
   padding: 5px 10px;
   border-radius: 8px;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+}
+
+.boxIconClose h3 {
+  color: var(--red-600);
+  font-weight: 700;
+}
+
+.boxIconClose h3:hover {
+  color: var(--red-500);
 }
 
 .iconClose {
@@ -39,7 +51,7 @@
 .listParts {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 }
 
 .containerInputs {
@@ -72,10 +84,37 @@
   place-content: center;
 }
 
+.infoInput {
+  display: flex;
+  flex-direction: row;
+}
+
 .inputInfo {
   padding: 10px;
   outline: none;
   border-radius: 8px;
   border: 1px solid var(--white-300);
   font-size: 16px;
+}
+
+.containerBtnSoli {
+  margin-top: 2em;
+  display: grid;
+  place-content: center;
+}
+
+.btnSoli {
+  padding: 10px 20px;
+  border-radius: 8px;
+  outline: none;
+  border: 1px solid var(--white-200);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  background: var(--white-100);
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--white-900);
+}
+
+.btnSoli:hover {
+  background: var(--white-200);
 }

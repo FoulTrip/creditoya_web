@@ -107,11 +107,16 @@ model LoanApplication {
     personal_reference_city              String
     personal_reference_address           String
     personal_reference_number_residence  String?
+    personal_reference_number_phone      String
     family_reference_name                String
     family_reference_work_company_name   String
     family_reference_city                String
     family_reference_address             String
     family_reference_number_residence    String?
+    family_reference_number_phone        String
+    fixed_term                           ifOrNot?
+    labor_or_work                        ifOrNot?
+    labor_seniority_contracts            String
     remarks                              String?
     status                               Status        @default(Pendiente)
     contract_type_fixed_term             ifOrNot

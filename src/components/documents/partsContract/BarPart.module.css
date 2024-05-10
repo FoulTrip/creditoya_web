@@ -1,13 +1,42 @@
+.barPartOneOpen {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 15px 15px;
+  background: var(--white-100);
+  border: 1px solid var(--white-100);
+  border-radius: 8px;
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+  cursor: pointer;
+}
+
+.barPartOneOpenSucces {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 15px 15px;
+  background: var(--green-100);
+  border: 1px solid var(--white-100);
+  border-radius: 8px;
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+  cursor: pointer;
+}
+
 .barPartOne {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 10px;
-  background: var(--white-100);
-  border: 1px solid var(--white-200);
+  padding: 15px 15px;
+  /* background: var(--white-100); */
+  /* border: 1px solid var(--white-100); */
   border-radius: 8px;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
   cursor: pointer;
+}
+
+.barPartOne:hover {
+  background: var(--white-100);
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
 }
 
 .boxIconStatus,
@@ -17,6 +46,12 @@
   place-content: center;
 }
 
+.titleOpenBar {
+  color: var(--white-950);
+  font-weight: 300;
+}
+
 .incompleteFormIcon {
-  color: var(--red-600);
+  color: var(--red-500);
+  filter: drop-shadow(0px 0px 10px #0000);
 }

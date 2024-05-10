@@ -5,14 +5,7 @@ import styles from "./Contract.module.css";
 import Modal from "../modal/Modal";
 import PreEnvio from "./PreEnvio";
 import { useGlobalContext } from "@/context/Auth";
-import {
-  TbCircleDashedX,
-  TbX,
-  TbCircleDashed,
-  TbChevronDown,
-  TbInfoCircle,
-} from "react-icons/tb";
-import JsonBasePDF from "@/components/Jsons/PrestamoCarta.json";
+import { TbX, TbInfoCircle } from "react-icons/tb";
 import axios from "axios";
 import {
   ScalarDocument,
@@ -21,6 +14,20 @@ import {
 } from "@/types/User";
 import BarParts from "./partsContract/BarParts";
 import { toast } from "sonner";
+// import ContractForm from "./partsContract/ContractForm";
+
+import {
+  keysLoan,
+  keysLoan01,
+  keysLoan02,
+  keysLoan03,
+  keysLoan04,
+  keysLoan05,
+  keysLoan06,
+} from "./partsContract/KeysLoan";
+
+import { sectionInputs } from "@/handlers/ContractHandlers";
+import socket from "@/Socket";
 
 function Contract({ toggleContract }: { toggleContract: () => void }) {
   const [openFirstPart, setOpenFirstPart] = useState<boolean>(false);
@@ -30,15 +37,8 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
   const [openFivePart, setOpenFivePart] = useState<boolean>(false);
   const [openSixPart, setOpenSixPart] = useState<boolean>(false);
 
-  const [infoUser, setInfoUser] = useState<ScalarUser | null>(null);
-  const [docsUser, setDocsUser] = useState<ScalarDocument | null>(null);
-
   const { user } = useGlobalContext();
   const [formData, setFormData] = useState<ScalarLoanApplication | null>(null);
-
-  const keysLoan: (keyof ScalarLoanApplication)[] = Object.keys(
-    {} as ScalarLoanApplication
-  ) as (keyof ScalarLoanApplication)[];
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -53,22 +53,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("/api/loans/create", formData, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      console.log(response.data);
-      if (response.data.success) {
-        toast.success("Solicitud enviada con éxito");
-      } else {
-        throw new Error("Error al enviar la solicitud");
-      }
+      
+      const data = {
+        loan: formData,
+        token: user?.token,
+      };
+
+      socket.emit("create_loan_request", data);
     } catch (error) {
       console.error("Error:", error);
       toast.error("Error al enviar la solicitud");
     }
   };
+
+  // console.log(formData);
+
+  useEffect(() => {
+    socket.emit("connected", "Hello from ContractForm");
+  }, []);
 
   useEffect(() => {
     const getInfoUser = async () => {
@@ -85,11 +87,12 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
       );
 
       const data: ScalarUser = response.data.data;
-      setInfoUser(data);
+      // setInfoUser(data);
 
       if (data) {
         setFormData((prevFormData) => ({
           ...(prevFormData as ScalarLoanApplication),
+          names: data.names,
           firtLastName: data.firstLastName,
           secondLastName: data.secondLastName,
           city: data.city as string,
@@ -114,7 +117,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
       );
 
       const data: ScalarDocument = response.data.data;
-      setDocsUser(data);
+      // setDocsUser(data);
       if (data) {
         setFormData((prevFormData) => ({
           ...(prevFormData as ScalarLoanApplication),
@@ -134,12 +137,13 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
       <main className={styles.containerContract}>
         <div className={styles.barContract}>
           <div className={styles.titleActions}>
-            <h2 className={styles.titleContract}>SOLICITUD DE CREDITO</h2>
+            <h2 className={styles.titleContract}>Solicitud de credito</h2>
           </div>
 
           <div className={styles.centerTitleAction}>
             <div className={styles.boxIconClose} onClick={toggleContract}>
-              <TbX className={styles.iconClose} size={20} />
+              {/* <TbX className={styles.iconClose} size={20} /> */}
+              <h3>Cancelar</h3>
             </div>
           </div>
         </div>
@@ -149,16 +153,72 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
             titleBar={"Informacion del credito"}
             openBar={() => setOpenFirstPart(!openFirstPart)}
             openBarStatus={openFirstPart}
-            inputsComplete={false}
+            inputsComplete={sectionInputs({
+              key: keysLoan01,
+              formData: formData as ScalarLoanApplication,
+            })}
           />
           {openFirstPart && (
             <>
               <div className={styles.containerInputs}>
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
+                    <p>Deudor Principal</p>
+                    <div className={styles.infoInput}>
+                      <p>
+                        {typeof formData?.affiliated_company === "string"
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle size={20} />
+                      </div>
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.principal_debtor || ""}
+                    onChange={(e) => handleInputChange(e, "principal_debtor")}
+                    name={keysLoan.find((key) => key === "principal_debtor")}
+                  />
+                </div>
+
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Codeudor</p>
+                    <div className={styles.infoInput}>
+                      <p>
+                        {typeof formData?.affiliated_company === "string"
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle size={20} />
+                      </div>
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.co_debtor || ""}
+                    onChange={(e) => handleInputChange(e, "co_debtor")}
+                    name={keysLoan.find((key) => key === "co_debtor")}
+                  />
+                </div>
+
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
                     <p>Empresa afiliada</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {typeof formData?.affiliated_company === "string"
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle size={20} />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -173,14 +233,21 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Nit</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {typeof formData?.nit === "string"
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle size={20} />
+                      </div>
                     </div>
                   </div>
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={formData?.nit}
+                    value={formData?.nit || ""}
                     onChange={(e) => handleInputChange(e, "nit")}
                     name={keysLoan.find((key) => key === "nit")}
                   />
@@ -196,7 +263,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={formData?.requested_amount}
+                    value={formData?.requested_amount || ""}
                     onChange={(e) => handleInputChange(e, "requested_amount")}
                     name={keysLoan.find((key) => key === "requested_amount")}
                   />
@@ -212,7 +279,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={formData?.deadline}
+                    value={formData?.deadline || ""}
                     onChange={(e) => handleInputChange(e, "deadline")}
                     name={keysLoan.find((key) => key === "deadline")}
                   />
@@ -227,7 +294,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                   <select
                     className={styles.boxSelect}
-                    value={formData?.payment}
+                    value={formData?.payment || ""}
                     onChange={(e) => handleInputChange(e, "payment")}
                     name={keysLoan.find((key) => key === "payment")}
                   >
@@ -253,7 +320,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={formData?.quota_value}
+                    value={formData?.quota_value || ""}
                     onChange={(e) => handleInputChange(e, "quota_value")}
                     name={keysLoan.find((key) => key === "quota_value")}
                   />
@@ -262,11 +329,23 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
             </>
           )}
 
+          {/* <ContractForm
+            formData={formData as ScalarLoanApplication}
+            handleInputChange={handleInputChange}
+            keysLoan={keysLoan01}
+            openPart={openFirstPart}
+            setOpenPart={setOpenFirstPart}
+            completeInputs={sectionInputs01}
+          /> */}
+
           <BarParts
             titleBar={"Informacion General del solicitante"}
             openBar={() => setOpenSecondPart(!openSecondPart)}
-            inputsComplete={false}
-            openBarStatus={false}
+            inputsComplete={sectionInputs({
+              key: keysLoan02,
+              formData: formData as ScalarLoanApplication,
+            })}
+            openBarStatus={openSecondPart}
           />
           {openSecondPart && (
             <>
@@ -281,7 +360,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={infoUser?.firstLastName || ""}
+                    value={formData?.firtLastName || ""}
                     onChange={(e) => handleInputChange(e, "firtLastName")}
                     name={keysLoan.find((key) => key === "firtLastName")}
                   />
@@ -313,7 +392,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={infoUser?.names || ""}
+                    value={formData?.names || ""}
                     onChange={(e) => handleInputChange(e, "names")}
                     name={keysLoan.find((key) => key === "names")}
                   />
@@ -402,8 +481,8 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     className={styles.inputInfo}
                     type="date"
                     value={
-                      infoUser?.birth_day instanceof Date
-                        ? infoUser.birth_day.toISOString().split("T")[0]
+                      formData?.birthDate instanceof Date
+                        ? formData.birthDate.toISOString().split("T")[0]
                         : ""
                     }
                     onChange={(e) => handleInputChange(e, "birthDate")}
@@ -1004,7 +1083,10 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           <BarParts
             titleBar={"Informacion financiera"}
             openBar={() => setOpenThreePart(!openThreePart)}
-            inputsComplete={false}
+            inputsComplete={sectionInputs({
+              key: keysLoan03,
+              formData: formData as ScalarLoanApplication,
+            })}
             openBarStatus={openThreePart}
           />
           {openThreePart && (
@@ -1212,39 +1294,456 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           <BarParts
             titleBar={"Referencias (Personas que no viven con usted)"}
             openBar={() => setOpenFourPart(!openFourPart)}
-            inputsComplete={false}
+            inputsComplete={sectionInputs({
+              key: keysLoan04,
+              formData: formData as ScalarLoanApplication,
+            })}
             openBarStatus={openFourPart}
           />
           {openFourPart && (
             <>
-              <p>Hola</p>
+              <div className={styles.containerInputs}>
+                <h3>Personal</h3>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Apellidos y Nombres</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.personal_reference_name || ""}
+                    onChange={(e) =>
+                      handleInputChange(e, "personal_reference_name")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "personal_reference_name"
+                    )}
+                  />
+                </div>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Empresa donde trabaja</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.personal_reference_work_company_name || ""}
+                    onChange={(e) =>
+                      handleInputChange(
+                        e,
+                        "personal_reference_work_company_name"
+                      )
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "personal_reference_work_company_name"
+                    )}
+                  />
+                </div>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Ciudad</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.personal_reference_city || ""}
+                    onChange={(e) =>
+                      handleInputChange(e, "personal_reference_city")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "personal_reference_city"
+                    )}
+                  />
+                </div>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Direccion residencia</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.personal_reference_address || ""}
+                    onChange={(e) =>
+                      handleInputChange(e, "personal_reference_address")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "personal_reference_address"
+                    )}
+                  />
+                </div>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Telefono Residencia</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.personal_reference_number_residence || ""}
+                    onChange={(e) =>
+                      handleInputChange(
+                        e,
+                        "personal_reference_number_residence"
+                      )
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "personal_reference_number_residence"
+                    )}
+                  />
+                </div>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Telefono celular</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.personal_reference_number_phone}
+                    onChange={(e) =>
+                      handleInputChange(e, "personal_reference_number_phone")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "personal_reference_number_phone"
+                    )}
+                  />
+                </div>
+                Familiar
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Apellidos y Nombres</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.family_reference_name || ""}
+                    onChange={(e) =>
+                      handleInputChange(e, "family_reference_name")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "family_reference_name"
+                    )}
+                  />
+                </div>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Empresa donde trabaja</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.family_reference_work_company_name || ""}
+                    onChange={(e) =>
+                      handleInputChange(e, "family_reference_work_company_name")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "family_reference_work_company_name"
+                    )}
+                  />
+                </div>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Ciudad</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.family_reference_city || ""}
+                    onChange={(e) =>
+                      handleInputChange(e, "family_reference_city")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "family_reference_city"
+                    )}
+                  />
+                </div>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Direccion residencia</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.family_reference_address || ""}
+                    onChange={(e) =>
+                      handleInputChange(e, "family_reference_address")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "family_reference_address"
+                    )}
+                  />
+                </div>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Telefono Residencia</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.family_reference_number_residence || ""}
+                    onChange={(e) =>
+                      handleInputChange(e, "family_reference_number_residence")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "family_reference_number_residence"
+                    )}
+                  />
+                </div>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Telefono celular</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.family_reference_number_phone || ""}
+                    onChange={(e) =>
+                      handleInputChange(e, "family_reference_number_phone")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "family_reference_number_phone"
+                    )}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
+          <BarParts
+            titleBar={"Indique la clase de contrato"}
+            openBar={() => setOpenFivePart(!openFivePart)}
+            inputsComplete={sectionInputs({
+              key: keysLoan05,
+              formData: formData as ScalarLoanApplication,
+            })}
+            openBarStatus={openFivePart}
+          />
+          {openFivePart && (
+            <>
+              <div className={styles.containerInputs}>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Termino fijo</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <select
+                    className={styles.boxSelect}
+                    value={formData?.fixed_term || ""}
+                    onChange={(e) => handleInputChange(e, "fixed_term")}
+                    name={keysLoan.find((key) => key === "fixed_term")}
+                  >
+                    <option className={styles.optionSelect} value="No">
+                      No
+                    </option>
+                    <option className={styles.optionSelect} value="Si">
+                      Si
+                    </option>
+                  </select>
+                </div>
+
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Labor o Obra</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <select
+                    className={styles.boxSelect}
+                    value={formData?.labor_or_work || ""}
+                    onChange={(e) => handleInputChange(e, "labor_or_work")}
+                    name={keysLoan.find((key) => key === "labor_or_work")}
+                  >
+                    <option className={styles.optionSelect} value="Si">
+                      No
+                    </option>
+                    <option className={styles.optionSelect} value="No">
+                      Si
+                    </option>
+                  </select>
+                </div>
+              </div>
             </>
           )}
 
           <BarParts
             titleBar={"Datos del contrato"}
-            openBar={() => setOpenFivePart(!openFivePart)}
-            inputsComplete={false}
-            openBarStatus={openFivePart}
-          />
-          {openFivePart && (
-            <>
-              <p>Hola</p>
-            </>
-          )}
-
-          <BarParts
-            titleBar={"Creditos vigentes que afecten su nomina"}
             openBar={() => setOpenSixPart(!openSixPart)}
-            inputsComplete={false}
+            inputsComplete={sectionInputs({
+              key: keysLoan06,
+              formData: formData as ScalarLoanApplication,
+            })}
             openBarStatus={openSixPart}
           />
           {openSixPart && (
             <>
-              <p>Hola</p>
+              <div className={styles.containerInputs}>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Fecha de vinculacion</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="date"
+                    value={
+                      formData?.date_relationship instanceof Date
+                        ? formData.date_relationship.toISOString().split("T")[0]
+                        : ""
+                    }
+                    onChange={(e) => handleInputChange(e, "date_relationship")}
+                    name={keysLoan.find((key) => key === "date_relationship")}
+                  />
+                </div>
+
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Antiguedad laboral (Suma tiempo contratos)</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.labor_seniority_contracts || ""}
+                    onChange={(e) =>
+                      handleInputChange(e, "labor_seniority_contracts")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "labor_seniority_contracts"
+                    )}
+                  />
+                </div>
+
+                {formData?.fixed_term == "Si" && (
+                  <div className={styles.boxInput}>
+                    <div className={styles.headerInputInfo}>
+                      <p>Fecha fin contrato actual</p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle size={20} />
+                      </div>
+                    </div>
+                    <input
+                      className={styles.inputInfo}
+                      type="text"
+                      value={formData?.requested_amount}
+                      onChange={(e) => handleInputChange(e, "requested_amount")}
+                      name={keysLoan.find((key) => key === "requested_amount")}
+                    />
+                  </div>
+                )}
+
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Promedio salario variable mensual</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.average_variable_salary}
+                    onChange={(e) =>
+                      handleInputChange(e, "average_variable_salary")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "average_variable_salary"
+                    )}
+                  />
+                </div>
+
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Total ingreso Mensual</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.total_monthly_income}
+                    onChange={(e) =>
+                      handleInputChange(e, "total_monthly_income")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "total_monthly_income"
+                    )}
+                  />
+                </div>
+
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Descuentos mensuales</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.monthly_discounts || ""}
+                    onChange={(e) => handleInputChange(e, "monthly_discounts")}
+                    name={keysLoan.find((key) => key === "monthly_discounts")}
+                  />
+                </div>
+              </div>
             </>
           )}
         </div>
+
+        {sectionInputs({
+          key: keysLoan,
+          formData: formData as ScalarLoanApplication,
+        }) && (
+          <>
+            <div className={styles.containerBtnSoli}>
+              <button className={styles.btnSoli} onClick={handleSubmit}>
+                Solicitar
+              </button>
+            </div>
+          </>
+        )}
       </main>
     </>
   );

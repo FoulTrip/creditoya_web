@@ -56,7 +56,7 @@ export type ScalarLoanApplication = {
   numberDocument: string;
   persons_in_charge: string;
   monthly_expenses: string;
-  birthDate: string;
+  birthDate: Date;
   place_birth: string;
   destination_resources: string;
   city: string;
@@ -102,13 +102,18 @@ export type ScalarLoanApplication = {
   personal_reference_city: string;
   personal_reference_address: string;
   personal_reference_number_residence?: string;
+  personal_reference_number_phone: string;
   family_reference_name: string;
   family_reference_work_company_name: string;
   family_reference_city: string;
   family_reference_address: string;
   family_reference_number_residence?: string;
+  family_reference_number_phone: string;
   remarks?: string;
   status: Status;
+  fixed_term: ifOrNot;
+  labor_or_work: ifOrNot;
+  labor_seniority_contracts: string;
   contract_type_fixed_term: ifOrNot;
   contract_type_work: ifOrNot;
   date_relationship: Date;

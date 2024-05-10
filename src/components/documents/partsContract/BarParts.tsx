@@ -22,15 +22,24 @@ function BarParts({
 }) {
   return (
     <>
-      <div className={styles.barPartOne} onClick={openBar}>
+      <div
+        className={
+          !openBarStatus && !inputsComplete
+            ? styles.barPartOne
+            : !inputsComplete
+            ? styles.barPartOneOpen
+            : styles.barPartOneOpenSucces
+        }
+        onClick={openBar}
+      >
         <div className={styles.boxIconStatus}>
           {inputsComplete ? (
-            <TbCircleCheck size={20} className={styles.incompleteFormIcon} />
+            <TbCircleCheck size={25} className={styles.incompleteFormIcon} />
           ) : (
-            <TbCircleDashedX size={20} className={styles.incompleteFormIcon} />
+            <TbCircleDashedX size={25} className={styles.incompleteFormIcon} />
           )}
         </div>
-        <h4 className={styles.titleOpenBar}>{titleBar}</h4>
+        <h4 className={styles.titleOpenBar}>{titleBar.toLocaleUpperCase()}</h4>
         <div className={styles.BoxIconChevron}>
           {openBarStatus ? (
             <TbChevronUp size={20} />
