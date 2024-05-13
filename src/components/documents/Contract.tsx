@@ -2,8 +2,6 @@
 
 import React, { use, useEffect, useState } from "react";
 import styles from "./Contract.module.css";
-import Modal from "../modal/Modal";
-import PreEnvio from "./PreEnvio";
 import { useGlobalContext } from "@/context/Auth";
 import { TbX, TbInfoCircle } from "react-icons/tb";
 import axios from "axios";
@@ -27,7 +25,11 @@ import {
 } from "./partsContract/KeysLoan";
 
 import { sectionInputs } from "@/handlers/ContractHandlers";
-import socket from "@/Socket";
+import { useWebSocket } from "@/Socket/SocketHook";
+
+const handleOnMessage = (event: any) => {
+  console.log("Mensaje del servidor: ", event.data);
+};
 
 function Contract({ toggleContract }: { toggleContract: () => void }) {
   const [openFirstPart, setOpenFirstPart] = useState<boolean>(false);
@@ -39,6 +41,11 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
 
   const { user } = useGlobalContext();
   const [formData, setFormData] = useState<ScalarLoanApplication | null>(null);
+
+  const { send } = useWebSocket({
+    url: process.env.NEXT_PUBLIC_ENDPOINT_WEBSOCKET as string,
+    onMessage: handleOnMessage,
+  });
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -53,24 +60,22 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
 
   const handleSubmit = async () => {
     try {
-      
       const data = {
-        loan: formData,
-        token: user?.token,
+        type: "create_new_loan",
+        data: {
+          loan: formData,
+          token: user?.token,
+        },
       };
 
-      socket.emit("create_loan_request", data);
+      send("create_new_loan", data);
     } catch (error) {
       console.error("Error:", error);
       toast.error("Error al enviar la solicitud");
     }
   };
 
-  // console.log(formData);
-
-  useEffect(() => {
-    socket.emit("connected", "Hello from ContractForm");
-  }, []);
+  // console.log(formData)
 
   useEffect(() => {
     const getInfoUser = async () => {

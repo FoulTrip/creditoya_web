@@ -144,6 +144,13 @@ model LoanApplication {
     updatedAt                            DateTime      @updatedAt
 }
 
+model Events {
+    id         String   @id @default(uuid()) @map("_id")
+    nameEvent  String
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now())
+}
+
 model pdfLoan {
     id                String          @id @default(uuid()) @map("_id")
     loanApplication   LoanApplication @relation(fields: [loanApplicationId], references: [id])
