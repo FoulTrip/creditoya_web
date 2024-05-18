@@ -3,9 +3,11 @@ import styles from "./styles/Requrements.module.css";
 import { Slider, SliderChangeEvent } from "primereact/slider";
 
 import { TbCheck, TbBrandWhatsapp, TbMail, TbPhone } from "react-icons/tb";
+import { useRouter } from "next/navigation";
 
 function RequirementsComponents() {
   const [value, setValue] = useState<number | null>(0);
+  const router = useRouter()
   return (
     <>
       <div className={styles.supraMain}>
@@ -158,7 +160,7 @@ function RequirementsComponents() {
         </div>
 
         <div className={styles.barPriceLoan}>
-          <h1 className={styles.titleHow}>Cuanto dinero Necesitas</h1>
+          <h1 className={styles.titleHow}>Comienza digitando cuanto dinero necesitas</h1>
 
           <div className={styles.priceLoan}>
             <div className={styles.boxSlider}>
@@ -173,7 +175,7 @@ function RequirementsComponents() {
             </div>
 
             <div className={styles.textPrice}>
-              <h1>Valor del prestamo</h1>
+              <h2>Valor del prestamo</h2>
               <h3>
                 $ {value?.toLocaleString("en-US", { minimumFractionDigits: 2 })}{" "}
                 COP
@@ -181,7 +183,7 @@ function RequirementsComponents() {
             </div>
 
             <div className={styles.boxBtnPrevLoan}>
-              <button>Crear prestamo</button>
+              <button onClick={() => router.push("/auth")}>Crear prestamo</button>
             </div>
           </div>
         </div>

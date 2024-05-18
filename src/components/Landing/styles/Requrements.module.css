@@ -160,12 +160,21 @@
   flex-direction: column;
   gap: 10px;
   margin-bottom: 3em;
+  margin-top: 3em;
 }
 
 .titleHow {
   font-weight: 600;
   color: var(--green-600);
   text-align: center;
+  view-timeline-name: --image;
+  view-timeline-axis: block;
+
+  animation-timeline: --image;
+  animation-name: show;
+
+  animation-range: entry 20% cover 30%;
+  animation-fill-mode: both;
 }
 
 .boxSlider {
@@ -186,6 +195,14 @@
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  view-timeline-name: --image;
+  view-timeline-axis: block;
+
+  animation-timeline: --image;
+  animation-name: show;
+
+  animation-range: entry 20% cover 30%;
+  animation-fill-mode: both;
 }
 
 .textPrice {
@@ -194,8 +211,13 @@
   padding-left: 10px;
 }
 
+.textPrice h2 {
+  font-weight: 600;
+  color: var(--green-950);
+}
+
 .valueLoan[type="range"] {
-  -webkit-appearance: none;
+  appearance: none;
   width: 500px;
   height: 15px;
   border-radius: 5px;

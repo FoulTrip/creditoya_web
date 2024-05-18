@@ -91,6 +91,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           whatsapp_number: data.phone_whatsapp as string,
           cellPhone: data.phone as string,
           birthDate: data.birth_day as Date,
+          userId: data.id as string,
         }));
       }
     };
@@ -115,6 +116,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           ...(prevFormData as ScalarLoanApplication),
           numberDocument: data.number,
           typeDocument: data.typeDocument,
+          ccNumber: data.number,
         }));
       }
       // console.log(data);
@@ -273,7 +275,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={formData?.deadline || ""}
+                    value={formData?.deadline || undefined}
                     onChange={(e) => handleInputChange(e, "deadline")}
                     name={keysLoan.find((key) => key === "deadline")}
                   />
@@ -427,13 +429,13 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     onChange={(e) => handleInputChange(e, "typeDocument")}
                     name={keysLoan.find((key) => key === "typeDocument")}
                   >
-                    <option className={styles.optionSelect} value="Semanal">
+                    <option className={styles.optionSelect} value="CC">
                       C.C.
                     </option>
-                    <option className={styles.optionSelect} value="Quincenal">
+                    <option className={styles.optionSelect} value="CE">
                       C.E.
                     </option>
-                    <option className={styles.optionSelect} value="Mensual">
+                    <option className={styles.optionSelect} value="PASAPORTE">
                       Pasaporte
                     </option>
                   </select>
@@ -1092,6 +1094,38 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           {openThreePart && (
             <>
               <div className={styles.containerInputs}>
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Numero de cuenta</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.bankNumberAccount || ""}
+                    onChange={(e) => handleInputChange(e, "bankNumberAccount")}
+                    name={keysLoan.find((key) => key === "bankNumberAccount")}
+                  />
+                </div>
+
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Entidad</p>
+                    <div className={styles.boxIconInfo}>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.entity || ""}
+                    onChange={(e) => handleInputChange(e, "entity")}
+                    name={keysLoan.find((key) => key === "entity")}
+                  />
+                </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Total ingresos mensuales</p>
