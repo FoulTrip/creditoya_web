@@ -5,6 +5,14 @@
   flex-wrap: wrap-reverse;
   gap: 10px;
   justify-content: space-between;
+  background: linear-gradient(
+    to right top,
+    #ffffff,
+    #f7f7ff,
+    #eef0ff,
+    #e2eaff,
+    #d5e4ff
+  );
 }
 
 .textCopy {

@@ -1,0 +1,177 @@
+@keyframes show {
+  from {
+    opacity: 0;
+    scale: 25%;
+  }
+
+  to {
+    opacity: 1;
+    scale: 100%;
+  }
+}
+
+.mainServices {
+  min-height: 100dvh;
+  background: linear-gradient(
+    to right top,
+    #ffffff,
+    #f7f7ff,
+    #eef0ff,
+    #e2eaff,
+    #d5e4ff
+  );
+  display: flex;
+  flex-direction: column;
+  padding-top: 5em;
+  padding-bottom: 5em;
+}
+
+.TitleServices {
+  padding: 0 30px;
+  font-weight: 900;
+  color: var(--green-600);
+  display: grid;
+  place-content: center;
+  margin-bottom: 1em;
+  view-timeline-name: --image;
+  view-timeline-axis: block;
+
+  animation-timeline: --image;
+  animation-name: show;
+
+  animation-range: entry 20% cover 30%;
+  animation-fill-mode: both;
+}
+
+.viewText {
+  text-align: center;
+  font-weight: 900;
+  color: var(--green-800);
+  padding-left: 10px;
+}
+
+.serviceBox {
+  /* display: grid;
+  place-content: center; */
+  /* background: var(--blue-100); */
+  width: 90%;
+  padding: 0px 20px;
+  margin-left: 5%;
+  border-radius: 8px;
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+
+  view-timeline-name: --image;
+  view-timeline-axis: block;
+
+  animation-timeline: --image;
+  animation-name: show;
+
+  animation-range: entry 20% cover 30%;
+  animation-fill-mode: both;
+}
+
+.serviceBoxRb {
+  /* display: grid;
+  place-content: center; */
+  /* background: var(--blue-100); */
+  width: 90%;
+  padding: 20px 0px;
+  margin-left: 5%;
+  border-radius: 8px;
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+
+  view-timeline-name: --image;
+  view-timeline-axis: block;
+
+  animation-timeline: --image;
+  animation-name: show;
+
+  animation-range: entry 20% cover 30%;
+  animation-fill-mode: both;
+}
+
+.centerServiceBox {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.ilustrationService {
+  display: grid;
+  place-content: center;
+  margin-left: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.ilusIcon {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0px 0px 10px #000000);
+}
+
+.infoService {
+  display: grid;
+  place-content: center;
+}
+
+.boxStep {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.boxStepDob {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.step {
+  padding: 15px 20px;
+  background: var(--green-300);
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  color: var(--green-600);
+  font-weight: 600;
+}
+
+.centerInfoService {
+  display: flex;
+  flex-direction: column;
+}
+
+.centerInfoService h2 {
+  font-weight: 600;
+  color: var(--green-900);
+}
+
+.centerInfoServiceDob {
+  display: flex;
+  flex-direction: column;
+}
+
+.centerInfoServiceDob h2 {
+  display: flex;
+  justify-content: flex-end;
+  font-weight: 600;
+  color: var(--green-900);
+}
+
+.centerInfoServiceDob p {
+  display: flex;
+  justify-content: flex-end;
+  padding-left: 20px;
+}
+
+@media screen and (max-width: 800px) {
+  .mainServices {
+    gap: 40px;
+  }
+  .centerInfoServiceDob p {
+    margin-left: 0;
+  }
+
+  .serviceBox {
+    padding: 10px 0px;
+  }
+}

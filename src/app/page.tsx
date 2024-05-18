@@ -1,13 +1,17 @@
 "use client";
 
 import HeroinSection from "@/components/Landing/HeroinSection";
-import ServicesSection from "@/components/Landing/ServicesSection";
+import RequirementsComponents from "@/components/Landing/Requirements";
+import ServiceSection from "@/components/Landing/ServiceSection";
+import StepSection from "@/components/Landing/Steps";
 
 export default function Home() {
   return (
     <>
       <HeroinSection />
-      <ServicesSection />
+      <ServiceSection />
+      <StepSection />
+      <RequirementsComponents />
     </>
   );
 }

@@ -36,7 +36,7 @@ export type AuthUser = {
 
 // Tipo para LoanApplication
 export type ScalarLoanApplication = {
-  id: string;
+  id?: string;
   userId: string;
   email: string;
   principal_debtor: string;
@@ -47,7 +47,7 @@ export type ScalarLoanApplication = {
   deadline: number;
   payment: typePayment;
   quota_value: number;
-  current_loans: ifOrNot;
+  // current_loans: ifOrNot;
   firtLastName: string;
   secondLastName: string;
   names: string;
@@ -63,7 +63,7 @@ export type ScalarLoanApplication = {
   genre: string;
   marital_status: string;
   cellPhone: string;
-  length_service: string;
+  // length_service: string;
   residence_address: string;
   residence_phone: string;
   housing_type: HouseType;
@@ -88,7 +88,7 @@ export type ScalarLoanApplication = {
   name_company_spouse?: string;
   phone_company_spoue?: string;
   total_monthly_income: number;
-  total_monthly_revenues: number;
+  // total_monthly_revenues: number;
   total_assets: string;
   total_liabilities: string;
   patrimony: string;
@@ -114,14 +114,12 @@ export type ScalarLoanApplication = {
   fixed_term: ifOrNot;
   labor_or_work: ifOrNot;
   labor_seniority_contracts: string;
-  contract_type_fixed_term: ifOrNot;
-  contract_type_work: ifOrNot;
   date_relationship: Date;
   labor_seniority: string;
   contract_termination_date?: string;
   indefinite_term: ifOrNot;
   average_variable_salary: number;
-  total_monthly_income_final: number;
+  // total_monthly_income_final: number;
   monthly_discounts: number;
   current_loans_affecting: ifOrNot;
   affecting_loan_entity_name?: string;

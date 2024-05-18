@@ -42,7 +42,7 @@
   --green-200: #9eff90;
   --green-300: #5fff50;
   --green-400: #29fe1d;
-  --green-500: #07e500;
+  --green-500: rgb(7, 229, 0);
   --green-600: #00b800;
   --green-700: #008000;
   --green-800: #076d08;
@@ -55,7 +55,7 @@
   font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-style: normal;
-  /* color-scheme: light; */
+  /* color-scheme: dark; */
   scrollbar-color: var(--white-100);
 }
 

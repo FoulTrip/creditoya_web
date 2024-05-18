@@ -24,12 +24,8 @@ import {
   keysLoan06,
 } from "./partsContract/KeysLoan";
 
-import { sectionInputs } from "@/handlers/ContractHandlers";
-import { useWebSocket } from "@/Socket/SocketHook";
-
-const handleOnMessage = (event: any) => {
-  console.log("Mensaje del servidor: ", event.data);
-};
+import { isRequired, sectionInputs } from "@/handlers/ContractHandlers";
+import socket from "@/Socket/Socket";
 
 function Contract({ toggleContract }: { toggleContract: () => void }) {
   const [openFirstPart, setOpenFirstPart] = useState<boolean>(false);
@@ -42,10 +38,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
   const { user } = useGlobalContext();
   const [formData, setFormData] = useState<ScalarLoanApplication | null>(null);
 
-  const { send } = useWebSocket({
-    url: process.env.NEXT_PUBLIC_ENDPOINT_WEBSOCKET as string,
-    onMessage: handleOnMessage,
-  });
+  useEffect(() => {
+    socket.emit("connected", "Hello from Contract");
+  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -60,22 +55,13 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
 
   const handleSubmit = async () => {
     try {
-      const data = {
-        type: "create_new_loan",
-        data: {
-          loan: formData,
-          token: user?.token,
-        },
-      };
-
-      send("create_new_loan", data);
+      console.log(formData);
+      socket.emit("create_loan_request", formData);
     } catch (error) {
       console.error("Error:", error);
       toast.error("Error al enviar la solicitud");
     }
   };
-
-  // console.log(formData)
 
   useEffect(() => {
     const getInfoUser = async () => {
@@ -104,6 +90,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           email: data.email,
           whatsapp_number: data.phone_whatsapp as string,
           cellPhone: data.phone as string,
+          birthDate: data.birth_day as Date,
         }));
       }
     };
@@ -171,7 +158,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <p>Deudor Principal</p>
                     <div className={styles.infoInput}>
                       <p>
-                        {typeof formData?.affiliated_company === "string"
+                        {isRequired("principal_debtor")
                           ? "Obligatorio"
                           : "Opcional"}
                       </p>
@@ -194,9 +181,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <p>Codeudor</p>
                     <div className={styles.infoInput}>
                       <p>
-                        {typeof formData?.affiliated_company === "string"
-                          ? "Obligatorio"
-                          : "Opcional"}
+                        {isRequired("co_debtor") ? "Obligatorio" : "Opcional"}
                       </p>
                       <div className={styles.boxIconInfo}>
                         <TbInfoCircle size={20} />
@@ -217,7 +202,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <p>Empresa afiliada</p>
                     <div className={styles.infoInput}>
                       <p>
-                        {typeof formData?.affiliated_company === "string"
+                        {isRequired("affiliated_company")
                           ? "Obligatorio"
                           : "Opcional"}
                       </p>
@@ -239,11 +224,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <div className={styles.headerInputInfo}>
                     <p>Nit</p>
                     <div className={styles.infoInput}>
-                      <p>
-                        {typeof formData?.nit === "string"
-                          ? "Obligatorio"
-                          : "Opcional"}
-                      </p>
+                      <p>{isRequired("nit") ? "Obligatorio" : "Opcional"}</p>
                       <div className={styles.boxIconInfo}>
                         <TbInfoCircle size={20} />
                       </div>
@@ -262,6 +243,11 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <div className={styles.headerInputInfo}>
                     <p>Monto solicitado</p>
                     <div className={styles.boxIconInfo}>
+                      <p>
+                        {isRequired("requested_amount")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
                       <TbInfoCircle size={20} />
                     </div>
                   </div>
@@ -278,6 +264,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <div className={styles.headerInputInfo}>
                     <p>Plazo (Meses)</p>
                     <div className={styles.boxIconInfo}>
+                      <p>
+                        {isRequired("deadline") ? "Obligatorio" : "Opcional"}
+                      </p>
                       <TbInfoCircle size={20} />
                     </div>
                   </div>
@@ -294,6 +283,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <div className={styles.headerInputInfo}>
                     <p>Pago</p>
                     <div className={styles.boxIconInfo}>
+                      <p>
+                        {isRequired("payment") ? "Obligatorio" : "Opcional"}
+                      </p>
                       <TbInfoCircle size={20} />
                     </div>
                   </div>
@@ -319,6 +311,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <div className={styles.headerInputInfo}>
                     <p>Valor cuota</p>
                     <div className={styles.boxIconInfo}>
+                      <p>
+                        {isRequired("quota_value") ? "Obligatorio" : "Opcional"}
+                      </p>
                       <TbInfoCircle size={20} />
                     </div>
                   </div>
@@ -1619,6 +1614,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           {openSixPart && (
             <>
               <div className={styles.containerInputs}>
+                +|
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Fecha de vinculacion</p>
@@ -1638,7 +1634,6 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     name={keysLoan.find((key) => key === "date_relationship")}
                   />
                 </div>
-
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Antiguedad laboral (Suma tiempo contratos)</p>
@@ -1658,7 +1653,6 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
-
                 {formData?.fixed_term == "Si" && (
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
@@ -1676,7 +1670,6 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     />
                   </div>
                 )}
-
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Promedio salario variable mensual</p>
@@ -1696,7 +1689,6 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
-
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Total ingreso Mensual</p>
@@ -1716,7 +1708,6 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
-
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Descuentos mensuales</p>

@@ -1,0 +1,265 @@
+@keyframes show {
+  from {
+    opacity: 0;
+    scale: 25%;
+  }
+
+  to {
+    opacity: 1;
+    scale: 100%;
+  }
+}
+
+.supraMain {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: linear-gradient(
+    to left top,
+    #d5e4ff,
+    #e2eaff,
+    #eef0ff,
+    #f7f7ff,
+    #ffffff
+  );
+  padding: 0px 30px;
+}
+
+.MainRequisites {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 5em 30px;
+  gap: 40px;
+}
+
+.boxRequire {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  /* background: var(--white-100); */
+  padding: 20px;
+  view-timeline-name: --image;
+  view-timeline-axis: block;
+
+  animation-timeline: --image;
+  animation-name: show;
+
+  animation-range: entry 20% cover 30%;
+  animation-fill-mode: both;
+}
+
+.titleRequire {
+  font-weight: 700;
+  color: var(--green-900);
+}
+
+.infoBox {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.boxCheckIcon {
+  display: grid;
+  place-content: center;
+  padding: 5px;
+
+  view-timeline-name: --image;
+  view-timeline-axis: block;
+
+  animation-timeline: --image;
+  animation-name: show;
+
+  animation-range: entry 20% cover 30%;
+  animation-fill-mode: both;
+}
+
+.iconCheck {
+  color: var(--green-600);
+}
+
+.contactInfo {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  margin-top: 2em;
+  margin-bottom: 5em;
+  margin-left: 5%;
+}
+
+.titleContact {
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+.centerBtns {
+  display: grid;
+  place-content: center;
+}
+
+.listActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  view-timeline-name: --image;
+  view-timeline-axis: block;
+
+  animation-timeline: --image;
+  animation-name: show;
+
+  animation-range: entry 20% cover 30%;
+  animation-fill-mode: both;
+}
+
+.btnAction {
+  display: grid;
+  place-content: center;
+  background: var(--white-200);
+  padding: 10px 15px;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.centerBtnAction {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.boxIconAction {
+  display: grid;
+  place-content: center;
+}
+
+.iconWs,
+.labelActWs {
+  color: var(--green-600);
+  font-weight: 600;
+  display: grid;
+  place-content: center;
+}
+
+.iconMail,
+.labelActMail {
+  color: var(--blue-600);
+  font-weight: 600;
+  display: grid;
+  place-content: center;
+}
+
+.labelActPhone,
+.iconPhone {
+  color: var(--white-500);
+  font-weight: 600;
+}
+
+.barPriceLoan {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 3em;
+}
+
+.titleHow {
+  font-weight: 600;
+  color: var(--green-600);
+  text-align: center;
+}
+
+.boxSlider {
+  display: grid;
+  place-content: center;
+  flex-basis: 400px;
+  flex-grow: 1;
+  /* margin-bottom: 1em; */
+}
+
+.priceLoan {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 1em;
+  gap: 15px;
+  background: var(--white-200);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.textPrice {
+  flex-basis: 400px;
+  flex-grow: 1;
+  padding-left: 10px;
+}
+
+.valueLoan[type="range"] {
+  -webkit-appearance: none;
+  width: 500px;
+  height: 15px;
+  border-radius: 5px;
+  background: var(--white-50);
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.valueLoan[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Hace que el control deslizante sea compatible con Chrome */
+  appearance: none;
+  width: 30px; /* Ancho del control deslizante */
+  height: 30px; /* Altura del control deslizante */
+  border-radius: 8px;
+  background: var(--green-500); /* Color de fondo del control deslizante */
+  cursor: pointer; /* Cursor al pasar el mouse */
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.valueLoan[type="range"]::-moz-range-thumb {
+  width: 25px; /* Ancho del control deslizante */
+  height: 25px; /* Altura del control deslizante */
+  border-radius: 50%;
+  background: #4caf50; /* Color de fondo del control deslizante */
+  cursor: pointer; /* Cursor al pasar el mouse */
+}
+
+.boxBtnPrevLoan {
+  display: grid;
+  place-content: center;
+}
+
+.boxBtnPrevLoan button {
+  padding: 10px 15px;
+  cursor: pointer;
+  outline: none;
+  border: 1px solid var(--white-300);
+  border-radius: 8px;
+  background: var(--green-200);
+  color: var(--green-600);
+  font-weight: 600;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.boxBtnPrevLoan button:hover {
+  background: var(--green-300);
+}
+
+@media screen and (max-width: 800px) {
+  .MainRequisites {
+    padding: 0px 10px;
+    /* width: 90%;
+    margin-left: 5%; */
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .supraMain {
+    padding: 0px 10px;
+  }
+
+  .valueLoan[type="range"] {
+    width: 350px;
+  }
+}

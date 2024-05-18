@@ -126,7 +126,7 @@ model LoanApplication {
     contract_termination_date            String?
     indefinite_term                      ifOrNot
     average_variable_salary              Int
-    total_monthly_income_final           Int
+    // total_monthly_income_final           Int
     monthly_discounts                    Int
     current_loans_affecting              ifOrNot
     affecting_loan_entity_name           String?

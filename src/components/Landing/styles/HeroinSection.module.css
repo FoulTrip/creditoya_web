@@ -29,7 +29,7 @@
 }
 
 .supraMain {
-  background-image: linear-gradient(
+  background: linear-gradient(
     to right top,
     #ffffff,
     #f7f7ff,
@@ -38,199 +38,115 @@
     #d5e4ff
   );
   min-height: 100dvh;
-  display: grid;
-  place-content: center;
+  display: flex;
+  flex-wrap: wrap-reverse;
+  /* width: 90%;
+  margin-left: 5%; */
 }
 
-.ContainerMain {
+/* .centerMain {
   display: flex;
-  flex-wrap: wrap;
-  width: 90%;
-  margin-left: 5%;
+  flex-direction: column;
+  gap: 20px;
+} */
+
+.infoContent {
+  flex-basis: 500px;
+  flex-grow: 1;
+  display: grid;
+  place-content: center;
+  padding-left: 70px;
+}
+
+.centerInfoContent {
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
-.Boxtexts {
-  flex-basis: 400px;
-  flex-grow: 1;
+.slogan {
+  display: grid;
+  place-content: center;
+  font-weight: 600;
+  padding-right: 100px;
+  color: var(--green-900);
+}
+
+.btn {
+  display: flex;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.centerBtn {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  background: var(--green-200);
+  border-radius: 8px;
+  padding: 15px 20px;
+}
+
+.centerBtn p {
+  display: grid;
+  place-content: center;
+  color: var(--green-600);
+  font-weight: 500;
+}
+
+.boxIconArrow {
   display: grid;
   place-content: center;
 }
 
+.iconArrow {
+  color: var(--green-600);
+}
+
+.secondIlus {
+  width: 90%;
+  height: auto;
+}
+
 .ilustrationContent {
-  flex-basis: 400px;
+  flex-basis: 500px;
   flex-grow: 1;
   display: grid;
   place-content: center;
-  position: sticky;
-  /* z-index: -1; */
   animation-name: slideIn;
   animation-duration: 1s;
 }
 
 .ilustrationGif {
   filter: drop-shadow(5px 5px 10px #000000);
-  width: 100%;
+  width: 120%;
   height: auto;
-  image-rendering: pixelated;
-  z-index: -1;
-  mask-image: linear-gradient(black 80%, transparent);
 }
 
-.title {
-  font-weight: 500;
-  /* color: var(--blue-600); */
-  font-size: 40px;
-  text-align: center;
-}
-
-.cardTestLoan {
-  margin-top: 2em;
-  padding: 0px 100px;
-  /* display: grid;
-  place-content: center; */
-}
-
-.centerCardTestLoan {
-  border-radius: 8px;
-  background: var(--white-50);
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  animation-name: fadeIn;
-  animation-duration: 2s;
-}
-
-.boxReq {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 10px;
-}
-
-.inputReq {
-  padding: 10px;
-  flex: 1;
-  border: 1px solid transparent;
-  outline: none;
-  font-size: 16px;
-}
-
-.boxIcon {
-  display: grid;
-  place-content: center;
-}
-
-.nameWeb {
-  font-weight: 500;
-  color: var(--red-600);
-  filter: drop-shadow(0px 0px 10px var(--red-400));
-}
-
-.btnGetStarted {
-  display: grid;
-  place-content: center;
-  background: var(--blue-600);
-  border-radius: 0px 0px 8px 8px;
-  padding: 20px;
-  cursor: pointer;
-  border: 1px solid var(--white-300);
-}
-
-.centerBtn {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-}
-
-.textBtn {
-  color: var(--white-50);
-  font-weight: 500;
-  font-size: 16px;
-}
-
-.boxIconBtn {
-  display: grid;
-  place-content: center;
-}
-
-.iconBtn {
-  color: var(--white-50);
-}
-
-.iconCheck {
-  color: var(--green-200);
-}
-
-.iconCheckActive {
-  color: var(--green-600);
-}
-
-.failures {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 5px;
-}
-
-.boxFailure {
-  display: flex;
-  flex-direction: row;
-  padding: 10px 20px;
-  gap: 10px;
-  /* border: 1px solid var(--white-300); */
-  /* background: var(--blue-100); */
-  border-radius: 1em;
-  margin-top: 2em;
-  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
-  view-timeline-name: --image;
-  view-timeline-axis: block;
-
-  animation-timeline: --image;
-  animation-name: show;
-
-  animation-range: entry 20% cover 30%;
-  animation-fill-mode: both;
-}
-
-.boxIconFailure,
-.boxFailure p {
-  display: grid;
-  place-content: center;
-  text-align: start;
-  color: var(--white-600);
-  text-align: center;
-  font-size: 13px;
-}
-
-.iconFailure {
-  filter: drop-shadow(0px 0px 10px #000000);
-}
-
-@media screen and (max-width: 1000px) {
-  .ContainerMain {
-    width: 90%;
-    margin-left: 5%;
+@media screen and (max-width: 800px) {
+  .infoContent {
+    padding-left: 0;
   }
-}
 
-@media screen and (max-width: 700px) {
-  .ContainerMain {
-    padding-top: 7em;
+  .ilustrationContent {
+    margin-top: 5em;
+  }
+
+  .slogan {
+    padding-right: 0;
+  }
+
+  .secondIlus {
+    width: 100%;
+    height: auto;
+  }
+
+  .supraMain {
+    padding: 0px 30px;
   }
 
   .ilustrationGif {
     width: 100%;
     height: auto;
-  }
-
-  .cardTestLoan {
-    padding: 0;
-  }
-
-  .failures {
-    padding: 0;
-    display: flex;
-    flex-direction: column;
   }
 }
