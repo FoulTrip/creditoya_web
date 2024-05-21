@@ -12,6 +12,7 @@ import { ScalarLoanApplication } from "@/types/User";
 
 import CardLoan from "@/components/accesories/CardLoan";
 import LoadingPage from "@/components/Loaders/LoadingPage";
+import socket from "@/Socket/Socket";
 
 function Dashboard() {
   const router = useRouter();
@@ -58,6 +59,17 @@ function Dashboard() {
     getAllLoans();
   }, [user?.id, user?.token]);
 
+  useEffect(() => {
+    socket.on("updateLoan", (data: ScalarLoanApplication[]) => {
+      console.log("from server: ", data);
+      setLoans(data);
+    });
+
+    return () => {
+      socket.off("updateLoanClient");
+    };
+  });
+
   const handleOpenContract = () => {
     setOpenContract(!openContract);
   };
@@ -87,9 +99,11 @@ function Dashboard() {
                 <h1 className={styles.titleLoan}>Tus Prestamos</h1>
                 {Loans?.length == 0 && <div>Sin Prestaciones</div>}
                 <div className={styles.listLoans}>
-                  {Loans?.map((loan) => (
-                    <CardLoan key={loan.id} loan={loan} />
-                  ))}
+                  {Loans?.filter((loan) => loan.userId === user.id).map(
+                    (loan) => (
+                      <CardLoan key={loan.id} loan={loan} />
+                    )
+                  )}
                 </div>
               </>
             )}

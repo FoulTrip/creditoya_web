@@ -1,18 +1,24 @@
 import { ScalarLoanApplication } from "@/types/User";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./styles/cardLoan.module.css";
 import {
   TbArrowNarrowDown,
   TbChevronDown,
   TbChevronUp,
+  TbCircleCheck,
   TbClockSearch,
   TbEye,
   TbFileTypePdf,
 } from "react-icons/tb";
 import EditInfo from "./EditInfo";
+import socket from "@/Socket/Socket";
 
 function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
   const [openDetails, setOpenDetails] = useState<boolean>(false);
+
+  useEffect(() => {
+    socket.on("updateLoanClient", (data) => {});
+  });
 
   const toggleDetails = () => {
     setOpenDetails(!openDetails);
@@ -24,7 +30,12 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
         <div className={styles.headerStatus}>
           <div className={styles.centerHeaderStatus}>
             <div className={styles.iconHeaderStatus}>
-              <TbClockSearch className={styles.iconHeader} size={20} />
+              {loan.status === "Pendiente" && (
+                <TbClockSearch className={styles.iconHeader} size={20} />
+              )}
+              {loan.status === "Aprobado" && (
+                <TbCircleCheck className={styles.iconHeader} size={20} />
+              )}
             </div>
             <p>{loan.status}</p>
           </div>
