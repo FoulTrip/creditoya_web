@@ -39,7 +39,7 @@ function Dashboard() {
     } else {
       setLoading(false);
     }
-  }, [user?.id, user?.token]);
+  }, [user]);
 
   useEffect(() => {
     const getAllLoans = async () => {
@@ -57,7 +57,7 @@ function Dashboard() {
     };
 
     getAllLoans();
-  }, [user?.id, user?.token]);
+  }, [user]);
 
   useEffect(() => {
     socket.on("updateLoan", (data: ScalarLoanApplication[]) => {
@@ -68,7 +68,7 @@ function Dashboard() {
     return () => {
       socket.off("updateLoanClient");
     };
-  });
+  }, []);
 
   const handleOpenContract = () => {
     setOpenContract(!openContract);

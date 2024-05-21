@@ -98,10 +98,46 @@ function Profile({ params }: { params: { userId: string } }) {
 
     getInfoUserDocs();
     getInfoUser();
-  }, [params.userId, user?.token]);
+  }, [params.userId, user]);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
   console.log(birthday);
+
+  const handleSubmitImageFront = async ({ image }: { image: string }) => {
+    console.log(user?.token);
+    const response = await axios.post(
+      "/api/user/docs_update",
+      {
+        userId: params.userId,
+        documentFront: image,
+      },
+      { headers: { Authorization: `Bearer ${user?.token}` } }
+    );
+    // console.log(response);
+
+    if (response.data.success == true) {
+      toast.success("Parte frontal actualizada");
+    } else {
+      toast.error("la parte frontal no pudo actualizarse");
+    }
+  };
+
+  const handleSubmitImageBack = async ({ image }: { image: string }) => {
+    const response = await axios.post(
+      "/api/user/docs_update",
+      {
+        userId: params.userId,
+        documentBack: image,
+      },
+      { headers: { Authorization: `Bearer ${user?.token}` } }
+    );
+
+    // console.log(response);
+
+    if (response.data.success == true) {
+      toast.success("Parte trasera actualizada");
+    }
+  };
 
   const onDrop1 = useCallback(
     async (acceptedFiles: File[]) => {
@@ -125,7 +161,7 @@ function Profile({ params }: { params: { userId: string } }) {
         setImagePreview1(response.data);
       }
     },
-    [user?.token]
+    [user?.token, handleSubmitImageFront]
   );
 
   const onDrop2 = useCallback(
@@ -147,7 +183,7 @@ function Profile({ params }: { params: { userId: string } }) {
         setImagePreview2(response.data);
       }
     },
-    [user?.token]
+    [user, handleSubmitImageBack]
   );
 
   const onDrop3 = useCallback(
@@ -169,7 +205,7 @@ function Profile({ params }: { params: { userId: string } }) {
         setImagePreview3(response.data);
       }
     },
-    [user?.token]
+    [user, handleSubmitImageBack]
   );
 
   const { getRootProps: getRootProps1, getInputProps: getInputProps1 } =
@@ -178,25 +214,6 @@ function Profile({ params }: { params: { userId: string } }) {
     useDropzone({ onDrop: onDrop2 });
   const { getRootProps: getRootProps3, getInputProps: getInputProps3 } =
     useDropzone({ onDrop: onDrop3 });
-
-  const handleSubmitImageFront = async ({ image }: { image: string }) => {
-    console.log(user?.token);
-    const response = await axios.post(
-      "/api/user/docs_update",
-      {
-        userId: params.userId,
-        documentFront: image,
-      },
-      { headers: { Authorization: `Bearer ${user?.token}` } }
-    );
-    // console.log(response);
-
-    if (response.data.success == true) {
-      toast.success("Parte frontal actualizada");
-    } else {
-      toast.error("la parte frontal no pudo actualizarse");
-    }
-  };
 
   const handleUpdatePreviewLoads = async (
     updateData: Partial<Omit<ScalarUser, "password">>
@@ -239,23 +256,6 @@ function Profile({ params }: { params: { userId: string } }) {
       if (error instanceof Error) {
         toast.error(error.message);
       }
-    }
-  };
-
-  const handleSubmitImageBack = async ({ image }: { image: string }) => {
-    const response = await axios.post(
-      "/api/user/docs_update",
-      {
-        userId: params.userId,
-        documentBack: image,
-      },
-      { headers: { Authorization: `Bearer ${user?.token}` } }
-    );
-
-    // console.log(response);
-
-    if (response.data.success == true) {
-      toast.success("Parte trasera actualizada");
     }
   };
 

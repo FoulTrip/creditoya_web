@@ -18,6 +18,7 @@
     "axios": "^1.6.8",
     "bcryptjs": "^2.4.3",
     "browser-image-compression": "^2.0.2",
+    "bufferutil": "^4.0.8",
     "cloudinary": "^2.2.0",
     "googleapis": "^134.0.0",
     "handlebars": "^4.7.8",
@@ -33,7 +34,8 @@
     "react-icons": "^5.1.0",
     "react-responsive": "^10.0.0",
     "socket.io-client": "^4.7.5",
-    "sonner": "^1.4.41"
+    "sonner": "^1.4.41",
+    "utf-8-validate": "^5.0.10"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

@@ -2,7 +2,7 @@ import React from "react";
 import CommonInputField from "./CommonInputField";
 import { ScalarLoanApplication } from "@/types/User";
 import styles from "../Contract.module.css";
-import getFieldValue from "@/handlers/getFieldValue";
+import getFieldValue from "@/handlers/ContractHandlers";
 
 interface PropsInputField {
   fields: (keyof ScalarLoanApplication)[];
