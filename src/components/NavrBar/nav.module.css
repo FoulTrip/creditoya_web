@@ -95,7 +95,7 @@
 }
 
 .iconBtn {
-  color: var(--blue-400);
+  color: var(--green-600);
 }
 
 .btnOptLogin p {
@@ -113,7 +113,12 @@
 .centerOptsBox {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 15px;
+}
+
+.boxLogout {
+  display: grid;
+  place-content: center;
 }
 
 @media screen and (max-width: 700px) {

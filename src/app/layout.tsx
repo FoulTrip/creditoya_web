@@ -25,7 +25,6 @@ export default function RootLayout({
           <Toaster richColors />
           <NavBar />
           {children}
-          <IntFooter />
         </GlobalProvider>
       </body>
     </html>

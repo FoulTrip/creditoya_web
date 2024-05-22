@@ -1,0 +1,47 @@
+.footer {
+  padding: 20px 30px;
+  /* margin-top: 5em; */
+  display: flex;
+  flex-wrap: wrap-reverse;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.textCopy {
+  font-size: 16px;
+  display: grid;
+  place-content: center;
+  color: var(--white-600);
+  text-align: center;
+}
+
+.centerBoxPart {
+  display: grid;
+  place-content: center;
+}
+
+.partRedes {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.boxIconRed {
+  display: grid;
+  place-content: center;
+}
+
+.iconRed {
+  color: var(--white-500);
+  cursor: pointer;
+}
+
+.iconRed:hover {
+  color: var(--white-600);
+}
+
+@media screen and (max-width: 800px) {
+  .centerBoxPart {
+    flex: 1;
+  }
+}

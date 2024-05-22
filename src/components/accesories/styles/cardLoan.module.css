@@ -167,11 +167,10 @@
 .centerBoxBtnsDesicion {
   display: flex;
   flex-direction: row;
-  gap: 5px;
+  gap: 10px;
 }
 
-.btnRenov,
-.btnCanclLoan {
+.btnRenov {
   outline: none;
   padding: 10px 15px;
   border: 1px solid var(--white-200);
@@ -182,12 +181,13 @@
 }
 
 .btnRenov {
-  background: var(--blue-200);
+  background: var(--blue-100);
   color: var(--blue-900);
+  font-weight: 600;
 }
 
 .btnRenov:hover {
-  background: var(--blue-300);
+  background: var(--blue-200);
 }
 
 .btnCanclLoan {
@@ -197,6 +197,17 @@
 
 .btnCanclLoan:hover {
   background: var(--red-500);
+}
+
+.boxInfoAdvisor {
+  display: flex;
+  flex-direction: column;
+}
+
+.boxInfoAdvisor h5 {
+  display: flex;
+  font-weight: 600;
+  justify-content: flex-start;
 }
 
 @media screen and (max-width: 700px) {

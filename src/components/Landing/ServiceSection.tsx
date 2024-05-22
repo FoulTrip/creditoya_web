@@ -13,7 +13,14 @@ function ServiceSection() {
   return (
     <>
       <div className={styles.mainService}>
-        <h1 className={styles.titleService}>Nuestros servicios</h1>
+        <div className={styles.headerMainServices}>
+          <h1 className={styles.titleService}>
+            Soluciones Financieras a Tu Alcance
+          </h1>
+          <p>
+            Préstamos Rápidos y Flexibles para Impulsar Tus Metas Financieras
+          </p>
+        </div>
         <div className={styles.listServices}>
           <div className={styles.cardService}>
             <div className={styles.boxIconService}>

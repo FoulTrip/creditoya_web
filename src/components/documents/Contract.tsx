@@ -92,6 +92,8 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           cellPhone: data.phone as string,
           birthDate: data.birth_day as Date,
           userId: data.id as string,
+          genre: data.genre as string,
+          place_birth: data.place_of_birth as string,
         }));
       }
     };

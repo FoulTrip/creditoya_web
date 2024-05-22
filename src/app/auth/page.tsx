@@ -4,10 +4,9 @@ import React, { useState } from "react";
 import styles from "./page.module.css";
 import Image from "next/image";
 
-import logoTripCode from "@/assets/logo-tripcode.png";
+import logoTripCode from "@/assets/only_object_logo.png";
 import Signin from "@/components/auth/Signin";
 import Signup from "@/components/auth/Signup";
-import NavBar from "@/components/NavrBar/NavBarComponent";
 
 function OneContent() {
   const [selectLogin, setSelectLogin] = useState("signin");

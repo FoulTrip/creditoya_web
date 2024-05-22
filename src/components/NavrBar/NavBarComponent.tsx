@@ -5,7 +5,7 @@ import styles from "./nav.module.css";
 import Image from "next/image";
 import logoNav from "@/assets/creditoya_logo_minimalist.png";
 
-import { TbUserCircle } from "react-icons/tb";
+import { TbLogout, TbUserCircle } from "react-icons/tb";
 import { useGlobalContext } from "@/context/Auth";
 import Avatar from "react-avatar";
 import { useRouter } from "next/navigation";
@@ -42,7 +42,6 @@ function NavBar() {
                     Dashboard
                   </p>
                 )}
-                <p className={styles.btnOpt}>Nosotros</p>
                 <div
                   className={styles.btnOptLogin}
                   onClick={
@@ -65,6 +64,11 @@ function NavBar() {
                   </div>
                   {user ? <p>{user.names.split(" ")[0]}</p> : <p>Cuenta</p>}
                 </div>
+                {user && (
+                  <div className={styles.boxLogout}>
+                    <TbLogout size={25} />
+                  </div>
+                )}
               </div>
             </div>
           </>

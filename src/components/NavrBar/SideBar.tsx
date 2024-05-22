@@ -21,28 +21,6 @@ function SideBar() {
     <>
       {!visibleRight && (
         <>
-          <div
-            className={styles.btnOptLogin}
-            onClick={
-              user
-                ? () => router.push(`/profile/${user?.id}`)
-                : () => router.push(`/auth`)
-            }
-          >
-            <div className={styles.centerIconBtn}>
-              {user ? (
-                <Avatar
-                  src={user.avatar}
-                  className={styles.avatar}
-                  round={true}
-                  size="25"
-                />
-              ) : (
-                <TbUserCircle className={styles.iconBtn} size={25} />
-              )}
-            </div>
-            {user ? <p>{user.names.split(" ")[0]}</p> : <p>Cuenta</p>}
-          </div>
           <div className={styles.boxIconMenu}>
             <TbMenuDeep
               className={styles.iconMenu}

@@ -4,6 +4,7 @@ import styles from "./styles/cardLoan.module.css";
 import {
   TbArrowNarrowDown,
   TbChevronDown,
+  TbChevronRight,
   TbChevronUp,
   TbCircleCheck,
   TbClockSearch,
@@ -12,9 +13,11 @@ import {
 } from "react-icons/tb";
 import EditInfo from "./EditInfo";
 import socket from "@/Socket/Socket";
+import { useRouter } from "next/navigation";
 
 function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
   const [openDetails, setOpenDetails] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     socket.on("updateLoanClient", (data) => {});
@@ -44,22 +47,38 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
         <div className={styles.containerValueBox}>
           <div className={styles.centerValueBox}>
             <h3 className={styles.titleCantity}>Cantidad</h3>
-            <p className={styles.textValueCantity}>2'300'000 COP</p>
+            <p className={styles.textValueCantity}>$ {loan.requested_amount}</p>
           </div>
           <div className={styles.centerValueBox}>
             <h3 className={styles.titleCantity}>Plazo de pago</h3>
             <p className={styles.textValueCantity}>30 dias</p>
           </div>
+          <div className={styles.centerValueBox}>
+            <h3 className={styles.titleCantity}>Ganancia mensual</h3>
+            <p className={styles.textValueCantity}>{loan.monthly_income}</p>
+          </div>
+        </div>
+
+        <div className={styles.barViewDetails}>
+          <div
+            className={styles.subBarView}
+            onClick={() => router.push(`/req/${loan.id}`)}
+          >
+            <p className={styles.subTextBarView}>Datos completos</p>
+            <div className={styles.boxChevron}>
+              <TbChevronRight className={styles.iconChevron} size={20} />
+            </div>
+          </div>
         </div>
 
         <div className={styles.barViewDetails}>
           <div className={styles.subBarView} onClick={toggleDetails}>
-            <p className={styles.subTextBarView}>Detalles</p>
+            <p className={styles.subTextBarView}>Pagos</p>
             <div className={styles.boxChevron}>
               {openDetails ? (
-                <TbChevronUp className={styles.iconChevron} size={20} />
+                <TbChevronRight className={styles.iconChevron} size={20} />
               ) : (
-                <TbChevronDown className={styles.iconChevron} size={20} />
+                <TbChevronRight className={styles.iconChevron} size={20} />
               )}
             </div>
           </div>
@@ -101,7 +120,12 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
         <div className={styles.boxBtnsDesicion}>
           <div className={styles.centerBoxBtnsDesicion}>
             <button className={styles.btnRenov}>Renovar Credito</button>
-            <button className={styles.btnCanclLoan}>Cancelar Credito</button>
+            {loan.status === "Aprobado" && (
+              <div className={styles.boxInfoAdvisor}>
+                <h5>Asesor encargado</h5>
+                <p>David Vasquez Mahecha</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
