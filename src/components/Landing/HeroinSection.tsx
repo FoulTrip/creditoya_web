@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./styles/HeroinSection.module.css";
 import Image from "next/image";
-import ImageGif from "@/assets/heroIlustration02.svg";
+import ImageGif from "@/assets/Farmer-bro.svg";
 import logoApp from "@/assets/creditoya_logo.png";
 
 import { useMediaQuery } from "react-responsive";

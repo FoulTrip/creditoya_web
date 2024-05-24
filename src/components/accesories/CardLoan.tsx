@@ -72,30 +72,15 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
         </div>
 
         <div className={styles.barViewDetails}>
-          <div className={styles.subBarView} onClick={toggleDetails}>
+          <div
+            className={styles.subBarView}
+            onClick={() => router.push(`/req/${loan.id}/payments`)}
+          >
             <p className={styles.subTextBarView}>Pagos</p>
             <div className={styles.boxChevron}>
-              {openDetails ? (
-                <TbChevronRight className={styles.iconChevron} size={20} />
-              ) : (
-                <TbChevronRight className={styles.iconChevron} size={20} />
-              )}
+              <TbChevronRight className={styles.iconChevron} size={20} />
             </div>
           </div>
-          {openDetails && (
-            <>
-              <div className={styles.listDetails}>
-                <EditInfo label="Entidad" text={loan.entity} />
-                {loan.bankCurrentAccount == true && (
-                  <EditInfo label="Tipo" text={"Cuenta Corriente"} />
-                )}
-                {loan.bankSavingAccount == true && (
-                  <EditInfo label="Tipo" text={"Cuenta Corriente"} />
-                )}
-                <EditInfo label="Cuenta" text={loan.bankNumberAccount} />
-              </div>
-            </>
-          )}
         </div>
 
         <div className={styles.recurses}>
