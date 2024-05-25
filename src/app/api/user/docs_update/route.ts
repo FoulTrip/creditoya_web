@@ -8,8 +8,12 @@ export async function POST(req: Request) {
     const { userId, number, documentFront, documentBack }: ScalarDocument =
       await req.json();
 
+    console.log(userId, number, documentBack, documentFront);
+
     const authToken = req.headers.get("Authorization");
     const token = authToken?.split(" ")[1];
+
+    console.log(token);
 
     if (!token) {
       throw new Error("Token is required");
@@ -31,10 +35,10 @@ export async function POST(req: Request) {
       userId,
       documentFront as string,
       documentBack as string,
-      number
+      number as string
     );
-    
-    console.log(response)
+
+    console.log(response);
 
     return NextResponse.json({ success: true, data: response });
   } catch (error) {

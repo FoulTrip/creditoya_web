@@ -141,22 +141,44 @@ function Profile({ params }: { params: { userId: string } }) {
 
   const onDrop1 = useCallback(
     async (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-      setLoadingProccessImg01(true);
-      const ProccessedFile = await RemoveImage(file);
-      if (ProccessedFile) {
+      if (acceptedFiles.length > 0) {
+        const file = acceptedFiles[0];
         const formData = new FormData();
-        formData.append("file", ProccessedFile);
+        formData.append("img", file);
+        formData.append("userId", user?.id as string);
         const formDataArray = Array.from(formData.entries());
         console.log(formDataArray);
         console.log(formData);
-        const response = await axios.post("/api/upload", formData, {
-          headers: { Authorization: `Bearer ${user?.token}` },
-        });
+        console.log(process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG);
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         await handleSubmitImageFront({
           image: response.data,
         });
-        // console.log(response);
+        console.log(response);
+
+        if (response.data.success) {
+          const resChangeDoc = await axios.post(
+            "/api/user/docs_update",
+            {
+              userId: user?.id,
+              documentFront: response.data.data,
+            },
+            { headers: { Authorization: `Bearer ${user?.token}` } }
+          );
+
+          console.log(resChangeDoc);
+
+          if (resChangeDoc.data.success)
+            toast.success("Documento subido desde prisma");
+        }
         // console.log("url: ", response.data);
         setImagePreview1(response.data);
       }

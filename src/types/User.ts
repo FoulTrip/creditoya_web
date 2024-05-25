@@ -163,7 +163,7 @@ export type ScalarDocument = {
   typeDocument: TypesDocument;
   documentFront: string | undefined;
   documentBack: string | undefined;
-  number: string;
+  number: string | undefined;
   createdAt: Date;
   updatedAt: Date;
 };
