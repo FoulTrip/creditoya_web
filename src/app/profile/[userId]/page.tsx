@@ -24,6 +24,7 @@ import {
   TbTrash,
 } from "react-icons/tb";
 import LoadingPage from "@/components/Loaders/LoadingPage";
+import Modal from "@/components/modal/Modal";
 
 function Profile({ params }: { params: { userId: string } }) {
   const [imagePreview1, setImagePreview1] = useState("");
@@ -52,6 +53,10 @@ function Profile({ params }: { params: { userId: string } }) {
   const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
   const [loadingProccessImg02, setLoadingProccessImg02] = useState(false);
   const [loadingProccessImg03, setLoadingProccessImg03] = useState(false);
+
+  const [openDocs, setOpenDocs] = useState<boolean>(false);
+  const [contentOpenDoc, setContentOpenDoc] = useState<string | null>(null);
+
   const router = useRouter();
   const { user } = useGlobalContext();
 
@@ -139,9 +144,18 @@ function Profile({ params }: { params: { userId: string } }) {
     }
   };
 
+  const handleSetViewDocImg = ({ image }: { image: string }) => {
+    setContentOpenDoc(image);
+  };
+
+  const handleOpenViewDocImg = () => {
+    setOpenDocs(!openDocs);
+  };
+
   const onDrop1 = useCallback(
     async (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
+        setLoadingProccessImg01(true);
         const file = acceptedFiles[0];
         const formData = new FormData();
         formData.append("img", file);
@@ -155,6 +169,7 @@ function Profile({ params }: { params: { userId: string } }) {
           formData,
           {
             headers: {
+              // Authorization: `Bearer ${user?.token}`,
               "Content-Type": "multipart/form-data",
             },
           }
@@ -176,10 +191,10 @@ function Profile({ params }: { params: { userId: string } }) {
 
           console.log(resChangeDoc);
 
-          if (resChangeDoc.data.success)
-            toast.success("Documento subido desde prisma");
+          if (resChangeDoc.data.success) toast.success("Documento subido");
         }
         // console.log("url: ", response.data);
+        setLoadingProccessImg01(false);
         setImagePreview1(response.data);
       }
     },
@@ -190,16 +205,35 @@ function Profile({ params }: { params: { userId: string } }) {
     async (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
       setLoadingProccessImg02(true);
-      const ProccessedFile = await RemoveImage(file);
-      if (ProccessedFile) {
+      if (file) {
         const formData = new FormData();
-        formData.append("file", ProccessedFile as File);
-        const response = await axios.post("/api/upload", formData, {
-          headers: { Authorization: `Bearer ${user?.token}` },
-        });
-        await handleSubmitImageBack({
-          image: response.data,
-        });
+        formData.append("img", file);
+        formData.append("userId", user?.id as string);
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
+          formData,
+          {
+            headers: {
+              // Authorization: `Bearer ${user?.token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.data.success) {
+          const resChangeDoc = await axios.post(
+            "/api/user/docs_update",
+            {
+              userId: user?.id,
+              documentBack: response.data.data,
+            },
+            { headers: { Authorization: `Bearer ${user?.token}` } }
+          );
+
+          console.log(resChangeDoc);
+
+          if (resChangeDoc.data.success) toast.success("Documento subido");
+        }
         // console.log(response);
         setLoadingProccessImg02(false);
         setImagePreview2(response.data);
@@ -212,13 +246,20 @@ function Profile({ params }: { params: { userId: string } }) {
     async (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
       setLoadingProccessImg03(true);
-      const ProccessedFile = await RemoveImage(file);
-      if (ProccessedFile) {
+      if (file) {
         const formData = new FormData();
-        formData.append("file", ProccessedFile as File);
-        const response = await axios.post("/api/upload", formData, {
-          headers: { Authorization: `Bearer ${user?.token}` },
-        });
+        formData.append("img", file);
+        formData.append("userId", user?.id as string);
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
+          formData,
+          {
+            headers: {
+              // Authorization: `Bearer ${user?.token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         await handleSubmitImageBack({
           image: response.data,
         });
@@ -642,7 +683,7 @@ function Profile({ params }: { params: { userId: string } }) {
 
           <h1 className={styles.datesBox}>Documentos</h1>
 
-          <div>
+          <div className={styles.boxCc}>
             <div className={styles.boxPartInfo}>
               <p>Cedula de Ciudadania</p>
               <div className={styles.partChange}>
@@ -668,28 +709,35 @@ function Profile({ params }: { params: { userId: string } }) {
 
           <div className={styles.containerDocumentsImgs}>
             <div className={styles.onlyImgsDocs}>
-              <div className={styles.boxInfoUser} {...getRootProps1()}>
-                <input {...getInputProps1()} />
+              <div
+                className={styles.boxInfoUser}
+                {...(imagePreview1 === "No definido" ? getRootProps1() : {})}
+              >
+                {imagePreview1 === "No definido" && (
+                  <input {...getInputProps1()} />
+                )}
                 {imagePreview1 && imagePreview1 != "No definido" ? (
                   <>
-                    {/* <Image
-                      className={styles.avatarIcon}
-                      src={imagePreview1}
-                      alt="img01"
-                      width={200}
-                      height={300}
-                    /> */}
-                    <div className={styles.barStatusDocs}>
-                      <div className={styles.headerCardStatus}>
-                        <div className={styles.boxIconStatus}>
-                          <TbCircleCheckFilled className={styles.iconCheck} />
+                    <div className={styles.supraBarStatus}>
+                      <div className={styles.barStatusDocs}>
+                        <div className={styles.headerCardStatus}>
+                          <div className={styles.boxIconStatus}>
+                            <TbCircleCheckFilled className={styles.iconCheck} />
+                          </div>
+                          <p className={styles.warninCC}>
+                            Documento frontal subido
+                          </p>
                         </div>
-                        <p className={styles.warninCC}>
-                          Documento frontal subido
-                        </p>
                       </div>
+
                       <div className={styles.boxIconsStatus}>
-                        <div className={styles.boxIcon}>
+                        <div
+                          className={styles.boxIcon}
+                          onClick={() => {
+                            handleOpenViewDocImg();
+                            handleSetViewDocImg({ image: imagePreview1 });
+                          }}
+                        >
                           <TbPhotoSearch
                             className={styles.viewIcon}
                             size={20}
@@ -715,25 +763,32 @@ function Profile({ params }: { params: { userId: string } }) {
                 )}
               </div>
 
-              <div className={styles.boxInfoUser} {...getRootProps2()}>
-                <input {...getInputProps2()} />
+              <div
+                className={styles.boxInfoUser}
+                {...(imagePreview2 === "No definido" ? getRootProps2() : {})}
+              >
+                {imagePreview2 === "No definido" && (
+                  <input {...getInputProps2()} />
+                )}
+
                 {imagePreview2 && imagePreview2 != "No definido" ? (
                   <>
-                    {/* <Image
-                      className={styles.avatarIcon}
-                      src={imagePreview2}
-                      alt="img"
-                      width={200}
-                      height={300}
-                    /> */}
-                    <div className={styles.barStatusDocs}>
-                      <div className={styles.headerCardStatus}>
-                        <div className={styles.boxIconStatus}>
-                          <TbCircleCheckFilled className={styles.iconCheck} />
+                    <div className={styles.supraBarStatus}>
+                      <div className={styles.barStatusDocs}>
+                        <div className={styles.headerCardStatus}>
+                          <div
+                            className={styles.boxIconStatus}
+                            onClick={() => {
+                              handleOpenViewDocImg();
+                              handleSetViewDocImg({ image: imagePreview2 });
+                            }}
+                          >
+                            <TbCircleCheckFilled className={styles.iconCheck} />
+                          </div>
+                          <p className={styles.warninCC}>
+                            Documento posterior subido
+                          </p>
                         </div>
-                        <p className={styles.warninCC}>
-                          Documento posterior subido
-                        </p>
                       </div>
                       <div className={styles.boxIconsStatus}>
                         <div className={styles.boxIcon}>
@@ -765,8 +820,13 @@ function Profile({ params }: { params: { userId: string } }) {
 
             <div className={styles.cardLaboral}>
               {/* <h2>Ingresa tu carta laboral actualizada</h2> */}
-              <div className={styles.boxInfoUser} {...getRootProps3()}>
-                <input {...getInputProps3()} />
+              <div
+                className={styles.boxInfoUser}
+                {...(imagePreview3 === "No definido" ? getRootProps3() : {})}
+              >
+                {imagePreview3 === "No definido" && (
+                  <input {...getInputProps3()} />
+                )}
                 {imagePreview3 && imagePreview3 != "No definido" ? (
                   <>
                     {/* <Image
@@ -784,7 +844,13 @@ function Profile({ params }: { params: { userId: string } }) {
                         <p className={styles.warninCC}>Carta laboral subida</p>
                       </div>
                       <div className={styles.boxIconsStatus}>
-                        <div className={styles.boxIcon}>
+                        <div
+                          className={styles.boxIcon}
+                          onClick={() => {
+                            handleOpenViewDocImg();
+                            handleSetViewDocImg({ image: imagePreview3 });
+                          }}
+                        >
                           <TbFileSearch className={styles.viewIcon} size={20} />
                         </div>
                         <div className={styles.boxIcon}>
@@ -808,6 +874,18 @@ function Profile({ params }: { params: { userId: string } }) {
               </div>
             </div>
           </div>
+
+          <Modal isOpen={openDocs} onClose={handleOpenViewDocImg}>
+            <div className={styles.boxImageDocPrev}>
+              <Image
+                src={contentOpenDoc as string}
+                alt="content"
+                width={300}
+                height={300}
+                className={styles.imgPrevDoc}
+              />
+            </div>
+          </Modal>
         </main>
       </>
     );

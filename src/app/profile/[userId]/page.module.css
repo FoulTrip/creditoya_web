@@ -47,7 +47,7 @@
 .supraPartCenter {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px
+  gap: 10px;
 }
 
 .partCenter {
@@ -114,15 +114,18 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+  margin-bottom: 1em;
 }
 
 .btnSaveInfo {
-  background: var(--white-200);
+  background: var(--green-100);
   border-radius: 8px;
-  border: 1px solid var(--white-300);
+  border: 1px solid var(--white-200);
   cursor: pointer;
+  font-weight: 600;
   padding: 5px 10px;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  color: var(--green-700);
 }
 
 .partChange {
@@ -151,16 +154,20 @@
   gap: 10px;
 }
 
-.barStatusDocs {
+.supraBarStatus {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+  /* border: 1px solid var(--white-200); */
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+}
+
+.barStatusDocs {
   padding: 10px 15px;
   background: var(--white-50);
   gap: 10px;
   border-radius: 16px;
-  /* border: 1px solid var(--white-200); */
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  justify-content: space-between;
 }
 
 .boxIconStatus {
@@ -191,6 +198,17 @@
 
 .viewIcon {
   color: var(--white-600);
+}
+
+.boxImageDocPrev {
+  display: grid;
+  place-content: center;
+}
+
+.imgPrevDoc {
+  transform: rotate(-90deg);
+  flex: 1;
+  height: auto;
 }
 
 .trashIcon {

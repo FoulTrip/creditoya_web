@@ -5,7 +5,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-import { TbFingerprint } from "react-icons/tb";
+import { TbAccessPoint, TbFingerprint } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import Contract from "@/components/documents/Contract";
 import { ScalarLoanApplication } from "@/types/User";
@@ -96,8 +96,20 @@ function Dashboard() {
 
             {!openContract && (
               <>
-                <h1 className={styles.titleLoan}>Tus Prestamos</h1>
-                {Loans?.length == 0 && <div>Sin Prestaciones</div>}
+                {/* <h1 className={styles.titleLoan}>Tus Prestamos</h1> */}
+                {Loans?.length == 0 && (
+                  <div className={styles.warnNoLoan}>
+                    <div className={styles.canterWarnLoan}>
+                      <div className={styles.boxIconNoLoan}>
+                        <TbAccessPoint
+                          className={styles.iconNoLoan}
+                          size={25}
+                        />
+                      </div>
+                      <p>Sin Prestamos activos</p>
+                    </div>
+                  </div>
+                )}
                 <div className={styles.listLoans}>
                   {Loans?.filter((loan) => loan.userId === user.id).map(
                     (loan) => (
