@@ -10,9 +10,9 @@ import axios from "axios";
 import { ScalarDocument, ScalarUser } from "@/types/User";
 import { toast } from "sonner";
 import { useGlobalContext } from "@/context/Auth";
-import { RemoveImage } from "@/handlers/removeBackground";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
+import { v2 as cloudinary } from "cloudinary";
 
 import {
   TbCircleCheckFilled,
@@ -106,10 +106,8 @@ function Profile({ params }: { params: { userId: string } }) {
   }, [params.userId, user]);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
-  console.log(birthday);
 
   const handleSubmitImageFront = async ({ image }: { image: string }) => {
-    console.log(user?.token);
     const response = await axios.post(
       "/api/user/docs_update",
       {
@@ -118,12 +116,11 @@ function Profile({ params }: { params: { userId: string } }) {
       },
       { headers: { Authorization: `Bearer ${user?.token}` } }
     );
-    // console.log(response);
 
-    if (response.data.success == true) {
+    console.log(response);
+
+    if (response.data.success) {
       toast.success("Parte frontal actualizada");
-    } else {
-      toast.error("la parte frontal no pudo actualizarse");
     }
   };
 
@@ -139,7 +136,7 @@ function Profile({ params }: { params: { userId: string } }) {
 
     // console.log(response);
 
-    if (response.data.success == true) {
+    if (response.data.success) {
       toast.success("Parte trasera actualizada");
     }
   };
@@ -160,6 +157,7 @@ function Profile({ params }: { params: { userId: string } }) {
         const formData = new FormData();
         formData.append("img", file);
         formData.append("userId", user?.id as string);
+        formData.append("type", "front");
         const formDataArray = Array.from(formData.entries());
         console.log(formDataArray);
         console.log(formData);
@@ -174,9 +172,11 @@ function Profile({ params }: { params: { userId: string } }) {
             },
           }
         );
+
         await handleSubmitImageFront({
           image: response.data,
         });
+
         console.log(response);
 
         if (response.data.success) {
@@ -195,7 +195,8 @@ function Profile({ params }: { params: { userId: string } }) {
         }
         // console.log("url: ", response.data);
         setLoadingProccessImg01(false);
-        setImagePreview1(response.data);
+        setImagePreview1(response.data.data);
+        console.log(imagePreview1)
       }
     },
     [user?.token, handleSubmitImageFront]
@@ -209,6 +210,7 @@ function Profile({ params }: { params: { userId: string } }) {
         const formData = new FormData();
         formData.append("img", file);
         formData.append("userId", user?.id as string);
+        formData.append("type", "back");
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
           formData,
@@ -236,7 +238,7 @@ function Profile({ params }: { params: { userId: string } }) {
         }
         // console.log(response);
         setLoadingProccessImg02(false);
-        setImagePreview2(response.data);
+        setImagePreview2(response.data.data);
       }
     },
     [user, handleSubmitImageBack]
@@ -335,6 +337,30 @@ function Profile({ params }: { params: { userId: string } }) {
       toast.success("Numero de cedula actualizado");
     }
     // console.log(response);
+  };
+
+  const handleDeleteDoc = async (type: string) => {
+    
+    const response = await axios.post(
+      "/api/user/delete_doc",
+      {
+        userId: params.userId,
+        type,
+      },
+      {
+        headers: { Authorization: `Bearer ${user?.token}` },
+      }
+    );
+
+    console.log(response);
+
+    if (response.data.success) {
+      setImagePreview1(response.data.data[0].documentFront)
+      setImagePreview2(response.data.data[0].documentBack)
+      toast.success("Documento eliminado");
+    } else if (response.data.success == false) {
+      toast.error("Imposible eliminar documento");
+    }
   };
 
   if (loading) {
@@ -743,7 +769,10 @@ function Profile({ params }: { params: { userId: string } }) {
                             size={20}
                           />
                         </div>
-                        <div className={styles.boxIcon}>
+                        <div
+                          className={styles.boxIcon}
+                          onClick={() => handleDeleteDoc("front")}
+                        >
                           <TbTrash className={styles.trashIcon} size={20} />
                         </div>
                       </div>
@@ -791,13 +820,22 @@ function Profile({ params }: { params: { userId: string } }) {
                         </div>
                       </div>
                       <div className={styles.boxIconsStatus}>
-                        <div className={styles.boxIcon}>
+                        <div
+                          onClick={() => {
+                            handleOpenViewDocImg();
+                            handleSetViewDocImg({ image: imagePreview2 });
+                          }}
+                          className={styles.boxIcon}
+                        >
                           <TbPhotoSearch
                             className={styles.viewIcon}
                             size={20}
                           />
                         </div>
-                        <div className={styles.boxIcon}>
+                        <div
+                          className={styles.boxIcon}
+                          onClick={() => handleDeleteDoc("back")}
+                        >
                           <TbTrash className={styles.trashIcon} size={20} />
                         </div>
                       </div>

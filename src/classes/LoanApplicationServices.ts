@@ -8,7 +8,7 @@ class LoanApplicationService {
   // Método para crear una solicitud de préstamo
   static async create(data: ScalarLoanApplication): Promise<LoanApplication> {
     const loanApplicationData = {
-      ...data
+      ...data,
     };
     return prisma.loanApplication.create({ data: loanApplicationData });
   }

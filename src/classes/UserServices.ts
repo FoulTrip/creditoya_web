@@ -1,6 +1,6 @@
 // Import statements
 import { prisma } from "@/prisma/db";
-import { ScalarUser } from "@/types/User";
+import { ScalarDocument, ScalarUser } from "@/types/User";
 import { Document, User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
@@ -95,35 +95,28 @@ class UserService {
   static async updateDocument(
     userId: string,
     documentFront: string,
-    documentBack: string,
-    number: string
-  ): Promise<User | null> {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: { Document: true },
-    });
-
-    if (!user) {
-      throw new Error("Usuario no encontrado");
+    documentBack: string
+  ): Promise<ScalarDocument[]> {
+    if (documentBack) {
+      await prisma.document.updateMany({
+        where: { userId },
+        data: {
+          documentBack: { set: documentBack },
+        },
+      });
     }
 
-    // Actualiza los documentos del usuario
-    const updatedDocuments = user.Document.map((document) =>
-      prisma.document.update({
-        where: { id: document.id },
+    if (documentFront) {
+      await prisma.document.updateMany({
+        where: { userId },
         data: {
-          documentFront: documentFront,
-          documentBack: documentBack,
-          number: number,
+          documentFront: { set: documentFront },
         },
-      })
-    );
+      });
+    }
 
-    await Promise.all(updatedDocuments);
-
-    return prisma.user.findUnique({
-      where: { id: userId },
-      include: { Document: true },
+    return prisma.document.findMany({
+      where: { userId },
     });
   }
 
@@ -147,6 +140,31 @@ class UserService {
     });
 
     return document;
+  }
+
+  static async setDocumentToUndefined(
+    userId: string,
+    type: string
+  ): Promise<ScalarDocument[] | null> {
+    if (type == "front") {
+      await prisma.document.updateMany({
+        where: { userId },
+        data: {
+          documentFront: "No definido",
+        },
+      });
+    } else if (type == "back") {
+      await prisma.document.updateMany({
+        where: { userId },
+        data: {
+          documentBack: "No definido",
+        },
+      });
+    }
+
+    return prisma.document.findMany({
+      where: { userId },
+    });
   }
 }
 

@@ -116,9 +116,8 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
       if (data) {
         setFormData((prevFormData) => ({
           ...(prevFormData as ScalarLoanApplication),
-          numberDocument: data.number,
+          numberDocument: data.number as string,
           typeDocument: data.typeDocument,
-          ccNumber: data.number,
         }));
       }
       // console.log(data);
@@ -261,6 +260,27 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     value={formData?.requested_amount || ""}
                     onChange={(e) => handleInputChange(e, "requested_amount")}
                     name={keysLoan.find((key) => key === "requested_amount")}
+                  />
+                </div>
+
+                <div className={styles.boxInput}>
+                  <div className={styles.headerInputInfo}>
+                    <p>Numero de cuenta</p>
+                    <div className={styles.boxIconInfo}>
+                      <p>
+                        {isRequired("ccNumber")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <TbInfoCircle size={20} />
+                    </div>
+                  </div>
+                  <input
+                    className={styles.inputInfo}
+                    type="text"
+                    value={formData?.ccNumber || ""}
+                    onChange={(e) => handleInputChange(e, "ccNumber")}
+                    name={keysLoan.find((key) => key === "ccNumber")}
                   />
                 </div>
 

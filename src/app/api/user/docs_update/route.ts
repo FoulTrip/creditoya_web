@@ -31,11 +31,10 @@ export async function POST(req: Request) {
       throw new Error("Token inválido");
     }
 
-    const response = await UserService.updateDocument(
+    const response: ScalarDocument[] = await UserService.updateDocument(
       userId,
       documentFront as string,
       documentBack as string,
-      number as string
     );
 
     console.log(response);
