@@ -252,6 +252,7 @@ function Profile({ params }: { params: { userId: string } }) {
         const formData = new FormData();
         formData.append("img", file);
         formData.append("userId", user?.id as string);
+        formData.append("type", "letter");
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
           formData,

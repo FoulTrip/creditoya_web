@@ -152,7 +152,7 @@ function Signup() {
             className={styles.input}
             type="text"
             name="email"
-            placeholder="Email"
+            placeholder="Correo Electronico"
             onChange={handleChange}
             value={data.email}
           />
@@ -166,7 +166,7 @@ function Signup() {
             className={styles.input}
             type="password"
             name="password"
-            placeholder="Password"
+            placeholder="Contraseña"
             onChange={handleChange}
             value={data.password}
           />

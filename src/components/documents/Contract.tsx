@@ -1,9 +1,9 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Contract.module.css";
 import { useGlobalContext } from "@/context/Auth";
-import { TbX, TbInfoCircle } from "react-icons/tb";
+import { TbInfoCircle } from "react-icons/tb";
 import axios from "axios";
 import {
   ScalarDocument,
@@ -12,7 +12,6 @@ import {
 } from "@/types/User";
 import BarParts from "./partsContract/BarParts";
 import { toast } from "sonner";
-// import ContractForm from "./partsContract/ContractForm";
 
 import {
   keysLoan,
@@ -26,6 +25,7 @@ import {
 
 import { isRequired, sectionInputs } from "@/handlers/ContractHandlers";
 import socket from "@/Socket/Socket";
+import Modal from "../modal/Modal";
 
 function Contract({ toggleContract }: { toggleContract: () => void }) {
   const [openFirstPart, setOpenFirstPart] = useState<boolean>(false);
@@ -37,6 +37,8 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
 
   const { user } = useGlobalContext();
   const [formData, setFormData] = useState<ScalarLoanApplication | null>(null);
+  const [openInfo, setOpenInfo] = useState<boolean>(false);
+  const [infoModel, setInfoModel] = useState<string | null>(null);
 
   useEffect(() => {
     socket.emit("connected", "Hello from Contract");
@@ -61,6 +63,18 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
       console.error("Error:", error);
       toast.error("Error al enviar la solicitud");
     }
+  };
+
+  const handleInfoInput = ({
+    option,
+  }: {
+    option: keyof ScalarLoanApplication | null;
+  }): void => {
+    setInfoModel(option);
+  };
+
+  const handleOpenModel = () => {
+    setOpenInfo(!openInfo);
   };
 
   useEffect(() => {
@@ -166,7 +180,16 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                           : "Opcional"}
                       </p>
                       <div className={styles.boxIconInfo}>
-                        <TbInfoCircle size={20} />
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "principal_debtor",
+                            });
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -187,7 +210,16 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                         {isRequired("co_debtor") ? "Obligatorio" : "Opcional"}
                       </p>
                       <div className={styles.boxIconInfo}>
-                        <TbInfoCircle size={20} />
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "co_debtor",
+                            });
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -210,7 +242,16 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                           : "Opcional"}
                       </p>
                       <div className={styles.boxIconInfo}>
-                        <TbInfoCircle size={20} />
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "affiliated_company",
+                            });
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -229,7 +270,16 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <div className={styles.infoInput}>
                       <p>{isRequired("nit") ? "Obligatorio" : "Opcional"}</p>
                       <div className={styles.boxIconInfo}>
-                        <TbInfoCircle size={20} />
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "nit",
+                            });
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -245,13 +295,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Monto solicitado</p>
-                    <div className={styles.boxIconInfo}>
+                    <div className={styles.infoInput}>
                       <p>
                         {isRequired("requested_amount")
                           ? "Obligatorio"
                           : "Opcional"}
                       </p>
-                      <TbInfoCircle size={20} />
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "requested_amount",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -265,33 +326,23 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
 
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
-                    <p>Numero de cuenta</p>
-                    <div className={styles.boxIconInfo}>
-                      <p>
-                        {isRequired("ccNumber")
-                          ? "Obligatorio"
-                          : "Opcional"}
-                      </p>
-                      <TbInfoCircle size={20} />
-                    </div>
-                  </div>
-                  <input
-                    className={styles.inputInfo}
-                    type="text"
-                    value={formData?.ccNumber || ""}
-                    onChange={(e) => handleInputChange(e, "ccNumber")}
-                    name={keysLoan.find((key) => key === "ccNumber")}
-                  />
-                </div>
-
-                <div className={styles.boxInput}>
-                  <div className={styles.headerInputInfo}>
                     <p>Plazo (Meses)</p>
-                    <div className={styles.boxIconInfo}>
+                    <div className={styles.infoInput}>
                       <p>
                         {isRequired("deadline") ? "Obligatorio" : "Opcional"}
                       </p>
-                      <TbInfoCircle size={20} />
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "deadline",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -306,11 +357,22 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Pago</p>
-                    <div className={styles.boxIconInfo}>
+                    <div className={styles.infoInput}>
                       <p>
                         {isRequired("payment") ? "Obligatorio" : "Opcional"}
                       </p>
-                      <TbInfoCircle size={20} />
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "payment",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <select
@@ -319,6 +381,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     onChange={(e) => handleInputChange(e, "payment")}
                     name={keysLoan.find((key) => key === "payment")}
                   >
+                    <option value="" disabled hidden>
+                      Selecciona una opcion
+                    </option>
                     <option className={styles.optionSelect} value="Semanal">
                       Semanal
                     </option>
@@ -334,11 +399,22 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Valor cuota</p>
-                    <div className={styles.boxIconInfo}>
+                    <div className={styles.infoInput}>
                       <p>
                         {isRequired("quota_value") ? "Obligatorio" : "Opcional"}
                       </p>
-                      <TbInfoCircle size={20} />
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "quota_value",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -352,15 +428,6 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
               </div>
             </>
           )}
-
-          {/* <ContractForm
-            formData={formData as ScalarLoanApplication}
-            handleInputChange={handleInputChange}
-            keysLoan={keysLoan01}
-            openPart={openFirstPart}
-            setOpenPart={setOpenFirstPart}
-            completeInputs={sectionInputs01}
-          /> */}
 
           <BarParts
             titleBar={"Informacion General del solicitante"}
@@ -377,8 +444,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Primer Apellido</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("firtLastName")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "firtLastName",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -393,8 +476,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Segundo Apellido</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("secondLastName")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "secondLastName",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -409,8 +508,20 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Nombres</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>{isRequired("names") ? "Obligatorio" : "Opcional"}</p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "names",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -425,8 +536,22 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Ocupacion, Oficio o Profesion</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("occupation") ? "Obligatorio" : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "occupation",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -441,8 +566,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Documento de identidad</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("typeDocument")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "typeDocument",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <select
@@ -451,6 +592,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     onChange={(e) => handleInputChange(e, "typeDocument")}
                     name={keysLoan.find((key) => key === "typeDocument")}
                   >
+                    <option value="" disabled hidden>
+                      Selecciona una opcion
+                    </option>
                     <option className={styles.optionSelect} value="CC">
                       C.C.
                     </option>
@@ -466,8 +610,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Numero de documento</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("numberDocument")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "numberDocument",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -481,8 +641,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Personas a cargo</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("persons_in_charge")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "persons_in_charge",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -497,8 +673,22 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Fecha de nacimiento</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("birthDate") ? "Obligatorio" : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "birthDate",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -517,8 +707,22 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Lugar de nacimiento</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("place_birth") ? "Obligatorio" : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "place_birth",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -533,8 +737,20 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Sexo</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>{isRequired("genre") ? "Obligatorio" : "Opcional"}</p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "genre",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -549,8 +765,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Estado Civil</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("marital_status")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "marital_status",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <select
@@ -559,22 +791,25 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     onChange={(e) => handleInputChange(e, "marital_status")}
                     name={keysLoan.find((key) => key === "marital_status")}
                   >
-                    <option className={styles.optionSelect} value="Semanal">
+                    <option value="" disabled hidden>
+                      Selecciona una opcion
+                    </option>
+                    <option className={styles.optionSelect} value="Casado">
                       Casado
                     </option>
-                    <option className={styles.optionSelect} value="Quincenal">
+                    <option className={styles.optionSelect} value="Soltero">
                       Soltero
                     </option>
-                    <option className={styles.optionSelect} value="Mensual">
+                    <option className={styles.optionSelect} value="Separado">
                       Separado
                     </option>
-                    <option className={styles.optionSelect} value="Mensual">
+                    <option className={styles.optionSelect} value="Divorsiado">
                       Divorsiado
                     </option>
-                    <option className={styles.optionSelect} value="Mensual">
+                    <option className={styles.optionSelect} value="Union_libre">
                       Union libre
                     </option>
-                    <option className={styles.optionSelect} value="Mensual">
+                    <option className={styles.optionSelect} value="Viudo">
                       Viudo
                     </option>
                   </select>
@@ -583,8 +818,22 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Telefono / Celular</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("cellPhone") ? "Obligatorio" : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "cellPhone",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -599,8 +848,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Destino de los recursos</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("destination_resources")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "destination_resources",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -619,8 +884,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Antiguedad de la empresa</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("labor_seniority")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "labor_seniority",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -635,8 +916,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Direccion residencia</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("residence_address")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "residence_address",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -651,8 +948,20 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Ciudad</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>{isRequired("city") ? "Obligatorio" : "Opcional"}</p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "city",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -667,8 +976,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Telefono de residencia</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("residence_phone")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "residence_phone",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -683,24 +1008,64 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Tipo de vivienda</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("housing_type")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "housing_type",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
-                  <input
-                    className={styles.inputInfo}
-                    type="text"
+                  <select
+                    className={styles.boxSelect}
                     value={formData?.housing_type || ""}
                     onChange={(e) => handleInputChange(e, "housing_type")}
                     name={keysLoan.find((key) => key === "housing_type")}
-                  />
+                  >
+                    <option value="" disabled hidden>
+                      Selecciona una opcion
+                    </option>
+                    <option className={styles.optionSelect} value="Propia">
+                      Propia
+                    </option>
+                    <option className={styles.optionSelect} value="Familiar">
+                      Familiar
+                    </option>
+                    <option className={styles.optionSelect} value="Arrendada">
+                      Arrendada
+                    </option>
+                  </select>
                 </div>
 
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Email</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>{isRequired("email") ? "Obligatorio" : "Opcional"}</p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "email",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -715,8 +1080,22 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Posee Vehiculo?</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("vehicle") ? "Obligatorio" : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "vehicle",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <select
@@ -725,6 +1104,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     onChange={(e) => handleInputChange(e, "vehicle")}
                     name={keysLoan.find((key) => key === "vehicle")}
                   >
+                    <option value="" disabled hidden>
+                      Selecciona una opcion
+                    </option>
                     <option className={styles.optionSelect} value="No">
                       No
                     </option>
@@ -738,8 +1120,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>Marca</p>
-                      <div className={styles.boxIconInfo}>
-                        <TbInfoCircle size={20} />
+                      <div className={styles.infoInput}>
+                        <p>
+                          {isRequired("vehicleType")
+                            ? "Obligatorio"
+                            : "Opcional"}
+                        </p>
+                        <div className={styles.boxIconInfo}>
+                          <TbInfoCircle
+                            size={20}
+                            className={styles.iconInfo}
+                            onClick={() => {
+                              handleOpenModel();
+                              handleInfoInput({
+                                option: "vehicleType",
+                              });
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
                     <input
@@ -755,8 +1153,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Numero de Whatsapp</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("whatsapp_number")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "whatsapp_number",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -771,8 +1185,22 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Pignorado</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("pignorado") ? "Obligatorio" : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "pignorado",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -787,8 +1215,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>A favor de</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("in_favor_pignorado")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "in_favor_pignorado",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -803,8 +1247,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Valor comercial</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("commercial_value")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "commercial_value",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -819,8 +1279,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Otros Bienes personales o familiares (describelos)</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("other_income_other_principal")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "other_income_other_principal",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -839,8 +1315,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>valor comercial</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("other_personal_commercial_value")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "other_personal_commercial_value",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -859,8 +1351,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Tiene familiares en la empresa de convenio</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("family_members_in_company_agreement")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "family_members_in_company_agreement",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <select
@@ -876,6 +1384,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                       (key) => key === "family_members_in_company_agreement"
                     )}
                   >
+                    <option value="" hidden disabled>
+                      Selecciona una opcion
+                    </option>
                     <option className={styles.optionSelect} value="No">
                       No
                     </option>
@@ -890,8 +1401,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <p>
                       Actualmente es codeudor de alguna obligacion crediticia?
                     </p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("is_currently_codebtor")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "is_currently_codebtor",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <select
@@ -904,6 +1431,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                       (key) => key === "is_currently_codebtor"
                     )}
                   >
+                    <option value="" disabled hidden>
+                      Selecciona una opcion
+                    </option>
                     <option className={styles.optionSelect} value="No">
                       No
                     </option>
@@ -917,8 +1447,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>Con Credito Ya?</p>
-                      <div className={styles.boxIconInfo}>
-                        <TbInfoCircle size={20} />
+                      <div className={styles.infoInput}>
+                        <p>
+                          {isRequired("codebtor_in_creditoya")
+                            ? "Obligatorio"
+                            : "Opcional"}
+                        </p>
+                        <div className={styles.boxIconInfo}>
+                          <TbInfoCircle
+                            size={20}
+                            className={styles.iconInfo}
+                            onClick={() => {
+                              handleOpenModel();
+                              handleInfoInput({
+                                option: "codebtor_in_creditoya",
+                              });
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
                     <select
@@ -945,8 +1491,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>De quien?</p>
-                      <div className={styles.boxIconInfo}>
-                        <TbInfoCircle size={20} />
+                      <div className={styles.infoInput}>
+                        <p>
+                          {isRequired("codebtor_origin_creditoya")
+                            ? "Obligatorio"
+                            : "Opcional"}
+                        </p>
+                        <div className={styles.boxIconInfo}>
+                          <TbInfoCircle
+                            size={20}
+                            className={styles.iconInfo}
+                            onClick={() => {
+                              handleOpenModel();
+                              handleInfoInput({
+                                option: "codebtor_origin_creditoya",
+                              });
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
                     <input
@@ -966,8 +1528,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Otra entidad?</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("other_entity")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "other_entity",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <select
@@ -976,6 +1554,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     onChange={(e) => handleInputChange(e, "other_entity")}
                     name={keysLoan.find((key) => key === "other_entity")}
                   >
+                    <option value="" disabled hidden>
+                      Selecciona una opcion
+                    </option>
                     <option className={styles.optionSelect} value="No">
                       No
                     </option>
@@ -989,8 +1570,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>Cual?</p>
-                      <div className={styles.boxIconInfo}>
-                        <TbInfoCircle size={20} />
+                      <div className={styles.infoInput}>
+                        <p>
+                          {isRequired("codebtor_origin_creditoya")
+                            ? "Obligatorio"
+                            : "Opcional"}
+                        </p>
+                        <div className={styles.boxIconInfo}>
+                          <TbInfoCircle
+                            size={20}
+                            className={styles.iconInfo}
+                            onClick={() => {
+                              handleOpenModel();
+                              handleInfoInput({
+                                option: "codebtor_origin_creditoya",
+                              });
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
                     <input
@@ -1010,8 +1607,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Monto</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("amount_in_the_other_entity")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "amount_in_the_other_entity",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1030,8 +1643,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Nombre y apellidos de conyugue</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("complete_name_spouse")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "complete_name_spouse",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1050,8 +1679,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Numero de identificacion del conyugue</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("number_document_spouse")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "number_document_spouse",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1070,8 +1715,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Telefono fijo del conyugue</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("phone_spouse")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "phone_spouse",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1086,8 +1747,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Telefono Oficina del conyugue</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("phone_company_spoue")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "phone_company_spoue",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1119,8 +1796,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Numero de cuenta</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("bankNumberAccount")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "bankNumberAccount",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1135,8 +1828,20 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Entidad</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>{isRequired("entity") ? "Obligatorio" : "Opcional"}</p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "entity",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1151,8 +1856,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Total ingresos mensuales</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("monthly_income")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "monthly_income",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1167,8 +1888,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Total egresos mensuales</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("monthly_expenses")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "monthly_expenses",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1183,8 +1920,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Total activos</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("total_assets")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "total_assets",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1199,8 +1952,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Total Pasivos</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("total_liabilities")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "total_liabilities",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1215,8 +1984,22 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Patrimonio</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("patrimony") ? "Obligatorio" : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "patrimony",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1231,8 +2014,22 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Valor cuota</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("quota_value") ? "Obligatorio" : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "quota_value",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1247,8 +2044,20 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Corte</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>{isRequired("court") ? "Obligatorio" : "Opcional"}</p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "court",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1267,8 +2076,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>N° de empleados</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("number_employees")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "number_employees",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1283,8 +2108,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Tiene otros ingresos diferentes a la principal?</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("other_income_other_principal")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "other_income_other_principal",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <select
@@ -1310,8 +2151,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>Cuales</p>
-                      <div className={styles.boxIconInfo}>
-                        <TbInfoCircle size={20} />
+                      <div className={styles.infoInput}>
+                        <p>
+                          {isRequired("which_other_income")
+                            ? "Obligatorio"
+                            : "Opcional"}
+                        </p>
+                        <div className={styles.boxIconInfo}>
+                          <TbInfoCircle
+                            size={20}
+                            className={styles.iconInfo}
+                            onClick={() => {
+                              handleOpenModel();
+                              handleInfoInput({
+                                option: "which_other_income",
+                              });
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
                     <input
@@ -1331,8 +2188,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Ingreso mensual</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("monthly_income")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "monthly_income",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1363,8 +2236,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Apellidos y Nombres</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("personal_reference_name")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "personal_reference_name",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1379,11 +2268,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Empresa donde trabaja</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("personal_reference_work_company_name")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "personal_reference_work_company_name",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1401,11 +2307,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Ciudad</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("personal_reference_city")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "personal_reference_city",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1420,11 +2343,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Direccion residencia</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("personal_reference_address")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "personal_reference_address",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1439,11 +2379,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Telefono Residencia</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("personal_reference_number_residence")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "personal_reference_number_residence",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1461,11 +2418,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Telefono celular</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("personal_reference_number_phone")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "personal_reference_number_phone",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1480,12 +2454,30 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
-                Familiar
+
+                <h3>Familiar</h3>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Apellidos y Nombres</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("family_reference_name")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "family_reference_name",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1500,11 +2492,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Empresa donde trabaja</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("family_reference_work_company_name")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "family_reference_work_company_name",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1519,11 +2528,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Ciudad</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("family_reference_city")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "family_reference_city",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1538,11 +2564,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Direccion residencia</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("family_reference_address")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "family_reference_address",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1557,11 +2600,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Telefono Residencia</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("family_reference_number_residence")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "family_reference_number_residence",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1576,11 +2636,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Telefono celular</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("family_reference_number_phone")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "family_reference_number_phone",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1614,8 +2691,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Termino fijo</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("fixed_term")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "fixed_term",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <select
@@ -1624,6 +2717,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     onChange={(e) => handleInputChange(e, "fixed_term")}
                     name={keysLoan.find((key) => key === "fixed_term")}
                   >
+                    <option value="" disabled hidden>Selecciona una opcion</option>
                     <option className={styles.optionSelect} value="No">
                       No
                     </option>
@@ -1636,8 +2730,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Labor o Obra</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("labor_or_work")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "labor_or_work",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <select
@@ -1646,6 +2756,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     onChange={(e) => handleInputChange(e, "labor_or_work")}
                     name={keysLoan.find((key) => key === "labor_or_work")}
                   >
+                    <option value="" disabled hidden>Selecciona una opcion</option>
                     <option className={styles.optionSelect} value="Si">
                       No
                     </option>
@@ -1670,12 +2781,27 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           {openSixPart && (
             <>
               <div className={styles.containerInputs}>
-                +|
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Fecha de vinculacion</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("date_relationship")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "date_relationship",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1690,11 +2816,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     name={keysLoan.find((key) => key === "date_relationship")}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Antiguedad laboral (Suma tiempo contratos)</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("labor_seniority_contracts")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "labor_seniority_contracts",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1709,13 +2852,30 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 {formData?.fixed_term == "Si" && (
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>Fecha fin contrato actual</p>
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("requested_amount")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
                       <div className={styles.boxIconInfo}>
-                        <TbInfoCircle size={20} />
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "requested_amount",
+                            });
+                          }}
+                        />
                       </div>
+                    </div>
                     </div>
                     <input
                       className={styles.inputInfo}
@@ -1726,11 +2886,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     />
                   </div>
                 )}
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Promedio salario variable mensual</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("average_variable_salary")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "average_variable_salary",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1745,11 +2922,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Total ingreso Mensual</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("total_monthly_income")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "total_monthly_income",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1764,11 +2958,28 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     )}
                   />
                 </div>
+
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
                     <p>Descuentos mensuales</p>
-                    <div className={styles.boxIconInfo}>
-                      <TbInfoCircle size={20} />
+                    <div className={styles.infoInput}>
+                      <p>
+                        {isRequired("monthly_discounts")
+                          ? "Obligatorio"
+                          : "Opcional"}
+                      </p>
+                      <div className={styles.boxIconInfo}>
+                        <TbInfoCircle
+                          size={20}
+                          className={styles.iconInfo}
+                          onClick={() => {
+                            handleOpenModel();
+                            handleInfoInput({
+                              option: "monthly_discounts",
+                            });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <input
@@ -1797,6 +3008,10 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           </>
         )}
       </main>
+
+      <Modal isOpen={openInfo} onClose={handleOpenModel}>
+        {infoModel}
+      </Modal>
     </>
   );
 }

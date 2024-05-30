@@ -13,10 +13,10 @@ import { useMediaQuery } from "react-responsive";
 import SideBar from "./SideBar";
 
 function NavBar() {
-  const { user } = useGlobalContext();
+  const { user, handleLogout } = useGlobalContext();
   const router = useRouter();
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 800px)" });
-  // console.log(user)
+
   return (
     <>
       <nav className={styles.containerNav}>
@@ -39,7 +39,7 @@ function NavBar() {
                     className={styles.btnOpt}
                     onClick={() => router.push("/dashboard")}
                   >
-                    Dashboard
+                    Solicitar prestamo
                   </p>
                 )}
                 <div
@@ -65,8 +65,14 @@ function NavBar() {
                   {user ? <p>{user.names.split(" ")[0]}</p> : <p>Cuenta</p>}
                 </div>
                 {user && (
-                  <div className={styles.boxLogout}>
-                    <TbLogout size={25} />
+                  <div
+                    className={styles.boxLogout}
+                    onClick={handleLogout}
+                  >
+                    <div className={styles.boxIconLogout}>
+                      <TbLogout size={20} />
+                    </div>
+                    <p>Cerrar Session</p>
                   </div>
                 )}
               </div>

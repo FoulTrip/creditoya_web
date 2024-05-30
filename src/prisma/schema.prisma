@@ -222,16 +222,11 @@ enum ifOrNot {
 
 enum MaritalStatus {
     Casado
-    Casada
     Soltero
-    Soltera
     Separado
-    Separada
     Divorciado
-    Divorciada
     Union_libre
-    viudo
-    viuda
+    Viudo
 }
 
 enum HousingType {

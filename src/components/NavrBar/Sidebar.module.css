@@ -1,8 +1,85 @@
+.warnBtn {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
 .boxIconMenu {
   display: grid;
   place-content: center;
 }
 
+.bntAccounSwift {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.bntAccounSwift:hover {
+  /* border: 1px solid var(--green-200); */
+  background: var(--green-50);
+}
+
+.bntAccount {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  border-radius: 8px;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.infoUser {
+  display: flex;
+  flex-direction: row;
+  /* background: var(--green-50);
+  padding: 5px 10px; */
+}
+
+.boxIconAcount {
+  display: grid;
+  place-content: center;
+  padding: 0px 0px 0px 5px;
+}
+
+.centerSwiftBtn {
+  padding: 10px;
+  font-weight: 600;
+  color: var(--green-800);
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.boxIconBtn {
+  display: grid;
+  place-content: center;
+  padding: 5px 10px;
+}
+
+.iconArrow {
+  color: var(--green-800);
+}
+
 .iconMenu {
-    color: var(--white-600);
+  color: var(--white-600);
+}
+
+.boxOption {
+  display: grid;
+  place-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.iconOption {
+  color: var(--green-600);
+  cursor: pointer;
+}
+
+.iconOption:hover {
+  filter: drop-shadow(0px 0px 10px #000000);
 }

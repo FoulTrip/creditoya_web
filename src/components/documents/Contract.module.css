@@ -89,12 +89,18 @@
   flex-direction: row;
 }
 
+.iconInfo {
+  color: var(--white-600);
+  cursor: pointer;
+}
+
 .inputInfo {
   padding: 10px;
   outline: none;
   border-radius: 8px;
   border: 1px solid var(--white-300);
   font-size: 16px;
+  color: var(--white-800);
 }
 
 .containerBtnSoli {

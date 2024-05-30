@@ -14,6 +14,7 @@ import { AuthUser } from "@/types/User";
 interface GlobalContextType {
   user: AuthUser | null;
   setUserData: (userData: AuthUser) => void;
+  handleLogout: () => void;
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -33,8 +34,13 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
     Cookies.set("userData", JSON.stringify(userData));
   };
 
+  const handleLogout = () => {
+    setUser(null);
+    Cookies.remove("userData");
+  };
+
   return (
-    <GlobalContext.Provider value={{ user, setUserData }}>
+    <GlobalContext.Provider value={{ user, setUserData, handleLogout }}>
       {children}
     </GlobalContext.Provider>
   );

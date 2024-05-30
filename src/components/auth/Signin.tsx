@@ -63,7 +63,7 @@ function Signin() {
               className={styles.input}
               type="text"
               name="email"
-              placeholder="Email"
+              placeholder="Correo Electronico"
               onChange={handleChange}
               value={formData.email}
             />
@@ -77,7 +77,7 @@ function Signin() {
               className={styles.input}
               type="password"
               name="password"
-              placeholder="Password"
+              placeholder="Contraseña"
               onChange={handleChange}
               value={formData.password}
             />
