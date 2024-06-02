@@ -4,7 +4,10 @@ import "./globals.css";
 import { GlobalProvider } from "@/context/Auth";
 import NavBar from "@/components/NavrBar/NavBarComponent";
 import { Toaster } from "sonner";
+
+// stats vercel
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +29,7 @@ export default function RootLayout({
           <NavBar />
           {children}
           <SpeedInsights />
+          <Analytics />
         </GlobalProvider>
       </body>
     </html>
