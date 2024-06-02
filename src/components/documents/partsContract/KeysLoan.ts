@@ -14,7 +14,6 @@ export const keysLoan01: (keyof ScalarLoanApplication)[] = [
   "deadline",
   "payment",
   "quota_value",
-  "ccNumber",
 ];
 
 export const keysLoan02: (keyof ScalarLoanApplication)[] = [

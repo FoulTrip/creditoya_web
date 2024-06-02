@@ -69,7 +69,7 @@
   display: grid;
   place-content: center;
   gap: 10px;
-  background: var(--green-50);
+
   border-radius: 16px;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--white-200);
@@ -78,7 +78,7 @@
 }
 
 .boxInfoUser:hover {
-  background: var(--green-100);
+  background: var(--green-50);
 }
 
 .inputImg {
@@ -113,5 +113,5 @@
 
 .textPreview {
   font-weight: 600;
-  color: var(--green-600);
+  color: var(--green-800);
 }

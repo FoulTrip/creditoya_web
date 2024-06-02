@@ -1,3 +1,65 @@
 .mainLoan {
-    margin-top: 5em;
+  margin-top: 7em;
+  width: 90%;
+  margin-left: 5%;
+}
+
+.DateContainer {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.dateLoan {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.boxIconDate,
+.dateLoan p {
+  display: grid;
+  place-content: center;
+}
+
+.listDetails {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.firstTitle {
+    margin-top: 1em;
+}
+
+.secondTitle {
+    margin-top: 1em;
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  /* border-radius: 8px; */
+  padding: 5px 10px;
+}
+
+.cardInfo:hover {
+  background: var(--green-50);
+}
+
+.boxIconAction,
+.barAction {
+  display: grid;
+  place-content: center;
+}
+
+.iconPensil {
+  color: var(--green-600);
+  cursor: pointer;
+}
+
+.iconPensil:hover {
+  filter: drop-shadow(0px 0px 10px #000000);
 }

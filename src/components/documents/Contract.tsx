@@ -132,6 +132,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           ...(prevFormData as ScalarLoanApplication),
           numberDocument: data.number as string,
           typeDocument: data.typeDocument,
+          ccNumber: data.number as string,
         }));
       }
       // console.log(data);
@@ -695,8 +696,8 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     className={styles.inputInfo}
                     type="date"
                     value={
-                      formData?.birthDate instanceof Date
-                        ? formData.birthDate.toISOString().split("T")[0]
+                      formData && formData.birthDate instanceof Date
+                        ? formData.birthDate.toLocaleDateString("es-ES")
                         : ""
                     }
                     onChange={(e) => handleInputChange(e, "birthDate")}
@@ -2693,9 +2694,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <p>Termino fijo</p>
                     <div className={styles.infoInput}>
                       <p>
-                        {isRequired("fixed_term")
-                          ? "Obligatorio"
-                          : "Opcional"}
+                        {isRequired("fixed_term") ? "Obligatorio" : "Opcional"}
                       </p>
                       <div className={styles.boxIconInfo}>
                         <TbInfoCircle
@@ -2717,7 +2716,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     onChange={(e) => handleInputChange(e, "fixed_term")}
                     name={keysLoan.find((key) => key === "fixed_term")}
                   >
-                    <option value="" disabled hidden>Selecciona una opcion</option>
+                    <option value="" disabled hidden>
+                      Selecciona una opcion
+                    </option>
                     <option className={styles.optionSelect} value="No">
                       No
                     </option>
@@ -2756,7 +2757,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     onChange={(e) => handleInputChange(e, "labor_or_work")}
                     name={keysLoan.find((key) => key === "labor_or_work")}
                   >
-                    <option value="" disabled hidden>Selecciona una opcion</option>
+                    <option value="" disabled hidden>
+                      Selecciona una opcion
+                    </option>
                     <option className={styles.optionSelect} value="Si">
                       No
                     </option>
@@ -2857,25 +2860,25 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>Fecha fin contrato actual</p>
-                    <div className={styles.infoInput}>
-                      <p>
-                        {isRequired("requested_amount")
-                          ? "Obligatorio"
-                          : "Opcional"}
-                      </p>
-                      <div className={styles.boxIconInfo}>
-                        <TbInfoCircle
-                          size={20}
-                          className={styles.iconInfo}
-                          onClick={() => {
-                            handleOpenModel();
-                            handleInfoInput({
-                              option: "requested_amount",
-                            });
-                          }}
-                        />
+                      <div className={styles.infoInput}>
+                        <p>
+                          {isRequired("requested_amount")
+                            ? "Obligatorio"
+                            : "Opcional"}
+                        </p>
+                        <div className={styles.boxIconInfo}>
+                          <TbInfoCircle
+                            size={20}
+                            className={styles.iconInfo}
+                            onClick={() => {
+                              handleOpenModel();
+                              handleInfoInput({
+                                option: "requested_amount",
+                              });
+                            }}
+                          />
+                        </div>
                       </div>
-                    </div>
                     </div>
                     <input
                       className={styles.inputInfo}

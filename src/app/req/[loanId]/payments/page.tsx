@@ -150,15 +150,15 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
         <div className={styles.headerInfo}>
           <h1>Detalles de Pago</h1>
           <h4 className={styles.detailText}>
-            Número total de cuotas:{" "}
+            Número total de cuotas:
             <span className={styles.valueP}>{paymentDetails.totalCuotas}</span>
           </h4>
           <h4 className={styles.detailText}>
-            Monto de cada cuota:{" "}
+            Monto de cada cuota:
             <span className={styles.valueP}>{paymentDetails.cuotaAmount}</span>
           </h4>
           <h4 className={styles.detailText}>
-            Próxima fecha de pago:{" "}
+            Próxima fecha de pago:
             <span className={styles.valueP}>
               {paymentDetails.nextPaymentDate}
             </span>
@@ -185,7 +185,7 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
                   <div className={styles.boxIconStatus}>
                     <TbCircleCheckFilled className={styles.iconCheck} />
                   </div>
-                  <p className={styles.warninCC}>Documento frontal subido</p>
+                  <p className={styles.warninCC}>Comprobante subido</p>
                 </div>
                 <div className={styles.boxIconsStatus}>
                   <div className={styles.boxIcon}>
@@ -206,7 +206,7 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
                 />
               </div>
               <p className={styles.textPreview}>
-                {loadingProccessImg01 && "Processando tu imagen..."}
+                {loadingProccessImg01 && "Processando pdf..."}
                 {!loadingProccessImg01 && "Agregar comprobante de pago"}
               </p>
             </div>

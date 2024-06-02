@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, ChangeEvent } from "react";
 import { useDropzone } from "react-dropzone";
 import styles from "./page.module.css";
 import CopyText from "@/components/accesories/CopyText";
@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { useGlobalContext } from "@/context/Auth";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
-import { v2 as cloudinary } from "cloudinary";
+import cloudinary from "@/lib/cloudinary-conf";
 
 import {
   TbCircleCheckFilled,
@@ -27,6 +27,7 @@ import LoadingPage from "@/components/Loaders/LoadingPage";
 import Modal from "@/components/modal/Modal";
 
 function Profile({ params }: { params: { userId: string } }) {
+  const { user } = useGlobalContext();
   const [imagePreview1, setImagePreview1] = useState("");
   const [imagePreview2, setImagePreview2] = useState("");
   const [imagePreview3, setImagePreview3] = useState("");
@@ -50,15 +51,20 @@ function Profile({ params }: { params: { userId: string } }) {
   const [addressResidence, setAddressResidence] = useState<string | null>(null);
   const [cityResidence, setCityResidence] = useState<string | null>(null);
 
+  const [selectedImagePerfil, setSelectedImagePerfil] = useState<File | null>(
+    null
+  );
+
   const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
   const [loadingProccessImg02, setLoadingProccessImg02] = useState(false);
   const [loadingProccessImg03, setLoadingProccessImg03] = useState(false);
 
   const [openDocs, setOpenDocs] = useState<boolean>(false);
-  const [contentOpenDoc, setContentOpenDoc] = useState<string | null>(null);
+  const [contentOpenDoc, setContentOpenDoc] = useState<
+    string | undefined | null
+  >(user?.avatar);
 
   const router = useRouter();
-  const { user } = useGlobalContext();
 
   useEffect(() => {
     const getInfoUserDocs = async () => {
@@ -106,6 +112,28 @@ function Profile({ params }: { params: { userId: string } }) {
   }, [params.userId, user]);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files && event.target.files[0];
+    if (file) {
+      setSelectedImagePerfil(file);
+    }
+  };
+
+  // const handleUpdateAvatar = async () => {
+  //   if (selectedImagePerfil) {
+  //     try {
+  //       const response = await cloudinary.v2.uploader.upload(
+  //         URL.createObjectURL(selectedImagePerfil),
+  //         {
+  //           folder: "avatars",
+  //         }
+  //       );
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  // };
 
   const handleSubmitImageFront = async ({ image }: { image: string }) => {
     const response = await axios.post(
@@ -196,7 +224,7 @@ function Profile({ params }: { params: { userId: string } }) {
         // console.log("url: ", response.data);
         setLoadingProccessImg01(false);
         setImagePreview1(response.data.data);
-        console.log(imagePreview1)
+        console.log(imagePreview1);
       }
     },
     [user?.token, handleSubmitImageFront]
@@ -341,7 +369,6 @@ function Profile({ params }: { params: { userId: string } }) {
   };
 
   const handleDeleteDoc = async (type: string) => {
-    
     const response = await axios.post(
       "/api/user/delete_doc",
       {
@@ -356,8 +383,8 @@ function Profile({ params }: { params: { userId: string } }) {
     console.log(response);
 
     if (response.data.success) {
-      setImagePreview1(response.data.data[0].documentFront)
-      setImagePreview2(response.data.data[0].documentBack)
+      setImagePreview1(response.data.data[0].documentFront);
+      setImagePreview2(response.data.data[0].documentBack);
       toast.success("Documento eliminado");
     } else if (response.data.success == false) {
       toast.error("Imposible eliminar documento");
@@ -383,12 +410,37 @@ function Profile({ params }: { params: { userId: string } }) {
 
           <div className={styles.boxImagePerfil}>
             <div className={styles.boxInfoUserAvatar}>
-              <Avatar
-                className={styles.avatarIcon}
-                src={user?.avatar}
-                round={true}
-                size={isTabletOrMobile ? "200px" : "300px"}
-              />
+              <div className={styles.centerInfoUserAvatar}>
+                <div className={styles.boxIconAvatar}>
+                  <Avatar
+                    className={styles.avatarIcon}
+                    src={user.avatar}
+                    round={true}
+                    size={isTabletOrMobile ? "200px" : "300px"}
+                  />
+                </div>
+                <div className={styles.boxChangeImage}>
+                  <div className={styles.centerBoxChangeImg}>
+                    <h3>Cambiar foto de perfil</h3>
+                    <input
+                      className={styles.btnChangeImage}
+                      type="file"
+                      onChange={handleImageChange}
+                      accept="image/*"
+                    />
+                    {selectedImagePerfil && (
+                      <button
+                        onClick={() => {
+                          toast.success("Change avatar coming soon..");
+                          // handleUpdateAvatar
+                        }}
+                      >
+                        Actualizar
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className={styles.boxInputsInfo}>
@@ -868,13 +920,6 @@ function Profile({ params }: { params: { userId: string } }) {
                 )}
                 {imagePreview3 && imagePreview3 != "No definido" ? (
                   <>
-                    {/* <Image
-                      className={styles.avatarIcon}
-                      src={imagePreview2}
-                      alt="img"
-                      width={200}
-                      height={300}
-                    /> */}
                     <div className={styles.barStatusDocs}>
                       <div className={styles.headerCardStatus}>
                         <div className={styles.boxIconStatus}>

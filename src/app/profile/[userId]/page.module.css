@@ -29,6 +29,22 @@
   border-radius: 8px;
 }
 
+.centerInfoUserAvatar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3em;
+}
+
+.boxChangeImage {
+  display: grid;
+  place-content: center;
+}
+
+.centerBoxChangeImg {
+  display: flex;
+  flex-direction: column;
+}
+
 .boxInputsInfo {
   flex-basis: 400px;
   flex-grow: 1;
@@ -235,4 +251,13 @@
 .cardLaboral {
   flex-basis: 400px;
   flex-grow: 1;
+}
+
+
+@media screen and (max-width: 800px) {
+  .boxIconAvatar, .boxChangeImage {
+    flex: 1;
+    display: grid;
+    place-content: center;
+  }
 }
