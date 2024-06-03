@@ -1,3 +1,17 @@
+.headerSignature {
+  display: flex;
+  flex-direction: column;
+}
+
+.headerSignature h1 {
+  font-weight: 600;
+  color: var(--green-800);
+}
+
+.headerSignature p {
+  color: var(--white-600);
+}
+
 .containerSendCode {
   display: flex;
   flex-direction: column;

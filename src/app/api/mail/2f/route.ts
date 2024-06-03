@@ -1,4 +1,4 @@
-import { transporter } from "@/app/lib/NodeMailer";
+import { transporter } from "@/lib/NodeMailer";
 import TokenService from "@/classes/TokenServices";
 // import { EmailTemplate } from "@/components/mail/Template";
 import { NextResponse } from "next/server";
@@ -36,16 +36,14 @@ export async function POST(req: Request) {
       to: addressee,
       subject: "🔒 Tu código de confirmación de préstamo",
       text: "¡Funciona!",
-      html: `<b>Hola ${name}, tu codigo es: ${code}</b>`,
+      html: `
+        <div>
+          <p>Hola ${name}</p>
+          <p>tu codigo es: </p>
+          <h3>${code}</h3>
+        </div>
+      `,
     });
-
-    // const data = await resend.emails.send({
-    //   from: "Credito Ya <onboarding@resend.dev>",
-    //   to: [addressee],
-    //   subject: "🔒 Tu codigo de confirmacion de prestamo",
-    //   text: "it Works",
-    //   react: EmailTemplate({ firstName: name, code: code }),
-    // });
 
     return NextResponse.json(data);
   } catch (error) {

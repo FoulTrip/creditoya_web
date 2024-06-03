@@ -5,6 +5,7 @@ import { MdMailLock } from "react-icons/md";
 import { MaskedMail } from "@/handlers/MaskedEmails";
 import axios from "axios";
 import { toast } from "sonner";
+import Signature from "./signature";
 
 interface PreEnvioProps {
   email: string;
@@ -14,11 +15,13 @@ interface PreEnvioProps {
 }
 
 function PreEnvio({ email, name, Success, token }: PreEnvioProps) {
+  console.log(email)
   const [verifyNumber, setVerifyNumber] = useState<Array<string>>(
     Array(5).fill("")
   );
   const [userInput, setUserInput] = useState<Array<string>>(Array(5).fill(""));
   const [codeSent, setCodeSent] = useState(false);
+  const [successSignature, setSuccessSignature] = useState<boolean>(false);
   const inputsRef = useRef<HTMLInputElement[]>([]);
 
   useEffect(() => {
@@ -70,34 +73,49 @@ function PreEnvio({ email, name, Success, token }: PreEnvioProps) {
 
   const maskedEmail = MaskedMail(email);
 
+  const handleSuccessSignature = () => {
+    setSuccessSignature(true);
+  };
+
   return (
     <>
-      <div className={styles.containerSendCode}>
-        <div className={styles.iconSendCode}>
-          <MdMailLock size={80} />
-        </div>
-        <h3 className={styles.textWarnin}>
-          Ingresa el codigo enviado a tu correo electronico
-        </h3>
-        <p className={styles.previewCorreo}>{maskedEmail}</p>
-        <div className={styles.inputContainer}>
-          <div className={styles.centerInputNumbers}>
-            {verifyNumber.map((_, i) => (
-              <input
-                key={i}
-                type="text"
-                maxLength={1}
-                onChange={handleChange(i)}
-                ref={(ref) => {
-                  if (ref) {
-                    inputsRef.current[i] = ref;
-                  }
-                }}
-              />
-            ))}
+      <div className={styles.headerSignature}>
+        <h1>Verificacion de seguridad</h1>
+        <p>
+          Haz tu firma y luego verifica el codigo enviado a tu correo
+          electronico o whatssapp
+        </p>
+      </div>
+      <Signature success={handleSuccessSignature} />
+      
+      {successSignature && (
+        <div className={styles.containerSendCode}>
+          <div className={styles.iconSendCode}>
+            <MdMailLock size={80} />
+          </div>
+          <h3 className={styles.textWarnin}>
+            Ingresa el codigo enviado a tu correo electronico
+          </h3>
+          <p className={styles.previewCorreo}>{email}</p>
+          <div className={styles.inputContainer}>
+            <div className={styles.centerInputNumbers}>
+              {verifyNumber.map((_, i) => (
+                <input
+                  key={i}
+                  type="text"
+                  maxLength={1}
+                  onChange={handleChange(i)}
+                  ref={(ref) => {
+                    if (ref) {
+                      inputsRef.current[i] = ref;
+                    }
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

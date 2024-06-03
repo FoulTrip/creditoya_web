@@ -13,6 +13,8 @@ import { ScalarLoanApplication } from "@/types/User";
 import CardLoan from "@/components/accesories/CardLoan";
 import LoadingPage from "@/components/Loaders/LoadingPage";
 import socket from "@/Socket/Socket";
+import { ContractProvider } from "@/context/Contract";
+import { toast } from "sonner";
 
 function Dashboard() {
   const router = useRouter();
@@ -71,6 +73,9 @@ function Dashboard() {
   }, []);
 
   const handleOpenContract = () => {
+    // if (Loans?.length == 1) toast.error("Ya tienes un prestamo activo");
+    // if (Loans?.length == 0) setOpenContract(!openContract);
+
     setOpenContract(!openContract);
   };
 
@@ -86,40 +91,42 @@ function Dashboard() {
     if (completeDocs) {
       return (
         <>
-          <main className={styles.containerDashboard}>
-            {!openContract && (
-              <div className={styles.btnNew} onClick={handleOpenContract}>
-                <p>Solicitar Prestamo</p>
-              </div>
-            )}
-            {openContract && <Contract toggleContract={toggleContract} />}
-
-            {!openContract && (
-              <>
-                {/* <h1 className={styles.titleLoan}>Tus Prestamos</h1> */}
-                {Loans?.length == 0 && (
-                  <div className={styles.warnNoLoan}>
-                    <div className={styles.canterWarnLoan}>
-                      <div className={styles.boxIconNoLoan}>
-                        <TbAccessPoint
-                          className={styles.iconNoLoan}
-                          size={25}
-                        />
-                      </div>
-                      <p>Sin Prestamos activos</p>
-                    </div>
-                  </div>
-                )}
-                <div className={styles.listLoans}>
-                  {Loans?.filter((loan) => loan.userId === user.id).map(
-                    (loan) => (
-                      <CardLoan key={loan.id} loan={loan} />
-                    )
-                  )}
+          <ContractProvider>
+            <main className={styles.containerDashboard}>
+              {!openContract && (
+                <div className={styles.btnNew} onClick={handleOpenContract}>
+                  <p>Solicitar Prestamo</p>
                 </div>
-              </>
-            )}
-          </main>
+              )}
+              {openContract && <Contract toggleContract={toggleContract} />}
+
+              {!openContract && (
+                <>
+                  {/* <h1 className={styles.titleLoan}>Tus Prestamos</h1> */}
+                  {Loans?.length == 0 && (
+                    <div className={styles.warnNoLoan}>
+                      <div className={styles.canterWarnLoan}>
+                        <div className={styles.boxIconNoLoan}>
+                          <TbAccessPoint
+                            className={styles.iconNoLoan}
+                            size={25}
+                          />
+                        </div>
+                        <p>Sin Prestamos activos</p>
+                      </div>
+                    </div>
+                  )}
+                  <div className={styles.listLoans}>
+                    {Loans?.filter((loan) => loan.userId === user.id).map(
+                      (loan) => (
+                        <CardLoan key={loan.id} loan={loan} />
+                      )
+                    )}
+                  </div>
+                </>
+              )}
+            </main>
+          </ContractProvider>
         </>
       );
     }
