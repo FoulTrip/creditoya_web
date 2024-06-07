@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import { useGlobalContext } from "@/context/Auth";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
-import cloudinary from "@/lib/cloudinary-conf";
 
 import {
   TbCircleCheckFilled,
@@ -191,7 +190,7 @@ function Profile({ params }: { params: { userId: string } }) {
         console.log(formData);
         console.log(process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG);
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
+          `${process.env.ENDPOINT_PROCESS_IMG}`,
           formData,
           {
             headers: {
