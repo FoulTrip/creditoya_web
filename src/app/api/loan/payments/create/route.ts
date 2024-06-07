@@ -10,32 +10,32 @@ interface reqCreate {
   nameClient: string;
   documentClient: string;
   quantity: string;
-  quota: string
+  quota: string;
 }
 
 export async function POST(req: Request) {
   try {
     // Verificar la autenticación JWT
-    // const authorizationHeader = req.headers.get("Authorization");
+    const authorizationHeader = req.headers.get("Authorization");
 
-    // if (!authorizationHeader) {
-    //   return NextResponse.json(
-    //     { message: "Token de autorización no proporcionado" },
-    //     { status: 401 }
-    //   );
-    // }
+    if (!authorizationHeader) {
+      return NextResponse.json(
+        { message: "Token de autorización no proporcionado" },
+        { status: 401 }
+      );
+    }
 
-    // const token = authorizationHeader.split(" ")[1];
-    // console.log(token);
+    const token = authorizationHeader.split(" ")[1];
+    console.log(token);
 
-    // const decodedToken = TokenService.verifyToken(
-    //   token,
-    //   process.env.JWT_SECRET as string
-    // );
+    const decodedToken = TokenService.verifyToken(
+      token,
+      process.env.JWT_SECRET as string
+    );
 
-    // if (!decodedToken) {
-    //   return NextResponse.json({ message: "Token no válido" }, { status: 401 });
-    // }
+    if (!decodedToken) {
+      return NextResponse.json({ message: "Token no válido" }, { status: 401 });
+    }
 
     const {
       loanId,
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       nameClient,
       documentClient,
       quantity,
-      quota
+      quota,
     }: reqCreate = await req.json();
 
     console.log(
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
       signature,
       quantity,
       status,
-      quota
+      quota,
     });
 
     if (response) {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ScalarLoanApplication, ScalarPaymentLoan } from "@/types/User";
 import { useGlobalContext } from "@/context/Auth";
@@ -157,7 +157,7 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
         { headers: { Authorization: `Bearer ${user?.token}` } }
       );
 
-      console.log(response.data)
+      console.log(response.data);
 
       if (response.data.success == true) {
         const responseAll = await axios.post(
@@ -188,138 +188,144 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
         </div>
       </div>
 
-      {loanData && (
-        <div className={styles.headerInfo}>
-          <h1>Detalles de Pago</h1>
-          <h4 className={styles.detailText}>
-            Número total de cuotas:
-            <span className={styles.valueP}>{paymentDetails.totalCuotas}</span>
-          </h4>
-          <h4 className={styles.detailText}>
-            Monto de cada cuota:
-            <span className={styles.valueP}>
-              {stringToPrice(String(paymentDetails.cuotaAmount))}
-            </span>
-          </h4>
-          <h4 className={styles.detailText}>
-            Próxima fecha de pago:
-            <span className={styles.valueP}>
-              {stringToPrice(paymentDetails.nextPaymentDate)}
-            </span>
-          </h4>
-        </div>
-      )}
-
-      <div className={styles.containerPay}>
-        {payments?.length === 0 && (
-          <p className={styles.textRegisterVoid}>No hay registros de pago</p>
+      <div>
+        {loanData && (
+          <div className={styles.headerInfo}>
+            <h1>Detalles de Pago</h1>
+            <h4 className={styles.detailText}>
+              Número total de cuotas:
+              <span className={styles.valueP}>
+                {paymentDetails.totalCuotas}
+              </span>
+            </h4>
+            <h4 className={styles.detailText}>
+              Monto de cada cuota:
+              <span className={styles.valueP}>
+                {stringToPrice(String(paymentDetails.cuotaAmount))}
+              </span>
+            </h4>
+            <h4 className={styles.detailText}>
+              Próxima fecha de pago:
+              <span className={styles.valueP}>
+                {stringToPrice(paymentDetails.nextPaymentDate)}
+              </span>
+            </h4>
+          </div>
         )}
-        {payments &&
-          payments?.length > 0 &&
-          payments?.map((details) => (
-            <>
-              <div key={details.id}>
-                <div className={styles.boxStatus}>
-                  <div className={styles.boxIconStatus}>
-                    <TbPointFilled
-                      className={
-                        details.status == "authorized"
-                          ? styles.pointSuccess
-                          : styles.pointError
-                      }
-                    />
-                  </div>
-                  <p className={styles.textVerify}>
-                    {details.status == "authorized" && "Verificado"}
-                    {details.status == "unauthorized" && "No Verificado"}
-                  </p>
-                </div>
-                <div className={styles.headerStatus}>
-                  <div className={styles.circleQuote}>
-                    <p className={styles.centerCircleQuote}>{details.quota}</p>
-                  </div>
-                  <h2>Comprobacion de pago</h2>
-                </div>
-                <div className={styles.boxDatePay}>
-                  <h5>ID: </h5>
-                  <p>{details.id}</p>
-                </div>
-                <div className={styles.boxDatePay}>
-                  <h5>Fecha de creacion: </h5>
-                  <p>
-                    {details.createdAt
-                      ? new Date(details.createdAt).toLocaleDateString(
-                          "es-ES",
-                          {
-                            weekday: "long",
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                          }
-                        )
-                      : "Fecha no disponible"}
-                  </p>
-                </div>
-                <div className={styles.boxDatePay}>
-                  <h5>Cantidad pagada: </h5>
-                  <p>{stringToPrice(details.quantity)}</p>
-                </div>
-                <div className={styles.btnViewPdf}>
-                  <div
-                    className={styles.centerBtnViewPdf}
-                    onClick={handlerOpenModel}
-                  >
-                    <div className={styles.boxIConArrow}>
-                      <TbFileText className={styles.iconArrow} />
-                    </div>
 
-                    <p className={styles.textViewDoc}>Documento PDF</p>
-                    <div className={styles.boxIConArrow}>
-                      <TbArrowUpRight className={styles.iconArrow} />
+        <div className={styles.containerPay}>
+          {payments?.length === 0 && (
+            <p className={styles.textRegisterVoid}>No hay registros de pago</p>
+          )}
+          {payments &&
+            payments?.length > 0 &&
+            payments?.map((details) => (
+              <React.Fragment key={details.id}>
+                <div>
+                  <div className={styles.boxStatus}>
+                    <div className={styles.boxIconStatus}>
+                      <TbPointFilled
+                        className={
+                          details.status == "authorized"
+                            ? styles.pointSuccess
+                            : styles.pointError
+                        }
+                      />
                     </div>
+                    <p className={styles.textVerify}>
+                      {details.status == "authorized" && "Verificado"}
+                      {details.status == "unauthorized" && "No Verificado"}
+                    </p>
                   </div>
-
-                  {details.status == "unauthorized" && (
+                  <div className={styles.headerStatus}>
+                    <div className={styles.circleQuote}>
+                      <p className={styles.centerCircleQuote}>
+                        {details.quota}
+                      </p>
+                    </div>
+                    <h2>Comprobacion de pago</h2>
+                  </div>
+                  <div className={styles.boxDatePay}>
+                    <h5>ID Prestamo: </h5>
+                    <p>{details.id}</p>
+                  </div>
+                  <div className={styles.boxDatePay}>
+                    <h5>Fecha de creacion: </h5>
+                    <p>
+                      {details.createdAt
+                        ? new Date(details.createdAt).toLocaleDateString(
+                            "es-ES",
+                            {
+                              weekday: "long",
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            }
+                          )
+                        : "Fecha no disponible"}
+                    </p>
+                  </div>
+                  <div className={styles.boxDatePay}>
+                    <h5>Cantidad pagada: </h5>
+                    <p>{stringToPrice(details.quantity)}</p>
+                  </div>
+                  <div className={styles.btnViewPdf}>
                     <div
-                      className={styles.centerBtnAprovePdf}
-                      onClick={handlerOpenSignature}
+                      className={styles.centerBtnViewPdf}
+                      onClick={handlerOpenModel}
                     >
                       <div className={styles.boxIConArrow}>
-                        <TbShieldCheckFilled className={styles.iconSec} />
+                        <TbFileText className={styles.iconArrow} />
                       </div>
-                      <p className={styles.textViewDoc}>Verificar</p>
-                    </div>
-                  )}
-                </div>
-              </div>
 
-              {openModel && (
-                <Modal isOpen={openModel} onClose={handlerOpenModel}>
-                  <PdfView
-                    idPdf={details.id as string}
-                    name={details.nameClient}
-                    datePay={String(details.createdAt)}
-                    payQuantity={details.quantity}
-                    expirationDay={paymentDetails.nextPaymentDate}
-                    numberDocument={details.documentClient}
-                    signature={details.signature}
-                  />
-                </Modal>
-              )}
-              {openSignature && (
-                <Modal isOpen={openSignature} onClose={handlerOpenSignature}>
-                  <SignaturePay
-                    src={handleSaveSignature}
-                    success={handlerOpenSignature}
-                    payId={details.id as string}
-                  />
-                </Modal>
-              )}
-            </>
-          ))}
+                      <p className={styles.textViewDoc}>Documento PDF</p>
+                      <div className={styles.boxIConArrow}>
+                        <TbArrowUpRight className={styles.iconArrow} />
+                      </div>
+                    </div>
+
+                    {details.status == "unauthorized" && (
+                      <div
+                        className={styles.centerBtnAprovePdf}
+                        onClick={handlerOpenSignature}
+                      >
+                        <div className={styles.boxIConArrow}>
+                          <TbShieldCheckFilled className={styles.iconSec} />
+                        </div>
+                        <p className={styles.textViewDoc}>Verificar</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {openModel && (
+                  <Modal isOpen={openModel} onClose={handlerOpenModel}>
+                    <PdfView
+                      idPdf={details.id as string}
+                      name={details.nameClient}
+                      datePay={String(details.createdAt)}
+                      payQuantity={details.quantity}
+                      expirationDay={paymentDetails.nextPaymentDate}
+                      numberDocument={details.documentClient}
+                      signature={details.signature}
+                    />
+                  </Modal>
+                )}
+                {openSignature && (
+                  <Modal isOpen={openSignature} onClose={handlerOpenSignature}>
+                    <SignaturePay
+                      src={handleSaveSignature}
+                      success={handlerOpenSignature}
+                      payId={details.id as string}
+                    />
+                  </Modal>
+                )}
+              </React.Fragment>
+            ))}
+        </div>
       </div>
     </main>
   );

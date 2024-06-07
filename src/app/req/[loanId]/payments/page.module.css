@@ -125,15 +125,9 @@
 
 .boxDatePay {
   display: flex;
-  flex-direction: row;
-  gap: 5px;
+  flex-direction: column;
   margin-bottom: 5px;
   margin-top: 5px;
-}
-
-.boxDatePay h5 {
-  display: grid;
-  place-content: center;
 }
 
 .btnViewPdf {
