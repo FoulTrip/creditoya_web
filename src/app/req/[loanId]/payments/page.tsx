@@ -40,7 +40,10 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
           "/api/loan/id",
           { loanId: params.loanId },
           {
-            headers: { Authorization: `Bearer ${user?.token}` },
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+              "Content-Type": "application/json",
+            },
           }
         );
         if (response.data.success) {
@@ -58,7 +61,12 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
         {
           loanId: params.loanId,
         },
-        { headers: { Authorization: `Bearer ${user?.token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       console.log(response);
@@ -139,7 +147,12 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
         payId,
         img: signatureUrl,
       },
-      { headers: { Authorization: `Bearer ${user?.token}` } }
+      {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+          "Content-Type": "application/json",
+        },
+      }
     );
 
     console.log(response.data);
@@ -218,7 +231,7 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
             payments?.length > 0 &&
             payments?.map((details) => (
               <React.Fragment key={details.id}>
-                <div>
+                <div key={details.id}>
                   <div className={styles.boxStatus}>
                     <div className={styles.boxIconStatus}>
                       <TbPointFilled
