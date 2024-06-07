@@ -37,8 +37,10 @@ function SignaturePay({
   const saveSignature = async () => {
     if (signatureCanvasRef.current) {
       const signatureImage = signatureCanvasRef.current.toDataURL();
+
       setUploadSuccess(true);
       setPreviewSignature(signatureImage);
+
       const response = await axios.post(
         "/api/loan/payments/signature",
         {

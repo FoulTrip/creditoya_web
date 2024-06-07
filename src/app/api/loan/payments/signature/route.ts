@@ -25,16 +25,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
 
-    const { img, payId } = await req.json();
+    const { img, payId }: { img: string; payId: string } = await req.json();
 
-    console.log(img);
+    console.log("img in server", img);
+    console.log("payId in server", payId);
 
-    if (!img) throw new Error("No se cargo la imagen");
+    if (!img) throw new Error("img is reqired");
+    if (!payId) throw new Error("payId is reqired");
 
     const response = await cloudinary.v2.uploader.upload(img, {
       folder: "signatures_payments",
       public_id: `signature.${payId}`,
     });
+
+    console.log("response cloudi: ", response);
 
     return NextResponse.json({
       success: true,

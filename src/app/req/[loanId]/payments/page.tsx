@@ -52,10 +52,6 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
       }
     };
 
-    fetchData();
-  }, [user, params]);
-
-  useEffect(() => {
     const fetchPayments = async () => {
       const response = await axios.post(
         "/api/loan/payments/byloan",
@@ -70,8 +66,9 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
       if (response.data.success == true) setPayments(response.data.data);
     };
 
+    fetchData();
     fetchPayments();
-  }, [params, user?.token]);
+  }, [user?.token, params.loanId]);
 
   const calculatePaymentDetails = (loan: ScalarLoanApplication) => {
     // Calculate payment details based on loan data
