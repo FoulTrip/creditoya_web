@@ -13,9 +13,7 @@ import Cookies from "js-cookie";
 import { ContractContextType } from "@/types/ContractContext";
 import { ScalarLoanApplication } from "@/types/User";
 
-const GlobalContext = createContext<ContractContextType | undefined>(
-  undefined
-);
+const GlobalContext = createContext<ContractContextType | undefined>(undefined);
 
 export function ContractProvider({ children }: { children: ReactNode }) {
   const [loan, setLoan] = useState<ScalarLoanApplication | null>(null);
@@ -27,9 +25,14 @@ export function ContractProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const setLoanInfo = (loan: ScalarLoanApplication) => {
-    setLoan(loan);
-    Cookies.set("respaldeLoan", JSON.stringify(loan));
+  const setLoanInfo = (updatedLoan: ScalarLoanApplication) => {
+    setLoan((prevLoan) => {
+      if (JSON.stringify(prevLoan) !== JSON.stringify(updatedLoan)) {
+        Cookies.set("respaldeLoan", JSON.stringify(updatedLoan));
+        return updatedLoan;
+      }
+      return prevLoan;
+    });
   };
 
   return (

@@ -10,14 +10,14 @@ import { TbCircleCheck, TbCircleX } from "react-icons/tb";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
 
-function Signature({
+function SignaturePay({
   success,
   src,
-  userId,
+  payId,
 }: {
   success: () => void;
-  src: (url: string) => void;
-  userId: string;
+  src: (data: any) => void;
+  payId: string;
 }) {
   const signatureCanvasRef = useRef<SignatureCanvas | null>(null);
   const [previewSignature, setPreviewSignature] = useState<string | null>(null);
@@ -40,10 +40,10 @@ function Signature({
       setUploadSuccess(true);
       setPreviewSignature(signatureImage);
       const response = await axios.post(
-        "/api/upload/signature",
+        "/api/loan/payments/signature",
         {
           img: signatureImage,
-          userId,
+          payId,
         },
         { headers: { Authorization: `Bearer ${user?.token}` } }
       );
@@ -52,7 +52,10 @@ function Signature({
 
       if (link) {
         setUploadSuccess(false);
-        src(link);
+        src({
+          signatureUrl: link,
+          payId
+        });
       }
       success();
     }
@@ -122,4 +125,4 @@ function Signature({
   );
 }
 
-export default Signature;
+export default SignaturePay;

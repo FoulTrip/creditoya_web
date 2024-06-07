@@ -1,27 +1,71 @@
-import { ScalarLoanApplication } from "@/types/User";
+import { ScalarEmployee, ScalarLoanApplication } from "@/types/User";
 import React, { useEffect, useState } from "react";
 import styles from "./styles/cardLoan.module.css";
 import {
+  TbArrowBarToDown,
   TbArrowNarrowDown,
+  TbArrowUpRight,
   TbChevronDown,
   TbChevronRight,
   TbChevronUp,
   TbCircleCheck,
   TbClockSearch,
   TbEye,
+  TbFileFilled,
   TbFileTypePdf,
+  TbMailFilled,
+  TbPhoneFilled,
+  TbViewportWide,
 } from "react-icons/tb";
 import EditInfo from "./EditInfo";
 import socket from "@/Socket/Socket";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { useGlobalContext } from "@/context/Auth";
+import { toast } from "sonner";
+import Avatar from "react-avatar";
 
 function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const router = useRouter();
+  const { user } = useGlobalContext();
+  const [infoEmployee, setInfoEmployee] = useState<ScalarEmployee | null>(null);
+
+  const formattedPrice = (price: string) => {
+    const number = parseFloat(price);
+
+    const formatter = new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+    const formattedNumber = formatter.format(number);
+    return formattedNumber;
+  };
+
+  useEffect(() => {
+    const getEmployee = async () => {
+      const response = await axios.post(
+        "/api/employee/id",
+        {
+          employeeId: loan.employeeId,
+        },
+        {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        }
+      );
+      console.log(response.data);
+      if (response.data.success) setInfoEmployee(response.data.data);
+    };
+
+    getEmployee();
+  }, [user?.token, loan.employeeId]);
 
   useEffect(() => {
     socket.on("updateLoanClient", (data) => {});
-  });
+  }, []);
 
   const toggleDetails = () => {
     setOpenDetails(!openDetails);
@@ -30,73 +74,54 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
   return (
     <>
       <div className={styles.cardLoan}>
-        <div className={styles.headerStatus}>
-          <div className={styles.centerHeaderStatus}>
-            <div className={styles.iconHeaderStatus}>
-              {loan.status === "Pendiente" && (
-                <TbClockSearch className={styles.iconHeader} size={20} />
-              )}
-              {loan.status === "Aprobado" && (
-                <TbCircleCheck className={styles.iconHeader} size={20} />
-              )}
-            </div>
-            <p>{loan.status}</p>
-          </div>
+        <div className={styles.boxAmount}>
+          <p>Cantidad Solicitada</p>
+          <h1>{formattedPrice(loan.requested_amount)}</h1>
         </div>
 
-        <div className={styles.containerValueBox}>
-          <div className={styles.centerValueBox}>
-            <h3 className={styles.titleCantity}>Cantidad</h3>
-            <p className={styles.textValueCantity}>$ {loan.requested_amount}</p>
-          </div>
-          <div className={styles.centerValueBox}>
-            <h3 className={styles.titleCantity}>Plazo de pago</h3>
-            <p className={styles.textValueCantity}>30 dias</p>
-          </div>
-          <div className={styles.centerValueBox}>
-            <h3 className={styles.titleCantity}>Ganancia mensual</h3>
-            <p className={styles.textValueCantity}>{loan.monthly_income}</p>
-          </div>
-        </div>
-
-        <div className={styles.barViewDetails}>
-          <div
-            className={styles.subBarView}
-            onClick={() => router.push(`/req/${loan.id}`)}
-          >
-            <p className={styles.subTextBarView}>Datos completos</p>
-            <div className={styles.boxChevron}>
-              <TbChevronRight className={styles.iconChevron} size={20} />
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.barViewDetails}>
-          <div
-            className={styles.subBarView}
-            onClick={() => router.push(`/req/${loan.id}/payments`)}
-          >
-            <p className={styles.subTextBarView}>Pagos</p>
-            <div className={styles.boxChevron}>
-              <TbChevronRight className={styles.iconChevron} size={20} />
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.recurses}>
-          <div className={styles.subBarViewRecurses}>
-            <div className={styles.BoxInfoPdf}>
-              <div className={styles.boxIconDocument}>
-                <TbFileTypePdf className={styles.iconpdf} size={25} />
+        <div className={styles.widgetsViews}>
+          <div className={styles.listBtnsActions}>
+            <div className={styles.barViewDetails}>
+              <div
+                className={styles.subBarView}
+                onClick={() => router.push(`/req/${loan.id}`)}
+              >
+                <p className={styles.subTextBarView}>Datos completos</p>
+                <div className={styles.boxChevron}>
+                  <TbArrowUpRight className={styles.iconChevron} size={20} />
+                </div>
               </div>
-              <p className={styles.labelIconDoc}>Contrato</p>
             </div>
-            <div className={styles.optPdf}>
-              <div className={styles.btnAction}>
-                <TbEye className={styles.iconBtnAction} />
+
+            <div className={styles.barViewDetails}>
+              <div
+                className={styles.subBarView}
+                onClick={() => router.push(`/req/${loan.id}/payments`)}
+              >
+                <p className={styles.subTextBarView}>Pagos</p>
+                <div className={styles.boxChevron}>
+                  <TbArrowUpRight className={styles.iconChevron} size={20} />
+                </div>
               </div>
-              <div className={styles.btnAction}>
-                <TbArrowNarrowDown className={styles.iconBtnAction} />
+            </div>
+          </div>
+
+          <div className={styles.DocsLists}>
+            <div className={styles.btnDoc}>
+              <div className={styles.infoBtn}>
+                <div className={styles.boxIconDoc}>
+                  <TbFileFilled className={styles.iconFileDoc} size={20} />
+                </div>
+                <p>Documento de pago</p>
+              </div>
+
+              <div className={styles.actBtns}>
+                <div className={styles.boxIconAct}>
+                  <TbArrowBarToDown className={styles.iconAct} size={20} />
+                </div>
+                <div className={styles.boxIconAct}>
+                  <TbViewportWide className={styles.iconAct} size={20} />
+                </div>
               </div>
             </div>
           </div>
@@ -104,11 +129,43 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
 
         <div className={styles.boxBtnsDesicion}>
           <div className={styles.centerBoxBtnsDesicion}>
-            <button className={styles.btnRenov}>Renovar Credito</button>
+            <div className={styles.boxStatusLoan}>
+              <h5>Estado de prestamo</h5>
+              {loan.status === "Pendiente" && (
+                <h1 className={styles.statusTextPendiente}>{loan.status}</h1>
+              )}
+              {loan.status === "Aprobado" && (
+                <h1 className={styles.statusTextSuccess}>{loan.status}</h1>
+              )}
+              {loan.status === "Rechazado" && (
+                <h1 className={styles.statusTextReject}>{loan.status}</h1>
+              )}
+            </div>
             {loan.status === "Aprobado" && (
-              <div className={styles.boxInfoAdvisor}>
-                <h5>Asesor encargado</h5>
-                <p>David Vasquez Mahecha</p>
+              <div className={styles.employeeInfo}>
+                <div className={styles.boxAvatar}>
+                  <Avatar src={infoEmployee?.avatar} round={true} size={"30"} />
+                </div>
+                <div className={styles.boxInfoAdvisor}>
+                  <div className={styles.boxInfoAdvisorCenter}>
+                    <h5>Asesor encargado</h5>
+                    <p>{`${infoEmployee?.name} ${infoEmployee?.lastNames}`}</p>
+                  </div>
+                </div>
+                <div className={styles.boxContactAses}>
+                  <div className={styles.boxAvatar}>
+                    <TbPhoneFilled
+                      className={styles.asesContactIcon}
+                      size={20}
+                    />
+                  </div>
+                  <div className={styles.boxAvatar}>
+                    <TbMailFilled
+                      size={20}
+                      className={styles.asesContactIcon}
+                    />
+                  </div>
+                </div>
               </div>
             )}
           </div>

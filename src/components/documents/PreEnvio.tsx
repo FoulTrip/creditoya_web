@@ -6,31 +6,34 @@ import { MaskedMail } from "@/handlers/MaskedEmails";
 import axios from "axios";
 import { toast } from "sonner";
 import Signature from "./signature";
+import { ScalarLoanApplication } from "@/types/User";
 
 interface PreEnvioProps {
-  email: string;
-  name: string;
+  data: ScalarLoanApplication;
   Success: () => void;
   token: string;
+  signature: (url: string) => void;
 }
 
-function PreEnvio({ email, name, Success, token }: PreEnvioProps) {
-  console.log(email)
+function PreEnvio({ data, Success, token, signature }: PreEnvioProps) {
+  console.log(data.email);
   const [verifyNumber, setVerifyNumber] = useState<Array<string>>(
     Array(5).fill("")
   );
   const [userInput, setUserInput] = useState<Array<string>>(Array(5).fill(""));
   const [codeSent, setCodeSent] = useState(false);
   const [successSignature, setSuccessSignature] = useState<boolean>(false);
+  const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
   const inputsRef = useRef<HTMLInputElement[]>([]);
 
   useEffect(() => {
     const sendCodeMail = async ({ code }: { code: string }) => {
-      const numberCode = Number(code);
+      const numberCode: number = Number(code);
+      const name: string = `${data.names} ${data.firtLastName} ${data.secondLastName}`;
       const response = await axios.post(
         "/api/mail/2f",
         {
-          addressee: email,
+          addressee: data.email,
           name,
           code: numberCode,
         },
@@ -47,7 +50,7 @@ function PreEnvio({ email, name, Success, token }: PreEnvioProps) {
       setVerifyNumber(Array.from(String(newKey)));
       sendCodeMail({ code: newKey });
     }
-  }, [codeSent, email, name, token]);
+  }, [data, token]);
 
   const handleChange =
     (position: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,10 +74,15 @@ function PreEnvio({ email, name, Success, token }: PreEnvioProps) {
     }
   };
 
-  const maskedEmail = MaskedMail(email);
+  const maskedEmail = MaskedMail(data.email);
 
   const handleSuccessSignature = () => {
     setSuccessSignature(true);
+  };
+
+  const handleSaveSignature = (signatureUrl: string) => {
+    signature(signatureUrl);
+    setSignatureUrl(signatureUrl);
   };
 
   return (
@@ -86,8 +94,12 @@ function PreEnvio({ email, name, Success, token }: PreEnvioProps) {
           electronico o whatssapp
         </p>
       </div>
-      <Signature success={handleSuccessSignature} />
-      
+      <Signature
+        success={handleSuccessSignature}
+        src={handleSaveSignature}
+        userId={data.userId}
+      />
+
       {successSignature && (
         <div className={styles.containerSendCode}>
           <div className={styles.iconSendCode}>
@@ -96,7 +108,7 @@ function PreEnvio({ email, name, Success, token }: PreEnvioProps) {
           <h3 className={styles.textWarnin}>
             Ingresa el codigo enviado a tu correo electronico
           </h3>
-          <p className={styles.previewCorreo}>{email}</p>
+          <p className={styles.previewCorreo}>{maskedEmail}</p>
           <div className={styles.inputContainer}>
             <div className={styles.centerInputNumbers}>
               {verifyNumber.map((_, i) => (

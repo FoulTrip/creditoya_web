@@ -40,10 +40,12 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
   const [openPreSend, setOpenPreSend] = useState<boolean>(false);
 
   const { user } = useGlobalContext();
-  const { loan, setLoanInfo } = useContractContext();
+  // const { loan, setLoanInfo } = useContractContext();
+  const [formData, setFormData] = useState<ScalarLoanApplication | null>(null);
 
   const [openInfo, setOpenInfo] = useState<boolean>(false);
   const [infoModel, setInfoModel] = useState<string | null>(null);
+  const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
 
   useEffect(() => {
     socket.emit("connected", "Hello from Contract");
@@ -55,19 +57,24 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
   ) => {
     const { value } = e.target;
 
-    const updatedLoan = {
-      ...loan,
+    setFormData((prevFormData) => ({
+      ...(prevFormData as ScalarLoanApplication),
       [key]: value,
-    } as ScalarLoanApplication;
+    }));
+  };
 
-    setLoanInfo(updatedLoan);
+  const handleSaveSignature = (signatureUrl: string) => {
+    setFormData((prevFormData) => ({
+      ...(prevFormData as ScalarLoanApplication),
+      signature: signatureUrl,
+    }));
   };
 
   const handleAuthLoan = async () => {
     try {
       setOpenPreSend(false);
-      console.log(loan);
-      socket.emit("create_loan_request", loan);
+      console.log(formData);
+      socket.emit("create_loan_request", formData);
     } catch (error) {
       console.error("Error:", error);
       toast.error("Error al enviar la solicitud");
@@ -103,21 +110,15 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
       const data: ScalarDocument = response.data.data;
       // setDocsUser(data);
       if (data) {
-        const updateLoan = {
-          ...(loan as ScalarLoanApplication),
+        setFormData((prevFormData) => ({
+          ...(prevFormData as ScalarLoanApplication),
           numberDocument: data.number as string,
           typeDocument: data.typeDocument,
-          ccNumber: data.number as string,
-        };
-        setLoanInfo(updateLoan);
+        }));
       }
       // console.log(data);
     };
 
-    getDocumetUser();
-  }, [user?.id, user?.token, loan]);
-
-  useEffect(() => {
     const getInfoUser = async () => {
       const response = await axios.post(
         "/api/user/id",
@@ -135,8 +136,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
       console.log();
 
       if (data) {
-        const updateLoan = {
-          ...(loan as ScalarLoanApplication),
+        setFormData((prevFormData) => ({
+          ...(prevFormData as ScalarLoanApplication),
+          principal_debtor: `${data.names} ${data.firstLastName} ${data.secondLastName}`,
           names: data.names,
           firtLastName: data.firstLastName,
           secondLastName: data.secondLastName,
@@ -148,15 +150,13 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
           userId: data.id as string,
           genre: data.genre as string,
           place_birth: data.place_of_birth as string,
-        };
-
-        setLoanInfo(updateLoan);
+        }));
       }
     };
 
+    getDocumetUser();
     getInfoUser();
-  }, [loan, user?.id, user?.token]);
-
+  }, [user]);
 
   return (
     <>
@@ -181,7 +181,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
             openBarStatus={openFirstPart}
             inputsComplete={sectionInputs({
               key: keysLoan01,
-              formData: loan as ScalarLoanApplication,
+              formData: formData as ScalarLoanApplication,
             })}
           />
           {openFirstPart && (
@@ -213,7 +213,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.principal_debtor || ""}
+                    value={formData?.principal_debtor || ""}
                     onChange={(e) => handleInputChange(e, "principal_debtor")}
                     name={keysLoan.find((key) => key === "principal_debtor")}
                   />
@@ -243,7 +243,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.co_debtor || ""}
+                    value={formData?.co_debtor || ""}
                     onChange={(e) => handleInputChange(e, "co_debtor")}
                     name={keysLoan.find((key) => key === "co_debtor")}
                   />
@@ -275,7 +275,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.affiliated_company || ""}
+                    value={formData?.affiliated_company || ""}
                     onChange={(e) => handleInputChange(e, "affiliated_company")}
                     name={keysLoan.find((key) => key === "affiliated_company")}
                   />
@@ -303,7 +303,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.nit || ""}
+                    value={formData?.nit || ""}
                     onChange={(e) => handleInputChange(e, "nit")}
                     name={keysLoan.find((key) => key === "nit")}
                   />
@@ -335,7 +335,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.requested_amount || ""}
+                    value={formData?.requested_amount || ""}
                     onChange={(e) => handleInputChange(e, "requested_amount")}
                     name={keysLoan.find((key) => key === "requested_amount")}
                   />
@@ -365,7 +365,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.deadline || undefined}
+                    value={formData?.deadline || undefined}
                     onChange={(e) => handleInputChange(e, "deadline")}
                     name={keysLoan.find((key) => key === "deadline")}
                   />
@@ -394,7 +394,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                   <select
                     className={styles.boxSelect}
-                    value={loan?.payment || ""}
+                    value={formData?.payment || ""}
                     onChange={(e) => handleInputChange(e, "payment")}
                     name={keysLoan.find((key) => key === "payment")}
                   >
@@ -437,7 +437,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.quota_value || ""}
+                    value={formData?.quota_value || ""}
                     onChange={(e) => handleInputChange(e, "quota_value")}
                     name={keysLoan.find((key) => key === "quota_value")}
                   />
@@ -451,7 +451,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
             openBar={() => setOpenSecondPart(!openSecondPart)}
             inputsComplete={sectionInputs({
               key: keysLoan02,
-              formData: loan as ScalarLoanApplication,
+              formData: formData as ScalarLoanApplication,
             })}
             openBarStatus={openSecondPart}
           />
@@ -484,7 +484,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.firtLastName || ""}
+                    value={formData?.firtLastName || ""}
                     onChange={(e) => handleInputChange(e, "firtLastName")}
                     name={keysLoan.find((key) => key === "firtLastName")}
                   />
@@ -516,7 +516,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.secondLastName || ""}
+                    value={formData?.secondLastName || ""}
                     onChange={(e) => handleInputChange(e, "secondLastName")}
                     name={keysLoan.find((key) => key === "secondLastName")}
                   />
@@ -544,7 +544,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.names || ""}
+                    value={formData?.names || ""}
                     onChange={(e) => handleInputChange(e, "names")}
                     name={keysLoan.find((key) => key === "names")}
                   />
@@ -574,7 +574,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.occupation || ""}
+                    value={formData?.occupation || ""}
                     onChange={(e) => handleInputChange(e, "occupation")}
                     name={keysLoan.find((key) => key === "occupation")}
                   />
@@ -605,7 +605,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                   <select
                     className={styles.boxSelect}
-                    value={loan?.typeDocument || ""}
+                    value={formData?.typeDocument || ""}
                     onChange={(e) => handleInputChange(e, "typeDocument")}
                     name={keysLoan.find((key) => key === "typeDocument")}
                   >
@@ -650,7 +650,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.numberDocument || ""}
+                    value={formData?.numberDocument || ""}
                     onChange={(e) => handleInputChange(e, "numberDocument")}
                   />
                 </div>
@@ -681,7 +681,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.persons_in_charge || ""}
+                    value={formData?.persons_in_charge || ""}
                     onChange={(e) => handleInputChange(e, "persons_in_charge")}
                     name={keysLoan.find((key) => key === "persons_in_charge")}
                   />
@@ -712,8 +712,8 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     className={styles.inputInfo}
                     type="date"
                     value={
-                      loan && loan.birthDate instanceof Date
-                        ? loan.birthDate.toLocaleDateString("es-ES")
+                      formData && formData.birthDate instanceof Date
+                        ? formData.birthDate.toLocaleDateString("es-ES")
                         : ""
                     }
                     onChange={(e) => handleInputChange(e, "birthDate")}
@@ -745,7 +745,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.place_birth || ""}
+                    value={formData?.place_birth || ""}
                     onChange={(e) => handleInputChange(e, "place_birth")}
                     name={keysLoan.find((key) => key === "place_birth")}
                   />
@@ -773,7 +773,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.genre || ""}
+                    value={formData?.genre || ""}
                     onChange={(e) => handleInputChange(e, "genre")}
                     name={keysLoan.find((key) => key === "genre")}
                   />
@@ -804,7 +804,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                   <select
                     className={styles.boxSelect}
-                    value={loan?.marital_status || ""}
+                    value={formData?.marital_status || ""}
                     onChange={(e) => handleInputChange(e, "marital_status")}
                     name={keysLoan.find((key) => key === "marital_status")}
                   >
@@ -856,7 +856,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.cellPhone || ""}
+                    value={formData?.cellPhone || ""}
                     onChange={(e) => handleInputChange(e, "cellPhone")}
                     name={keysLoan.find((key) => key === "cellPhone")}
                   />
@@ -888,7 +888,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.destination_resources || ""}
+                    value={formData?.destination_resources || ""}
                     onChange={(e) =>
                       handleInputChange(e, "destination_resources")
                     }
@@ -924,8 +924,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.labor_seniority || ""}
+                    value={formData?.labor_seniority || ""}
                     onChange={(e) => handleInputChange(e, "labor_seniority")}
+                    placeholder="'3 años' o '3 meses'"
                     name={keysLoan.find((key) => key === "labor_seniority")}
                   />
                 </div>
@@ -956,7 +957,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.residence_address || ""}
+                    value={formData?.residence_address || ""}
                     onChange={(e) => handleInputChange(e, "residence_address")}
                     name={keysLoan.find((key) => key === "residence_address")}
                   />
@@ -984,7 +985,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.city || ""}
+                    value={formData?.city || ""}
                     onChange={(e) => handleInputChange(e, "city")}
                     name={keysLoan.find((key) => key === "city")}
                   />
@@ -1016,7 +1017,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.residence_phone || ""}
+                    value={formData?.residence_phone || ""}
                     onChange={(e) => handleInputChange(e, "residence_phone")}
                     name={keysLoan.find((key) => key === "residence_phone")}
                   />
@@ -1047,7 +1048,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                   <select
                     className={styles.boxSelect}
-                    value={loan?.housing_type || ""}
+                    value={formData?.housing_type || ""}
                     onChange={(e) => handleInputChange(e, "housing_type")}
                     name={keysLoan.find((key) => key === "housing_type")}
                   >
@@ -1088,7 +1089,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.email || ""}
+                    value={formData?.email || ""}
                     onChange={(e) => handleInputChange(e, "email")}
                     name={keysLoan.find((key) => key === "email")}
                   />
@@ -1117,7 +1118,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                   <select
                     className={styles.boxSelect}
-                    value={loan?.vehicle || ""}
+                    value={formData?.vehicle || ""}
                     onChange={(e) => handleInputChange(e, "vehicle")}
                     name={keysLoan.find((key) => key === "vehicle")}
                   >
@@ -1133,7 +1134,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </select>
                 </div>
 
-                {loan?.vehicle == "Si" && (
+                {formData?.vehicle == "Si" && (
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>Marca</p>
@@ -1160,7 +1161,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <input
                       className={styles.inputInfo}
                       type="text"
-                      value={loan?.vehicleType || ""}
+                      value={formData?.vehicleType || ""}
                       onChange={(e) => handleInputChange(e, "vehicleType")}
                       name={keysLoan.find((key) => key === "vehicleType")}
                     />
@@ -1193,7 +1194,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.whatsapp_number || ""}
+                    value={formData?.whatsapp_number || ""}
                     onChange={(e) => handleInputChange(e, "whatsapp_number")}
                     name={keysLoan.find((key) => key === "whatsapp_number")}
                   />
@@ -1223,7 +1224,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.pignorado || ""}
+                    value={formData?.pignorado || ""}
                     onChange={(e) => handleInputChange(e, "pignorado")}
                     name={keysLoan.find((key) => key === "pignorado")}
                   />
@@ -1255,7 +1256,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.in_favor_pignorado || ""}
+                    value={formData?.in_favor_pignorado || ""}
                     onChange={(e) => handleInputChange(e, "in_favor_pignorado")}
                     name={keysLoan.find((key) => key === "in_favor_pignorado")}
                   />
@@ -1287,7 +1288,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.commercial_value || ""}
+                    value={formData?.commercial_value || ""}
                     onChange={(e) => handleInputChange(e, "commercial_value")}
                     name={keysLoan.find((key) => key === "commercial_value")}
                   />
@@ -1295,7 +1296,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
 
                 <div className={styles.boxInput}>
                   <div className={styles.headerInputInfo}>
-                    <p>Otros Bienes personales o familiares (describelos)</p>
+                    <p>Otros Bienes personales o familiares</p>
                     <div className={styles.infoInput}>
                       <p>
                         {isRequired("other_income_other_principal")
@@ -1316,17 +1317,26 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                       </div>
                     </div>
                   </div>
-                  <input
-                    className={styles.inputInfo}
-                    type="text"
-                    value={loan?.other_income_other_principal || ""}
+                  <select
+                    className={styles.boxSelect}
+                    value={formData?.other_income_other_principal || ""}
                     onChange={(e) =>
                       handleInputChange(e, "other_income_other_principal")
                     }
                     name={keysLoan.find(
                       (key) => key === "other_income_other_principal"
                     )}
-                  />
+                  >
+                    <option value="" hidden disabled>
+                      Selecciona una opcion
+                    </option>
+                    <option className={styles.optionSelect} value="No">
+                      No
+                    </option>
+                    <option className={styles.optionSelect} value="Si">
+                      Si
+                    </option>
+                  </select>
                 </div>
 
                 <div className={styles.boxInput}>
@@ -1355,7 +1365,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.other_personal_commercial_value || ""}
+                    value={formData?.other_personal_commercial_value || ""}
                     onChange={(e) =>
                       handleInputChange(e, "other_personal_commercial_value")
                     }
@@ -1390,7 +1400,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                   <select
                     className={styles.boxSelect}
-                    value={loan?.family_members_in_company_agreement || ""}
+                    value={formData?.family_members_in_company_agreement || ""}
                     onChange={(e) =>
                       handleInputChange(
                         e,
@@ -1440,7 +1450,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                   <select
                     className={styles.boxSelect}
-                    value={loan?.is_currently_codebtor || ""}
+                    value={formData?.is_currently_codebtor || ""}
                     onChange={(e) =>
                       handleInputChange(e, "is_currently_codebtor")
                     }
@@ -1460,7 +1470,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </select>
                 </div>
 
-                {loan?.is_currently_codebtor == "Si" && (
+                {formData?.is_currently_codebtor == "Si" && (
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>Con Credito Ya?</p>
@@ -1486,7 +1496,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     </div>
                     <select
                       className={styles.boxSelect}
-                      value={loan?.codebtor_in_creditoya || ""}
+                      value={formData?.codebtor_in_creditoya || ""}
                       onChange={(e) =>
                         handleInputChange(e, "codebtor_in_creditoya")
                       }
@@ -1504,7 +1514,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                 )}
 
-                {loan?.codebtor_in_creditoya == "Si" && (
+                {formData?.codebtor_in_creditoya == "Si" && (
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>De quien?</p>
@@ -1531,7 +1541,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <input
                       className={styles.inputInfo}
                       type="text"
-                      value={loan?.codebtor_origin_creditoya || ""}
+                      value={formData?.codebtor_origin_creditoya || ""}
                       onChange={(e) =>
                         handleInputChange(e, "codebtor_origin_creditoya")
                       }
@@ -1567,7 +1577,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                   <select
                     className={styles.boxSelect}
-                    value={loan?.other_entity || ""}
+                    value={formData?.other_entity || ""}
                     onChange={(e) => handleInputChange(e, "other_entity")}
                     name={keysLoan.find((key) => key === "other_entity")}
                   >
@@ -1583,13 +1593,13 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </select>
                 </div>
 
-                {loan?.other_entity == "Si" && (
+                {formData?.other_entity == "Si" && (
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>Cual?</p>
                       <div className={styles.infoInput}>
                         <p>
-                          {isRequired("codebtor_origin_creditoya")
+                          {isRequired("name_other_entity")
                             ? "Obligatorio"
                             : "Opcional"}
                         </p>
@@ -1600,7 +1610,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                             onClick={() => {
                               handleOpenModel();
                               handleInfoInput({
-                                option: "codebtor_origin_creditoya",
+                                option: "name_other_entity",
                               });
                             }}
                           />
@@ -1610,13 +1620,11 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <input
                       className={styles.inputInfo}
                       type="text"
-                      value={loan?.codebtor_origin_creditoya || ""}
+                      value={formData?.codebtor_origin_creditoya || ""}
                       onChange={(e) =>
-                        handleInputChange(e, "codebtor_origin_creditoya")
+                        handleInputChange(e, "name_other_entity")
                       }
-                      name={keysLoan.find(
-                        (key) => key === "codebtor_origin_creditoya"
-                      )}
+                      name={keysLoan.find((key) => key === "name_other_entity")}
                     />
                   </div>
                 )}
@@ -1647,7 +1655,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.amount_in_the_other_entity || ""}
+                    value={formData?.amount_in_the_other_entity || ""}
                     onChange={(e) =>
                       handleInputChange(e, "amount_in_the_other_entity")
                     }
@@ -1683,7 +1691,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.complete_name_spouse || ""}
+                    value={formData?.complete_name_spouse || ""}
                     onChange={(e) =>
                       handleInputChange(e, "complete_name_spouse")
                     }
@@ -1719,7 +1727,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.number_document_spouse || ""}
+                    value={formData?.number_document_spouse || ""}
                     onChange={(e) =>
                       handleInputChange(e, "number_document_spouse")
                     }
@@ -1734,7 +1742,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <p>Telefono fijo del conyugue</p>
                     <div className={styles.infoInput}>
                       <p>
-                        {isRequired("phone_spouse")
+                        {isRequired("landline_telephone_spouse")
                           ? "Obligatorio"
                           : "Opcional"}
                       </p>
@@ -1745,7 +1753,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                           onClick={() => {
                             handleOpenModel();
                             handleInfoInput({
-                              option: "phone_spouse",
+                              option: "landline_telephone_spouse",
                             });
                           }}
                         />
@@ -1755,9 +1763,13 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.phone_spouse || ""}
-                    onChange={(e) => handleInputChange(e, "phone_spouse")}
-                    name={keysLoan.find((key) => key === "phone_spouse")}
+                    value={formData?.landline_telephone_spouse || ""}
+                    onChange={(e) =>
+                      handleInputChange(e, "landline_telephone_spouse")
+                    }
+                    name={keysLoan.find(
+                      (key) => key === "landline_telephone_spouse"
+                    )}
                   />
                 </div>
 
@@ -1787,7 +1799,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.phone_company_spoue || ""}
+                    value={formData?.phone_company_spoue || ""}
                     onChange={(e) =>
                       handleInputChange(e, "phone_company_spoue")
                     }
@@ -1803,7 +1815,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
             openBar={() => setOpenThreePart(!openThreePart)}
             inputsComplete={sectionInputs({
               key: keysLoan03,
-              formData: loan as ScalarLoanApplication,
+              formData: formData as ScalarLoanApplication,
             })}
             openBarStatus={openThreePart}
           />
@@ -1836,7 +1848,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.bankNumberAccount || ""}
+                    value={formData?.bankNumberAccount || ""}
                     onChange={(e) => handleInputChange(e, "bankNumberAccount")}
                     name={keysLoan.find((key) => key === "bankNumberAccount")}
                   />
@@ -1864,7 +1876,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.entity || ""}
+                    value={formData?.entity || ""}
                     onChange={(e) => handleInputChange(e, "entity")}
                     name={keysLoan.find((key) => key === "entity")}
                   />
@@ -1896,7 +1908,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.monthly_income || ""}
+                    value={formData?.monthly_income || ""}
                     onChange={(e) => handleInputChange(e, "monthly_income")}
                     name={keysLoan.find((key) => key === "monthly_income")}
                   />
@@ -1928,7 +1940,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.monthly_expenses || ""}
+                    value={formData?.monthly_expenses || ""}
                     onChange={(e) => handleInputChange(e, "monthly_expenses")}
                     name={keysLoan.find((key) => key === "monthly_expenses")}
                   />
@@ -1960,7 +1972,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.total_assets || ""}
+                    value={formData?.total_assets || ""}
                     onChange={(e) => handleInputChange(e, "total_assets")}
                     name={keysLoan.find((key) => key === "total_assets")}
                   />
@@ -1992,7 +2004,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.total_liabilities || ""}
+                    value={formData?.total_liabilities || ""}
                     onChange={(e) => handleInputChange(e, "total_liabilities")}
                     name={keysLoan.find((key) => key === "total_liabilities")}
                   />
@@ -2022,7 +2034,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.patrimony || ""}
+                    value={formData?.patrimony || ""}
                     onChange={(e) => handleInputChange(e, "patrimony")}
                     name={keysLoan.find((key) => key === "patrimony")}
                   />
@@ -2052,7 +2064,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.quota_value}
+                    value={formData?.quota_value}
                     onChange={(e) => handleInputChange(e, "quota_value")}
                     name={keysLoan.find((key) => key === "quota_value")}
                   />
@@ -2081,8 +2093,8 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     className={styles.inputInfo}
                     type="date"
                     value={
-                      loan?.court instanceof Date
-                        ? loan.court.toISOString().split("T")[0]
+                      formData?.court instanceof Date
+                        ? formData.court.toISOString().split("T")[0]
                         : ""
                     }
                     onChange={(e) => handleInputChange(e, "court")}
@@ -2116,7 +2128,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.number_employees || ""}
+                    value={formData?.number_employees || ""}
                     onChange={(e) => handleInputChange(e, "number_employees")}
                     name={keysLoan.find((key) => key === "number_employees")}
                   />
@@ -2127,7 +2139,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <p>Tiene otros ingresos diferentes a la principal?</p>
                     <div className={styles.infoInput}>
                       <p>
-                        {isRequired("other_income_other_principal")
+                        {isRequired("other_economy_activity_principal")
                           ? "Obligatorio"
                           : "Opcional"}
                       </p>
@@ -2138,7 +2150,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                           onClick={() => {
                             handleOpenModel();
                             handleInfoInput({
-                              option: "other_income_other_principal",
+                              option: "other_economy_activity_principal",
                             });
                           }}
                         />
@@ -2147,12 +2159,12 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                   <select
                     className={styles.boxSelect}
-                    value={loan?.other_income_other_principal || ""}
+                    value={formData?.other_economy_activity_principal || ""}
                     onChange={(e) =>
-                      handleInputChange(e, "other_income_other_principal")
+                      handleInputChange(e, "other_economy_activity_principal")
                     }
                     name={keysLoan.find(
-                      (key) => key === "other_income_other_principal"
+                      (key) => key === "other_economy_activity_principal"
                     )}
                   >
                     <option className={styles.optionSelect} value="No">
@@ -2164,13 +2176,13 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </select>
                 </div>
 
-                {loan?.other_income_other_principal == "Si" && (
+                {formData?.other_economy_activity_principal == "Si" && (
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>Cuales</p>
                       <div className={styles.infoInput}>
                         <p>
-                          {isRequired("which_other_income")
+                          {isRequired("which_other_economy_activity_principal")
                             ? "Obligatorio"
                             : "Opcional"}
                         </p>
@@ -2181,7 +2193,8 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                             onClick={() => {
                               handleOpenModel();
                               handleInfoInput({
-                                option: "which_other_income",
+                                option:
+                                  "which_other_economy_activity_principal",
                               });
                             }}
                           />
@@ -2191,12 +2204,18 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <input
                       className={styles.inputInfo}
                       type="text"
-                      value={loan?.which_other_income || ""}
+                      value={
+                        formData?.which_other_economy_activity_principal || ""
+                      }
                       onChange={(e) =>
-                        handleInputChange(e, "which_other_income")
+                        handleInputChange(
+                          e,
+                          "which_other_economy_activity_principal"
+                        )
                       }
                       name={keysLoan.find(
-                        (key) => key === "which_other_income"
+                        (key) =>
+                          key === "which_other_economy_activity_principal"
                       )}
                     />
                   </div>
@@ -2207,7 +2226,9 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <p>Ingreso mensual</p>
                     <div className={styles.infoInput}>
                       <p>
-                        {isRequired("monthly_income")
+                        {isRequired(
+                          "monthly_income_other_economy_activity_principal"
+                        )
                           ? "Obligatorio"
                           : "Opcional"}
                       </p>
@@ -2218,7 +2239,8 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                           onClick={() => {
                             handleOpenModel();
                             handleInfoInput({
-                              option: "monthly_income",
+                              option:
+                                "monthly_income_other_economy_activity_principal",
                             });
                           }}
                         />
@@ -2228,9 +2250,21 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.monthly_income || ""}
-                    onChange={(e) => handleInputChange(e, "monthly_income")}
-                    name={keysLoan.find((key) => key === "monthly_income")}
+                    value={
+                      formData?.monthly_income_other_economy_activity_principal ||
+                      ""
+                    }
+                    onChange={(e) =>
+                      handleInputChange(
+                        e,
+                        "monthly_income_other_economy_activity_principal"
+                      )
+                    }
+                    name={keysLoan.find(
+                      (key) =>
+                        key ===
+                        "monthly_income_other_economy_activity_principal"
+                    )}
                   />
                 </div>
               </div>
@@ -2242,7 +2276,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
             openBar={() => setOpenFourPart(!openFourPart)}
             inputsComplete={sectionInputs({
               key: keysLoan04,
-              formData: loan as ScalarLoanApplication,
+              formData: formData as ScalarLoanApplication,
             })}
             openBarStatus={openFourPart}
           />
@@ -2276,7 +2310,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.personal_reference_name || ""}
+                    value={formData?.personal_reference_name || ""}
                     onChange={(e) =>
                       handleInputChange(e, "personal_reference_name")
                     }
@@ -2312,7 +2346,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.personal_reference_work_company_name || ""}
+                    value={formData?.personal_reference_work_company_name || ""}
                     onChange={(e) =>
                       handleInputChange(
                         e,
@@ -2351,7 +2385,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.personal_reference_city || ""}
+                    value={formData?.personal_reference_city || ""}
                     onChange={(e) =>
                       handleInputChange(e, "personal_reference_city")
                     }
@@ -2387,7 +2421,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.personal_reference_address || ""}
+                    value={formData?.personal_reference_address || ""}
                     onChange={(e) =>
                       handleInputChange(e, "personal_reference_address")
                     }
@@ -2423,7 +2457,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.personal_reference_number_residence || ""}
+                    value={formData?.personal_reference_number_residence || ""}
                     onChange={(e) =>
                       handleInputChange(
                         e,
@@ -2462,7 +2496,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.personal_reference_number_phone}
+                    value={formData?.personal_reference_number_phone}
                     onChange={(e) =>
                       handleInputChange(e, "personal_reference_number_phone")
                     }
@@ -2500,7 +2534,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.family_reference_name || ""}
+                    value={formData?.family_reference_name || ""}
                     onChange={(e) =>
                       handleInputChange(e, "family_reference_name")
                     }
@@ -2536,7 +2570,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.family_reference_work_company_name || ""}
+                    value={formData?.family_reference_work_company_name || ""}
                     onChange={(e) =>
                       handleInputChange(e, "family_reference_work_company_name")
                     }
@@ -2572,7 +2606,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.family_reference_city || ""}
+                    value={formData?.family_reference_city || ""}
                     onChange={(e) =>
                       handleInputChange(e, "family_reference_city")
                     }
@@ -2608,7 +2642,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.family_reference_address || ""}
+                    value={formData?.family_reference_address || ""}
                     onChange={(e) =>
                       handleInputChange(e, "family_reference_address")
                     }
@@ -2644,7 +2678,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.family_reference_number_residence || ""}
+                    value={formData?.family_reference_number_residence || ""}
                     onChange={(e) =>
                       handleInputChange(e, "family_reference_number_residence")
                     }
@@ -2680,7 +2714,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.family_reference_number_phone || ""}
+                    value={formData?.family_reference_number_phone || ""}
                     onChange={(e) =>
                       handleInputChange(e, "family_reference_number_phone")
                     }
@@ -2698,7 +2732,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
             openBar={() => setOpenFivePart(!openFivePart)}
             inputsComplete={sectionInputs({
               key: keysLoan05,
-              formData: loan as ScalarLoanApplication,
+              formData: formData as ScalarLoanApplication,
             })}
             openBarStatus={openFivePart}
           />
@@ -2728,7 +2762,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                   <select
                     className={styles.boxSelect}
-                    value={loan?.fixed_term || ""}
+                    value={formData?.fixed_term || ""}
                     onChange={(e) => handleInputChange(e, "fixed_term")}
                     name={keysLoan.find((key) => key === "fixed_term")}
                   >
@@ -2769,7 +2803,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   </div>
                   <select
                     className={styles.boxSelect}
-                    value={loan?.labor_or_work || ""}
+                    value={formData?.labor_or_work || ""}
                     onChange={(e) => handleInputChange(e, "labor_or_work")}
                     name={keysLoan.find((key) => key === "labor_or_work")}
                   >
@@ -2793,7 +2827,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
             openBar={() => setOpenSixPart(!openSixPart)}
             inputsComplete={sectionInputs({
               key: keysLoan06,
-              formData: loan as ScalarLoanApplication,
+              formData: formData as ScalarLoanApplication,
             })}
             openBarStatus={openSixPart}
           />
@@ -2827,8 +2861,8 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     className={styles.inputInfo}
                     type="date"
                     value={
-                      loan?.date_relationship instanceof Date
-                        ? loan.date_relationship.toISOString().split("T")[0]
+                      formData?.date_relationship instanceof Date
+                        ? formData.date_relationship.toISOString().split("T")[0]
                         : ""
                     }
                     onChange={(e) => handleInputChange(e, "date_relationship")}
@@ -2862,7 +2896,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.labor_seniority_contracts || ""}
+                    value={formData?.labor_seniority_contracts || ""}
                     onChange={(e) =>
                       handleInputChange(e, "labor_seniority_contracts")
                     }
@@ -2872,7 +2906,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   />
                 </div>
 
-                {loan?.fixed_term == "Si" && (
+                {formData?.fixed_term == "Si" && (
                   <div className={styles.boxInput}>
                     <div className={styles.headerInputInfo}>
                       <p>Fecha fin contrato actual</p>
@@ -2899,7 +2933,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                     <input
                       className={styles.inputInfo}
                       type="text"
-                      value={loan?.requested_amount}
+                      value={formData?.requested_amount}
                       onChange={(e) => handleInputChange(e, "requested_amount")}
                       name={keysLoan.find((key) => key === "requested_amount")}
                     />
@@ -2932,7 +2966,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.average_variable_salary}
+                    value={formData?.average_variable_salary}
                     onChange={(e) =>
                       handleInputChange(e, "average_variable_salary")
                     }
@@ -2968,7 +3002,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.total_monthly_income}
+                    value={formData?.total_monthly_income}
                     onChange={(e) =>
                       handleInputChange(e, "total_monthly_income")
                     }
@@ -3004,7 +3038,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
                   <input
                     className={styles.inputInfo}
                     type="text"
-                    value={loan?.monthly_discounts || ""}
+                    value={formData?.monthly_discounts || ""}
                     onChange={(e) => handleInputChange(e, "monthly_discounts")}
                     name={keysLoan.find((key) => key === "monthly_discounts")}
                   />
@@ -3016,7 +3050,7 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
 
         {sectionInputs({
           key: keysLoan,
-          formData: loan as ScalarLoanApplication,
+          formData: formData as ScalarLoanApplication,
         }) && (
           <>
             <div className={styles.containerBtnSoli}>
@@ -3033,10 +3067,10 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
 
       <Modal isOpen={openPreSend} onClose={handleAuthLoan}>
         <PreEnvio
-          email={loan?.email as string}
-          name={`${loan?.names} ${loan?.firtLastName} ${loan?.secondLastName}`}
+          data={formData as ScalarLoanApplication}
           Success={handleAuthLoan}
           token={user?.token as string}
+          signature={handleSaveSignature}
         />
       </Modal>
 

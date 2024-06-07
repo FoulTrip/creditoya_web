@@ -1,0 +1,85 @@
+.SignatureContainer {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1em;
+  margin-top: 2em;
+  width: 90%;
+  margin-left: 5%;
+}
+
+.previewImg {
+  flex-basis: 400px;
+  flex: 1;
+  display: grid;
+  place-content: center;
+}
+
+.centerPreviewImg {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.imgPreview {
+  width: 100%;
+  height: auto;
+}
+
+.signatureProcc {
+  flex-basis: 400px;
+  flex: 1;
+  display: grid;
+  place-content: center;
+  background: var(--white-100);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--white-200);
+}
+
+.clearSig,
+.saveSig {
+  padding: 5px 10px;
+  cursor: pointer;
+  display: grid;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+
+.clearSig:hover,
+.saveSig:hover {
+  background: var(--white-100);
+  border: 1px solid var(--white-200);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.iconClear {
+  color: var(--red-500);
+}
+
+.iconSave {
+  color: var(--green-500);
+}
+
+.centerClearSig,
+.centerSaveSig {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.centerClearSig p,
+.centerSaveSig p {
+  font-weight: 500;
+  color: var(--white-600);
+}
+
+.boxIconSaveSig {
+  display: grid;
+  place-content: center;
+}
+
+@media screen and (max-width: 800px) {
+  .SignatureContainer {
+    width: 100%;
+    margin-left: 0;
+  }
+}

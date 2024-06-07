@@ -20,6 +20,19 @@ export type ScalarUser = {
   updatedAt?: Date;
 };
 
+export type ScalarEmployee = {
+  id?: string;
+  password: string;
+  email: string;
+  name?: string;
+  lastNames?: string;
+  avatar?: string;
+  rol?: string;
+  phone?: string;
+  created_at?: Date;
+  updated_at?: Date;
+};
+
 export type SocialNetworks = {
   id?: string;
   userId: string;
@@ -113,6 +126,7 @@ export type ScalarLoanApplication = {
   family_reference_number_phone: string;
   remarks?: string;
   status: Status;
+  reasonReject?: string;
   fixed_term: ifOrNot;
   labor_or_work: ifOrNot;
   labor_seniority_contracts: string;
@@ -130,7 +144,6 @@ export type ScalarLoanApplication = {
   bankSavingAccount: boolean;
   bankNumberAccount: string;
   entity: string;
-  ccNumber: string;
   terms_and_conditions: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -139,7 +152,12 @@ export type ScalarLoanApplication = {
 export type ScalarPaymentLoan = {
   id?: string;
   loanApplicationId: string;
-  imagesEvidence: string[];
+  nameClient: string;
+  documentClient: string;
+  status: StatusPaymentSignature;
+  quantity: string;
+  quota: string
+  signature?: string;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -183,6 +201,8 @@ export type Status =
   | "En_mora"
   | "En_proceso_de_cobro"
   | "En_negociacion";
+
+export type StatusPaymentSignature = "unauthorized" | "authorized";
 
 export type typePayment = "Semanal" | "Quincenal" | "Mensual";
 

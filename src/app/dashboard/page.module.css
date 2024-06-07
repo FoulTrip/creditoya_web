@@ -78,6 +78,10 @@
 .titleLoan {
   margin-top: 2em;
   margin-bottom: 1em;
+  font-weight: 500;
+  color: var(--green-800);
+  display: flex;
+  justify-content: flex-start;
 }
 
 .warnNoLoan {
@@ -111,7 +115,7 @@
 
 .listLoans {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   gap: 10px;
   margin-top: 3em;
 }

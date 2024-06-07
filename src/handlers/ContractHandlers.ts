@@ -49,7 +49,6 @@ export const isRequired = (key: keyof ScalarLoanApplication) => {
     "bankNumberAccount",
     "bankSavingAccount",
     "birthDate",
-    "ccNumber",
     "cellPhone",
     "city",
     "co_debtor",

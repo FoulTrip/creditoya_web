@@ -30,7 +30,7 @@
   place-content: center;
 }
 
-.iconArrow {
+.iconArrow, .iconSec {
   color: var(--white-600);
 }
 
@@ -58,6 +58,13 @@
 
 .containerPay {
   margin-top: 3em;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.boxImageUpload {
+  margin-top: 3em;
 }
 
 .textRegisterVoid {
@@ -69,7 +76,6 @@
   display: grid;
   place-content: center;
   gap: 10px;
-
   border-radius: 16px;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--white-200);
@@ -89,6 +95,7 @@
 .barStatusDocs {
   display: flex;
   flex-direction: row;
+  flex: 1;
   padding: 10px 15px;
   gap: 10px;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -114,4 +121,145 @@
 .textPreview {
   font-weight: 600;
   color: var(--green-800);
+}
+
+.boxDatePay {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.boxDatePay h5 {
+  display: grid;
+  place-content: center;
+}
+
+.btnViewPdf {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: flex-start;
+  margin-top: 10px;
+}
+
+.centerBtnViewPdf {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  background: var(--red-200);
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.centerBtnAprovePdf {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  background: var(--red-200);
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.textViewDoc {
+  font-weight: 400;
+  color: var(--white-600);
+}
+
+.iconArrow {
+  color: var(--white-700);
+}
+
+.centerBtnViewPdf:hover {
+  background: var(--red-500);
+  transition: background 0.6s;
+}
+
+.centerBtnViewPdf:hover .textViewDoc {
+  color: var(--white-100);
+}
+
+.centerBtnViewPdf:hover .iconArrow {
+  color: var(--white-100);
+}
+
+.centerBtnAprovePdf:hover {
+  background: var(--blue-500);
+  transition: background 0.6s;
+}
+
+.centerBtnAprovePdf:hover .textViewDoc {
+  color: var(--white-100);
+}
+
+
+.centerBtnAprovePdf:hover .iconSec {
+  color: var(--white-100);
+}
+
+.boxIConArrow {
+  display: grid;
+  place-content: center;
+}
+
+.boxIConSec {
+  display: grid;
+  place-content: center;
+}
+
+.headerStatus {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: flex-start;
+}
+
+.centerHeaderStatus {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.boxIconStatus {
+  display: grid;
+  place-content: center;
+}
+
+.pointSuccess {
+  color: var(--green-200);
+}
+
+.pointError {
+  color: var(--red-400);
+}
+
+.boxStatus {
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.boxStatus p {
+  display: grid;
+  place-content: center;
+  font-weight: 500;
+  color: var(--green-800);
+}
+
+.circleQuote {
+  display: grid;
+  place-content: center;
+}
+
+.centerCircleQuote {
+  background: var(--green-50);
+  padding: 5px 10px;
+  border-radius: 50%;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  color: var(--green-800);
+  font-weight: 600;
 }

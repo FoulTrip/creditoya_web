@@ -1,6 +1,6 @@
 // Importar las declaraciones necesarias
 import { prisma } from "@/prisma/db";
-import { LoanApplication, pdfLoan } from "@prisma/client";
+import { LoanApplication } from "@prisma/client";
 import { ScalarLoanApplication } from "@/types/User";
 
 // Clase para el servicio de LoanApplication
@@ -45,6 +45,14 @@ class LoanApplicationService {
   static async getAllByUserId(userId: string): Promise<LoanApplication[]> {
     return prisma.loanApplication.findMany({
       where: { userId },
+    });
+  }
+
+  // Metodo para cambiar rejectReason de una solicitud
+  static async changeReject(loanApplicationId: string, reason: string) {
+    return prisma.loanApplication.update({
+      where: { id: loanApplicationId },
+      data: { reasonReject: reason },
     });
   }
 }

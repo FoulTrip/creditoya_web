@@ -1,72 +1,123 @@
 .cardLoan {
-  padding: 15px 15px;
+  padding: 30px;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  border: 1px solid var(--white-200);
+  gap: 20px;
+  flex: 1;
+  border: 1px solid transparent;
   background: var(--white-50);
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .cardLoan:hover {
-  background: var(--white-50);
   border: 1px solid var(--white-300);
 }
 
-.headerStatus {
+.boxAmount {
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
+  gap: 3px;
 }
 
-.centerHeaderStatus {
+.boxAmount p {
+  display: flex;
+  justify-content: flex-start;
+  font-weight: 500;
+  color: var(--white-600);
+}
+
+.boxAmount h1 {
+  display: flex;
+  justify-content: flex-start;
+  font-weight: 600;
+  color: var(--green-900);
+}
+
+.widgetsViews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.listBtnsActions {
+  flex-basis: 400px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.DocsLists {
+  flex-basis: 400px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.btnDoc {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--white-200);
+  cursor: pointer;
+}
+
+.btnDoc:hover {
+  background: var(--green-50);
+  border: 1px solid var(--white-300);
+}
+
+.infoBtn {
   display: flex;
   flex-direction: row;
   gap: 5px;
 }
 
-.containerValueBox {
+.boxIconDoc,
+.infoBtn p {
+  display: grid;
+  place-content: center;
+}
+
+.iconFileDoc {
+  color: var(--green-800);
+}
+
+.infoBtn p {
+  font-weight: 500;
+  color: var(--green-900);
+}
+
+.actBtns {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  gap: 15px;
 }
 
-.centerValueBox {
-  padding: 10px;
-  border-radius: 8px;
-  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+.iconFileDoc {
+  cursor: pointer;
 }
 
-.titleCantity {
-  text-align: start;
-  font-weight: 500;
+.boxIconAct {
+  display: grid;
+  place-content: center;
+}
+
+.iconAct {
   color: var(--white-800);
 }
 
-.textValueCantity {
-  text-align: start;
-}
-
-.centerHeaderStatus p {
-  display: grid;
-  place-content: center;
-}
-
-.iconHeaderStatus {
-  display: grid;
-  place-content: center;
-}
-
-.iconHeader {
-  color: var(--white-500);
+.iconAct:hover {
   filter: drop-shadow(0px 0px 10px #000000);
+  cursor: pointer;
 }
 
 .barViewDetails {
   display: flex;
   flex-direction: column;
-  /* margin-top: 1em; */
-  /* padding: 10px; */
   border-radius: 8px;
 }
 
@@ -74,15 +125,21 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  background: var(--white-100);
-  padding: 10px;
+  padding: 20px;
   border-radius: 8px;
   cursor: pointer;
   border: 1px solid var(--white-200);
 }
 
+.subBarView:hover {
+  background: var(--green-50);
+  border: 1px solid var(--white-200);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
 .subTextBarView {
-  color: var(--white-600);
+  color: var(--green-800);
+  font-weight: 500;
 }
 
 .listDetails {
@@ -104,33 +161,6 @@
 
 .iconChevron {
   color: var(--white-600);
-}
-
-.BoxInfoPdf {
-  display: flex;
-  flex-direction: row;
-}
-
-.boxIconDocument {
-  display: grid;
-  place-content: center;
-}
-
-.iconpdf {
-  color: var(--red-500);
-  /* filter: drop-shadow(0px 0px 10px #3f3f3f); */
-}
-
-.labelIconDoc {
-  display: grid;
-  place-content: center;
-  color: var(--white-600);
-}
-
-.optPdf {
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
 }
 
 .subBarViewRecurses {
@@ -204,15 +234,70 @@
   flex-direction: column;
 }
 
+.boxStatusLoan {
+  padding: 0px 10px 0px 0px;
+}
+
+.boxStatusLoan h5 {
+  display: flex;
+  font-weight: 600;
+  justify-content: flex-start;
+}
+
+.statusTextSuccess {
+  display: flex;
+  font-weight: 600;
+  justify-content: flex-start;
+  color: var(--green-600);
+}
+
+.statusTextPendiente {
+  display: flex;
+  font-weight: 600;
+  justify-content: flex-start;
+  color: var(--white-600);
+}
+
+.statusTextReject {
+  display: flex;
+  font-weight: 600;
+  justify-content: flex-start;
+  color: var(--red-600);
+}
+
 .boxInfoAdvisor h5 {
   display: flex;
   font-weight: 600;
   justify-content: flex-start;
 }
 
+.employeeInfo {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.boxAvatar,
+.boxInfoAdvisor {
+  display: grid;
+  place-content: center;
+}
+
+.boxContactAses {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.asesContactIcon {
+  color: var(--white-500);
+}
+
 @media screen and (max-width: 700px) {
   .cardLoan {
     flex-basis: 400px;
     flex-grow: 1;
+    padding: 10px;
   }
 }

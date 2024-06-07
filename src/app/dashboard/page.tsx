@@ -31,7 +31,6 @@ function Dashboard() {
         { userId: user?.id },
         { headers: { Authorization: `Bearer ${user?.token}` } }
       );
-      // console.log(response.data);
       setCompleteDocs(response.data.data);
       setLoading(false);
     };
@@ -55,6 +54,7 @@ function Dashboard() {
         }
       );
 
+      // console.log(response.data)
       setLoans(response.data.data);
     };
 
@@ -94,28 +94,35 @@ function Dashboard() {
           <ContractProvider>
             <main className={styles.containerDashboard}>
               {!openContract && (
-                <div className={styles.btnNew} onClick={handleOpenContract}>
-                  <p>Solicitar Prestamo</p>
-                </div>
-              )}
-              {openContract && <Contract toggleContract={toggleContract} />}
-
-              {!openContract && (
                 <>
-                  {/* <h1 className={styles.titleLoan}>Tus Prestamos</h1> */}
                   {Loans?.length == 0 && (
-                    <div className={styles.warnNoLoan}>
-                      <div className={styles.canterWarnLoan}>
-                        <div className={styles.boxIconNoLoan}>
-                          <TbAccessPoint
-                            className={styles.iconNoLoan}
-                            size={25}
-                          />
+                    <>
+                      {!openContract && (
+                        <div
+                          className={styles.btnNew}
+                          onClick={handleOpenContract}
+                        >
+                          <p>Solicitar Prestamo</p>
                         </div>
-                        <p>Sin Prestamos activos</p>
+                      )}
+                      {openContract && (
+                        <Contract toggleContract={toggleContract} />
+                      )}
+                      <div className={styles.warnNoLoan}>
+                        <div className={styles.canterWarnLoan}>
+                          <div className={styles.boxIconNoLoan}>
+                            <TbAccessPoint
+                              className={styles.iconNoLoan}
+                              size={25}
+                            />
+                          </div>
+                          <p>Sin Prestamos activos</p>
+                        </div>
                       </div>
-                    </div>
+                    </>
                   )}
+
+                  <h1 className={styles.titleLoan}>Tus Prestamos</h1>
                   <div className={styles.listLoans}>
                     {Loans?.filter((loan) => loan.userId === user.id).map(
                       (loan) => (

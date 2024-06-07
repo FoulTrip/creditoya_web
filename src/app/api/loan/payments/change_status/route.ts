@@ -1,5 +1,5 @@
+import PaymentServices from "@/classes/PaymentServices";
 import TokenService from "@/classes/TokenServices";
-import UserService from "@/classes/UserServices";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -15,25 +15,29 @@ export async function POST(req: Request) {
     }
 
     const token = authorizationHeader.split(" ")[1];
+    console.log(token);
 
     const decodedToken = TokenService.verifyToken(
       token,
       process.env.JWT_SECRET as string
-    ); // Reemplaza "tu-clave-secreta" con tu clave secreta
+    );
 
     if (!decodedToken) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
 
-    const { userId } = await req.json();
+    const { payId, status } = await req.json();
 
-    if (!userId) {
-      throw new Error("userId is required");
-    }
+    console.log(payId, status);
 
-    const response = await UserService.get(userId);
-    return NextResponse.json({ success: true, data: response });
+    const response = await PaymentServices.statusChange(payId, status);
+
+    if (!payId) throw new Error("loanId is required");
+    if (!status) throw new Error("img is required");
+
+    if (response) return NextResponse.json({ success: true, data: response });
   } catch (error) {
+    console.log(error);
     if (error instanceof Error) {
       return NextResponse.json({ success: false, error: error.message });
     }

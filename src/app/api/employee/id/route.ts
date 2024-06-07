@@ -1,5 +1,5 @@
+import EmployeeServices from "@/classes/EmployeeServices";
 import TokenService from "@/classes/TokenServices";
-import UserService from "@/classes/UserServices";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -8,10 +8,7 @@ export async function POST(req: Request) {
     const authorizationHeader = req.headers.get("Authorization");
 
     if (!authorizationHeader) {
-      return NextResponse.json(
-        { message: "Token de autorización no proporcionado" },
-        { status: 401 }
-      );
+      throw new Error("Token de autorización no proporcionado");
     }
 
     const token = authorizationHeader.split(" ")[1];
@@ -19,19 +16,20 @@ export async function POST(req: Request) {
     const decodedToken = TokenService.verifyToken(
       token,
       process.env.JWT_SECRET as string
-    ); // Reemplaza "tu-clave-secreta" con tu clave secreta
+    );
 
     if (!decodedToken) {
-      return NextResponse.json({ message: "Token no válido" }, { status: 401 });
+      throw new Error("Token no válido");
     }
 
-    const { userId } = await req.json();
+    const { employeeId } = await req.json();
 
-    if (!userId) {
-      throw new Error("userId is required");
-    }
+    console.log(employeeId);
 
-    const response = await UserService.get(userId);
+    const response = await EmployeeServices.get(employeeId);
+
+    console.log(response)
+
     return NextResponse.json({ success: true, data: response });
   } catch (error) {
     if (error instanceof Error) {

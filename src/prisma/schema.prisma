@@ -32,6 +32,19 @@ model User {
     LoanApplication        LoanApplication[]
 }
 
+model UsersIntranet {
+    id         String   @id @default(uuid()) @map("_id")
+    name       String
+    lastNames  String
+    email      String   @unique
+    password   String
+    phone      String   @unique @default("No definido")
+    rol        String   @default("No definido")
+    avatar     String   @default("No definido")
+    updated_at DateTime @default(now())
+    created_at DateTime @default(now())
+}
+
 model SocialNetworks {
     id         String @id @default(uuid()) @map("_id")
     nameSocial String
@@ -117,6 +130,7 @@ model LoanApplication {
     labor_seniority_contracts                       String
     remarks                                         String?
     status                                          Status         @default(Pendiente)
+    reasonReject                                    String?
     signature                                       String
     other_economy_activity_principal                ifOrNot
     which_other_economy_activity_principal          String
@@ -133,13 +147,11 @@ model LoanApplication {
     affecting_loan_quota_value                      String?
     bankCurrentAccount                              Boolean        @default(false) // Cuenta corriente
     bankSavingAccount                               Boolean        @default(false) // Ahorros
-    bankNumberAccount                               String // Nro. de cuenta
+    bankNumberAccount                               String         @unique // Nro. de cuenta 
     entity                                          String // Entidad
-    ccNumber                                        String         @unique
     terms_and_conditions                            Boolean        @default(false)
     createdAt                                       DateTime       @default(now())
     updatedAt                                       DateTime       @updatedAt
-    pdfLoan                                         pdfLoan[]
     paymentsLoan                                    paymentsLoan[]
 }
 
@@ -147,7 +159,12 @@ model paymentsLoan {
     id                String          @id @default(uuid()) @map("_id")
     loanApplication   LoanApplication @relation(fields: [loanApplicationId], references: [id])
     loanApplicationId String
-    imagesEvidence    String[]
+    nameClient        String
+    documentClient    String
+    status            StatusPayment
+    quantity          String
+    quota             String
+    signature         String?
     createdAt         DateTime        @default(now())
     updateAt          DateTime        @updatedAt
 }
@@ -157,24 +174,6 @@ model Events {
     nameEvent  String
     created_at DateTime @default(now())
     updated_at DateTime @default(now())
-}
-
-model pdfLoan {
-    id                String          @id @default(uuid()) @map("_id")
-    loanApplication   LoanApplication @relation(fields: [loanApplicationId], references: [id])
-    loanApplicationId String
-    headerTitle       String
-    firstExplainText  String
-    secondTitle       String
-    optionAccount     Json
-    threeTitle        String
-    justifyText       String
-    justifyUser       String
-    numberOnce        String
-    textOnce          String
-    finalTitle        String
-    subFinalText      String
-    finalText         String
 }
 
 model Document {
@@ -187,6 +186,11 @@ model Document {
     number        String        @default("No definido")
     createdAt     DateTime      @default(now())
     updatedAt     DateTime      @updatedAt
+}
+
+enum StatusPayment {
+    authorized
+    unauthorized
 }
 
 enum Status {

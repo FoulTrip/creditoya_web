@@ -6,19 +6,17 @@ import { ScalarLoanApplication, ScalarPaymentLoan } from "@/types/User";
 import { useGlobalContext } from "@/context/Auth";
 import {
   TbArrowLeft,
-  TbCircleCheckFilled,
-  TbFaceId,
-  TbPhotoSearch,
-  TbSquareRoundedPlusFilled,
-  TbTrash,
+  TbArrowUpRight,
+  TbFileText,
+  TbPointFilled,
+  TbShieldCheckFilled,
 } from "react-icons/tb";
+
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
-import { useDropzone } from "react-dropzone";
-
-interface Props {
-  loanId: string;
-}
+import Modal from "@/components/modal/Modal";
+import PdfView from "@/components/payments/PdfView";
+import SignaturePay from "@/components/payments/SignaturePay";
 
 function PaymentsLoan({ params }: { params: { loanId: string } }) {
   const { user } = useGlobalContext();
@@ -30,9 +28,8 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
     cuotaAmount: 0,
     nextPaymentDate: "",
   });
-  const [imagePreview1, setImagePreview1] = useState("");
-  const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
-  const [loadingImg, setLoadingImg] = useState<boolean>(false);
+  const [openSignature, setOpenSignature] = useState<boolean>(false);
+  const [openModel, setOpenModel] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -70,11 +67,11 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
 
       console.log(response);
 
-      if (response.data.success) setPayments(response.data.data);
+      if (response.data.success == true) setPayments(response.data.data);
     };
 
     fetchPayments();
-  }, [params, user]);
+  }, [params, user?.token]);
 
   const calculatePaymentDetails = (loan: ScalarLoanApplication) => {
     // Calculate payment details based on loan data
@@ -111,26 +108,71 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
     });
   };
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    setLoadingImg(true);
+  const stringToPrice = (price: string): string => {
+    const number = parseFloat(price);
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("loanId", file);
-
-    const response = await axios.post("api/loan/payments/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${user?.token}`,
-      },
+    const formatter = new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     });
 
-    console.log(response.data);
-  }, []);
+    const formattedNumber = formatter.format(number);
 
-  const { getRootProps: getRootProps1, getInputProps: getInputProps1 } =
-    useDropzone({ onDrop: onDrop });
+    return formattedNumber;
+  };
+
+  const handlerOpenModel = () => {
+    setOpenModel(!openModel);
+  };
+
+  const handlerOpenSignature = async () => {
+    setOpenSignature(!openSignature);
+  };
+
+  const handleSaveSignature = async (signatureData: any) => {
+    const { signatureUrl, payId } = signatureData;
+
+    console.log(signatureUrl);
+
+    const response = await axios.post(
+      "/api/loan/payments/change_signature",
+      {
+        payId,
+        img: signatureUrl,
+      },
+      { headers: { Authorization: `Bearer ${user?.token}` } }
+    );
+
+    console.log(response.data);
+
+    if (response.data.success == true) {
+      const response = await axios.post(
+        "/api/loan/payments/change_status",
+        {
+          payId,
+          status: "authorized",
+        },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+
+      console.log(response.data)
+
+      if (response.data.success == true) {
+        const responseAll = await axios.post(
+          "/api/loan/payments/byloan",
+          {
+            loanId: params.loanId,
+          },
+          { headers: { Authorization: `Bearer ${user?.token}` } }
+        );
+        console.log(response.data);
+        if (responseAll.data.success == true)
+          setPayments(responseAll.data.data);
+      }
+    }
+  };
 
   return (
     <main className={styles.mainPay}>
@@ -155,12 +197,14 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
           </h4>
           <h4 className={styles.detailText}>
             Monto de cada cuota:
-            <span className={styles.valueP}>{paymentDetails.cuotaAmount}</span>
+            <span className={styles.valueP}>
+              {stringToPrice(String(paymentDetails.cuotaAmount))}
+            </span>
           </h4>
           <h4 className={styles.detailText}>
             Próxima fecha de pago:
             <span className={styles.valueP}>
-              {paymentDetails.nextPaymentDate}
+              {stringToPrice(paymentDetails.nextPaymentDate)}
             </span>
           </h4>
         </div>
@@ -172,46 +216,110 @@ function PaymentsLoan({ params }: { params: { loanId: string } }) {
         )}
         {payments &&
           payments?.length > 0 &&
-          payments?.map((details) => <div key={details.id}></div>)}
-      </div>
-
-      <div className={styles.boxImageUpload}>
-        <div className={styles.boxInfoUser} {...getRootProps1()}>
-          <input {...getInputProps1()} className={styles.inputImg} />
-          {imagePreview1 && imagePreview1 != "No definido" ? (
+          payments?.map((details) => (
             <>
-              <div className={styles.barStatusDocs}>
-                <div className={styles.headerCardStatus}>
+              <div key={details.id}>
+                <div className={styles.boxStatus}>
                   <div className={styles.boxIconStatus}>
-                    <TbCircleCheckFilled className={styles.iconCheck} />
+                    <TbPointFilled
+                      className={
+                        details.status == "authorized"
+                          ? styles.pointSuccess
+                          : styles.pointError
+                      }
+                    />
                   </div>
-                  <p className={styles.warninCC}>Comprobante subido</p>
+                  <p className={styles.textVerify}>
+                    {details.status == "authorized" && "Verificado"}
+                    {details.status == "unauthorized" && "No Verificado"}
+                  </p>
                 </div>
-                <div className={styles.boxIconsStatus}>
-                  <div className={styles.boxIcon}>
-                    <TbPhotoSearch className={styles.viewIcon} size={20} />
+                <div className={styles.headerStatus}>
+                  <div className={styles.circleQuote}>
+                    <p className={styles.centerCircleQuote}>{details.quota}</p>
                   </div>
-                  <div className={styles.boxIcon}>
-                    <TbTrash className={styles.trashIcon} size={20} />
+                  <h2>Comprobacion de pago</h2>
+                </div>
+                <div className={styles.boxDatePay}>
+                  <h5>ID: </h5>
+                  <p>{details.id}</p>
+                </div>
+                <div className={styles.boxDatePay}>
+                  <h5>Fecha de creacion: </h5>
+                  <p>
+                    {details.createdAt
+                      ? new Date(details.createdAt).toLocaleDateString(
+                          "es-ES",
+                          {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                          }
+                        )
+                      : "Fecha no disponible"}
+                  </p>
+                </div>
+                <div className={styles.boxDatePay}>
+                  <h5>Cantidad pagada: </h5>
+                  <p>{stringToPrice(details.quantity)}</p>
+                </div>
+                <div className={styles.btnViewPdf}>
+                  <div
+                    className={styles.centerBtnViewPdf}
+                    onClick={handlerOpenModel}
+                  >
+                    <div className={styles.boxIConArrow}>
+                      <TbFileText className={styles.iconArrow} />
+                    </div>
+
+                    <p className={styles.textViewDoc}>Documento PDF</p>
+                    <div className={styles.boxIConArrow}>
+                      <TbArrowUpRight className={styles.iconArrow} />
+                    </div>
                   </div>
+
+                  {details.status == "unauthorized" && (
+                    <div
+                      className={styles.centerBtnAprovePdf}
+                      onClick={handlerOpenSignature}
+                    >
+                      <div className={styles.boxIConArrow}>
+                        <TbShieldCheckFilled className={styles.iconSec} />
+                      </div>
+                      <p className={styles.textViewDoc}>Verificar</p>
+                    </div>
+                  )}
                 </div>
               </div>
+
+              {openModel && (
+                <Modal isOpen={openModel} onClose={handlerOpenModel}>
+                  <PdfView
+                    idPdf={details.id as string}
+                    name={details.nameClient}
+                    datePay={String(details.createdAt)}
+                    payQuantity={details.quantity}
+                    expirationDay={paymentDetails.nextPaymentDate}
+                    numberDocument={details.documentClient}
+                    signature={details.signature}
+                  />
+                </Modal>
+              )}
+              {openSignature && (
+                <Modal isOpen={openSignature} onClose={handlerOpenSignature}>
+                  <SignaturePay
+                    src={handleSaveSignature}
+                    success={handlerOpenSignature}
+                    payId={details.id as string}
+                  />
+                </Modal>
+              )}
             </>
-          ) : (
-            <div className={styles.containerDropDocuments}>
-              <div className={styles.boxIconPreview}>
-                <TbSquareRoundedPlusFilled
-                  className={styles.iconPreview}
-                  size={60}
-                />
-              </div>
-              <p className={styles.textPreview}>
-                {loadingProccessImg01 && "Processando pdf..."}
-                {!loadingProccessImg01 && "Agregar comprobante de pago"}
-              </p>
-            </div>
-          )}
-        </div>
+          ))}
       </div>
     </main>
   );
