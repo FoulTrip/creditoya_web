@@ -182,6 +182,7 @@ model Document {
     userId        String
     documentFront String        @default("No definido")
     documentBack  String        @default("No definido")
+    imageWithCC   String        @default("No definido")
     typeDocument  TypesDocument @default(CC)
     number        String        @default("No definido")
     createdAt     DateTime      @default(now())

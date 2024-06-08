@@ -1,5 +1,6 @@
 import TokenService from "@/classes/TokenServices";
 import UserService from "@/classes/UserServices";
+import cloudinary from "@/lib/cloudinary-conf";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -25,13 +26,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
 
-    const { userId } = await req.json();
+    const { docId } = await req.json();
 
-    if (!userId) {
-      throw new Error("userId is required");
-    }
+    if (!docId) throw new Error("document Id is required");
 
-    const response = await UserService.listDocuments(userId);
+    const nameFile = `images_with_cc/selfie-${docId}`;
+
+    const response = await UserService.imageWithCCToUndefined(docId);
+
+    await cloudinary.v2.uploader.destroy(nameFile);
 
     return NextResponse.json({ success: true, data: response });
   } catch (error) {

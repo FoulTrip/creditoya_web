@@ -2,6 +2,11 @@
   width: 90%;
   margin-left: 5%;
   margin-top: 7em;
+  margin-bottom: 3em;
+}
+
+.titlePrinCipalPerfil {
+  font-weight: 600;
 }
 
 .boxImagePerfil {
@@ -18,6 +23,22 @@
   z-index: -1;
 }
 
+.barPicturesAuth {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.BoxInfoSelfie {
+  display: grid;
+  place-content: center;
+}
+
+.iconInfoSelf {
+  color: var(--white-600);
+  filter: drop-shadow(0px 0px 10px #000000);
+  cursor: pointer;
+}
+
 .boxInfoUserAvatar {
   display: grid;
   place-content: center;
@@ -29,10 +50,22 @@
   border-radius: 8px;
 }
 
+.boxInfoUserSelfie {
+  display: grid;
+  place-content: center;
+  flex-basis: 400px;
+  flex-grow: 1;
+  background: var(--white-100);
+  padding: 20px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  border: 1px solid var(--white-200);
+}
+
 .centerInfoUserAvatar {
   display: flex;
   flex-wrap: wrap;
-  gap: 3em;
+  gap: 2em;
 }
 
 .boxChangeImage {
@@ -40,9 +73,14 @@
   place-content: center;
 }
 
+.boxChangeImage h4 {
+  margin-bottom: 1em;
+  text-align: center;
+}
+
 .centerBoxChangeImg {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .boxInputsInfo {
@@ -242,8 +280,45 @@
   border: 1px solid var(--white-200);
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
+.boxIconAvatar {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  z-index: 1;
+}
 
-.iconCheck {
+.boxTitleSelfie {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin-bottom: 1em;
+}
+
+.centerBoxTitleSelfie {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.centerBoxTitleSelfie p {
+  display: grid;
+  place-content: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--white-600);
+}
+
+.boxIconAuthSelfie {
+  display: grid;
+  place-content: center;
+}
+
+.iconLock {
+  color: var(--blue-700);
+  filter: drop-shadow(0px 0px 10px #000000);
+}
+
+.boxChangeImage .iconCheck {
   color: green;
   filter: drop-shadow(0px 0px 10px #000000);
 }
@@ -253,11 +328,106 @@
   flex-grow: 1;
 }
 
+.btnChangeImage {
+  display: none; /* Oculta el input */
+}
+
+.customFileUpload {
+  display: grid;
+  place-content: center;
+  padding: 10px;
+  cursor: pointer;
+  background-color: var(--green-200); /* color de fondo */
+  color: white; /* color del texto */
+  border: none; /* sin borde */
+  border-radius: 4px; /* bordes redondeados */
+}
+
+.centerlabel {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.centerlabel p {
+  color: var(--green-700);
+  font-weight: 500;
+}
+
+.iconUpdateAvatar {
+  color: var(--green-700);
+}
+
+.boxIconLabel,
+.centerlabel p {
+  display: grid;
+  place-content: center;
+}
+
+.customFileUpload:hover {
+  background-color: var(--green-300); /* color de fondo al pasar el mouse */
+}
+
+.centerBoxChangeImg {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btnDeleteAvatar {
+  display: grid;
+  place-content: center;
+  padding: 10px;
+  cursor: pointer;
+  background: var(--red-300);
+  border: none;
+  border-radius: 4px;
+}
+
+.btnDeleteAvatar:hover {
+  background: var(--red-400);
+}
+
+.btnUpdateFinal {
+  padding: 10px 5px;
+  border: none;
+  display: grid;
+  place-content: center;
+  background: var(--white-100);
+  border-radius: 8px;
+  font-weight: 500;
+  color: var(--white-700);
+  cursor: pointer;
+}
+
+.btnUpdateFinal:hover {
+  background: var(--white-200);
+}
+
+.centerBtnDeleteAvatar {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.centerBtnDeleteAvatar p {
+  color: var(--white-50);
+  font-weight: 500;
+}
+
+.iconCancelAvatar {
+  color: var(--white-50);
+}
 
 @media screen and (max-width: 800px) {
-  .boxIconAvatar, .boxChangeImage {
+  .boxIconAvatar,
+  .boxChangeImage {
     flex: 1;
     display: grid;
     place-content: center;
+  }
+
+  .centerBoxTitleSelfie p {
+    font-size: 15px;
   }
 }

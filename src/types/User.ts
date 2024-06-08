@@ -156,7 +156,7 @@ export type ScalarPaymentLoan = {
   documentClient: string;
   status: StatusPaymentSignature;
   quantity: string;
-  quota: string
+  quota: string;
   signature?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -186,6 +186,7 @@ export type ScalarDocument = {
   typeDocument: TypesDocument;
   documentFront: string | undefined;
   documentBack: string | undefined;
+  imageWithCC: string | undefined;
   number: string | undefined;
   createdAt: Date;
   updatedAt: Date;

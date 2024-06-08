@@ -7,18 +7,24 @@ import CopyText from "@/components/accesories/CopyText";
 import Avatar from "react-avatar";
 import Image from "next/image";
 import axios from "axios";
-import { ScalarDocument, ScalarUser } from "@/types/User";
+import { AuthUser, ScalarDocument, ScalarUser } from "@/types/User";
 import { toast } from "sonner";
 import { useGlobalContext } from "@/context/Auth";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 
+import ImageDefault from "@/assets/avatar-default.jpg";
+
 import {
   TbCircleCheckFilled,
   TbFaceId,
   TbFileSearch,
+  TbInfoCircle,
   TbLicense,
+  TbLock,
+  TbPhotoCancel,
   TbPhotoSearch,
+  TbPhotoUp,
   TbTextScan2,
   TbTrash,
 } from "react-icons/tb";
@@ -26,7 +32,7 @@ import LoadingPage from "@/components/Loaders/LoadingPage";
 import Modal from "@/components/modal/Modal";
 
 function Profile({ params }: { params: { userId: string } }) {
-  const { user } = useGlobalContext();
+  const { user, setUserData } = useGlobalContext();
   const [imagePreview1, setImagePreview1] = useState("");
   const [imagePreview2, setImagePreview2] = useState("");
   const [imagePreview3, setImagePreview3] = useState("");
@@ -50,7 +56,11 @@ function Profile({ params }: { params: { userId: string } }) {
   const [addressResidence, setAddressResidence] = useState<string | null>(null);
   const [cityResidence, setCityResidence] = useState<string | null>(null);
 
-  const [selectedImagePerfil, setSelectedImagePerfil] = useState<File | null>(
+  const [selectedImagePerfil, setSelectedImagePerfil] = useState<string | null>(
+    null
+  );
+
+  const [selectedImageWithCC, setSelectedImageWithCC] = useState<string | null>(
     null
   );
 
@@ -74,7 +84,7 @@ function Profile({ params }: { params: { userId: string } }) {
         },
         { headers: { Authorization: `Bearer ${user?.token}` } }
       );
-      console.log(response.data);
+      // console.log(response.data);
       setInfoUser(response.data.data);
       if (response.data && response.data.data && response.data.data[0]) {
         setImagePreview1(response.data.data[0].documentFront);
@@ -91,9 +101,9 @@ function Profile({ params }: { params: { userId: string } }) {
         },
         { headers: { Authorization: `Bearer ${user?.token}` } }
       );
-      console.log(response);
+      // console.log(response);
       const data: ScalarUser = response.data.data;
-      console.log(data);
+      // console.log(data);
       setName(data.names);
       setFirstLastName(data.firstLastName);
       setSecondLastName(data.secondLastName);
@@ -114,25 +124,35 @@ function Profile({ params }: { params: { userId: string } }) {
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
+
+    // console.log(file)
+
     if (file) {
-      setSelectedImagePerfil(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        // console.log(base64String);
+        setSelectedImagePerfil(base64String);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  // const handleUpdateAvatar = async () => {
-  //   if (selectedImagePerfil) {
-  //     try {
-  //       const response = await cloudinary.v2.uploader.upload(
-  //         URL.createObjectURL(selectedImagePerfil),
-  //         {
-  //           folder: "avatars",
-  //         }
-  //       );
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-  // };
+  const handleImageWithCC = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files && event.target.files[0];
+
+    // console.log(file)
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        // console.log(base64String);
+        setSelectedImageWithCC(base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmitImageFront = async ({ image }: { image: string }) => {
     const response = await axios.post(
@@ -144,7 +164,7 @@ function Profile({ params }: { params: { userId: string } }) {
       { headers: { Authorization: `Bearer ${user?.token}` } }
     );
 
-    console.log(response);
+    // console.log(response);
 
     if (response.data.success) {
       toast.success("Parte frontal actualizada");
@@ -176,6 +196,126 @@ function Profile({ params }: { params: { userId: string } }) {
     setOpenDocs(!openDocs);
   };
 
+  const handleUpdateAvatar = async () => {
+    if (selectedImagePerfil !== null) {
+      const response = await axios.post(
+        "/api/upload/avatar",
+        {
+          img: selectedImagePerfil,
+          userId: user?.id,
+        },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+
+      if (response.data.success) {
+        const secure_url = response.data.data;
+
+        const resAddAvatar = await axios.post(
+          "/api/user/update_avatar",
+          {
+            userId: user?.id,
+            img: secure_url,
+          },
+          { headers: { Authorization: `Bearer ${user?.token}` } }
+        );
+
+        const { id, names, email, avatar } = resAddAvatar.data.data;
+        const updateSessionData = {
+          id,
+          names,
+          email,
+          avatar,
+          token: user?.token,
+        } as AuthUser;
+        setUserData(updateSessionData);
+        setSelectedImagePerfil(null);
+      }
+    }
+  };
+
+  const handleDeleteAvatar = async () => {
+    const response = await axios.post(
+      "/api/upload/delete_avatar",
+      {
+        userId: user?.id,
+      },
+      { headers: { Authorization: `Bearer ${user?.token}` } }
+    );
+
+    console.log(response);
+
+    if (response.data.success) {
+      const { id, names, email, avatar } = response.data.data;
+      const updateSessionData = {
+        id,
+        names,
+        email,
+        avatar,
+        token: user?.token,
+      } as AuthUser;
+
+      console.log(updateSessionData);
+      setUserData(updateSessionData);
+      setSelectedImagePerfil(null);
+    }
+  };
+
+  const handleUpdateImgWithCC = async () => {
+    if (selectedImageWithCC !== null) {
+      const response = await axios.post(
+        "/api/upload/pic_with_cc",
+        {
+          docId: infoUser && infoUser[0] && infoUser[0].id,
+          img: selectedImageWithCC,
+        },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+
+      // console.log(response);
+
+      if (response.data.success) {
+        const secure_url = response.data.data;
+
+        const resAddPic = await axios.post(
+          "/api/user/img_with_cc",
+          {
+            docId: infoUser && infoUser[0] && infoUser[0].id,
+            image: secure_url,
+          },
+          { headers: { Authorization: `Bearer ${user?.token}` } }
+        );
+
+        if (resAddPic.data.success) {
+          const response = await axios.post(
+            "/api/user/list_docs",
+            {
+              userId: params.userId,
+            },
+            { headers: { Authorization: `Bearer ${user?.token}` } }
+          );
+          toast.success("Imagen con cedula cargada");
+          setInfoUser(response.data.data);
+          setSelectedImageWithCC(null);
+        }
+      }
+    }
+  };
+
+  const handleDeleteImgWithCC = async () => {
+    const response = await axios.post(
+      "/api/upload/delete_pic_with_cc",
+      {
+        docId: infoUser && infoUser[0] && infoUser[0].id,
+      },
+      { headers: { Authorization: `Bearer ${user?.token}` } }
+    );
+
+    if (response.data.success) {
+      console.log(response);
+      toast.success("Imagen con cedula eliminada");
+    }
+  };
+
   const onDrop1 = useCallback(
     async (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
@@ -190,21 +330,15 @@ function Profile({ params }: { params: { userId: string } }) {
         console.log(formData);
         console.log(process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG);
         const response = await axios.post(
-          `${process.env.ENDPOINT_PROCESS_IMG}`,
-          formData,
-          {
-            headers: {
-              // Authorization: `Bearer ${user?.token}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
+          `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
+          formData
         );
+
+        console.log(response);
 
         await handleSubmitImageFront({
           image: response.data,
         });
-
-        console.log(response);
 
         if (response.data.success) {
           const resChangeDoc = await axios.post(
@@ -242,10 +376,10 @@ function Profile({ params }: { params: { userId: string } }) {
           `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
           formData,
           {
-            headers: {
-              // Authorization: `Bearer ${user?.token}`,
-              "Content-Type": "multipart/form-data",
-            },
+            // headers: {
+            //   // Authorization: `Bearer ${user?.token}`,
+            //   "Content-Type": "multipart/form-data",
+            // },
           }
         );
 
@@ -312,7 +446,7 @@ function Profile({ params }: { params: { userId: string } }) {
     updateData: Partial<Omit<ScalarUser, "password">>
   ): Promise<void> => {
     try {
-      console.log(updateData);
+      // console.log(updateData);
 
       // Filtrar las propiedades de updateData que no sean "password" y sean de tipo string
       const filteredUpdateData: Partial<Omit<ScalarUser, "password">> =
@@ -324,7 +458,7 @@ function Profile({ params }: { params: { userId: string } }) {
           )
         );
 
-      console.log(filteredUpdateData);
+      // console.log(filteredUpdateData);
 
       // Enviar solo las propiedades definidas en updateData
       const response = await axios.put(
@@ -379,7 +513,7 @@ function Profile({ params }: { params: { userId: string } }) {
       }
     );
 
-    console.log(response);
+    // console.log(response);
 
     if (response.data.success) {
       setImagePreview1(response.data.data[0].documentFront);
@@ -404,39 +538,170 @@ function Profile({ params }: { params: { userId: string } }) {
     return (
       <>
         <main className={styles.containerPerfil}>
-          <CopyText text={params.userId} copy={true} />
-          <h1>Identificacion</h1>
+          {/* <CopyText text={params.userId} copy={true} /> */}
 
           <div className={styles.boxImagePerfil}>
-            <div className={styles.boxInfoUserAvatar}>
-              <div className={styles.centerInfoUserAvatar}>
-                <div className={styles.boxIconAvatar}>
-                  <Avatar
-                    className={styles.avatarIcon}
-                    src={user.avatar}
-                    round={true}
-                    size={isTabletOrMobile ? "200px" : "300px"}
-                  />
-                </div>
-                <div className={styles.boxChangeImage}>
-                  <div className={styles.centerBoxChangeImg}>
-                    <h3>Cambiar foto de perfil</h3>
-                    <input
-                      className={styles.btnChangeImage}
-                      type="file"
-                      onChange={handleImageChange}
-                      accept="image/*"
-                    />
-                    {selectedImagePerfil && (
-                      <button
-                        onClick={() => {
-                          toast.success("Change avatar coming soon..");
-                          // handleUpdateAvatar
-                        }}
-                      >
-                        Actualizar
-                      </button>
+            <div className={styles.barPicturesAuth}>
+              <div className={styles.boxInfoUserAvatar}>
+                <div className={styles.centerInfoUserAvatar}>
+                  <div className={styles.boxIconAvatar}>
+                    {selectedImagePerfil == null && (
+                      <Avatar
+                        className={styles.avatarIcon}
+                        src={user.avatar}
+                        round={true}
+                        size={isTabletOrMobile ? "200px" : "300px"}
+                      />
                     )}
+                    {selectedImagePerfil !== null && (
+                      <Avatar
+                        className={styles.avatarIcon}
+                        src={selectedImagePerfil}
+                        round={true}
+                        size={isTabletOrMobile ? "200px" : "300px"}
+                      />
+                    )}
+                  </div>
+                  <div className={styles.boxChangeImage}>
+                    <div className={styles.centerBoxChangeImg}>
+                      <label
+                        htmlFor="file-upload"
+                        className={styles.customFileUpload}
+                      >
+                        <div className={styles.centerlabel}>
+                          <div className={styles.boxIconLabel}>
+                            <TbPhotoUp
+                              size={20}
+                              className={styles.iconUpdateAvatar}
+                            />
+                          </div>
+                          <p>Cambiar</p>
+                        </div>
+                      </label>
+                      <input
+                        id="file-upload"
+                        className={styles.btnChangeImage}
+                        type="file"
+                        onChange={handleImageChange}
+                        accept="image/*"
+                      />
+                      <div
+                        className={styles.btnDeleteAvatar}
+                        onClick={handleDeleteAvatar}
+                      >
+                        <div className={styles.centerBtnDeleteAvatar}>
+                          <div className={styles.boxIconLabel}>
+                            <TbPhotoCancel
+                              className={styles.iconCancelAvatar}
+                              size={20}
+                            />
+                          </div>
+                          <p>Eliminar</p>
+                        </div>
+                      </div>
+                      {selectedImagePerfil !== null && (
+                        <div
+                          onClick={handleUpdateAvatar}
+                          className={styles.btnUpdateFinal}
+                        >
+                          Actualizar
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.boxInfoUserSelfie}>
+                <div className={styles.boxTitleSelfie}>
+                  <div className={styles.centerBoxTitleSelfie}>
+                    <div className={styles.boxIconAuthSelfie}>
+                      <TbLock size={25} className={styles.iconLock} />
+                    </div>
+                    <p>Autenticación con Selfie y Documento</p>
+                  </div>
+                  <div className={styles.BoxInfoSelfie}>
+                    <TbInfoCircle className={styles.iconInfoSelf} size={20} />
+                  </div>
+                </div>
+                <div className={styles.centerInfoUserAvatar}>
+                  <div className={styles.boxIconAvatar}>
+                    {selectedImageWithCC == null && (
+                      <Image
+                        className={styles.avatarIcon}
+                        src={
+                          infoUser &&
+                          infoUser[0] &&
+                          infoUser[0].imageWithCC !== "No definido"
+                            ? (infoUser[0].imageWithCC as string)
+                            : ImageDefault
+                        }
+                        width={600}
+                        height={600}
+                        alt="logo"
+                      />
+                    )}
+                    {selectedImageWithCC !== null && (
+                      <Image
+                        className={styles.avatarIcon}
+                        src={selectedImageWithCC}
+                        alt="withcc"
+                        width={600}
+                        height={600}
+                      />
+                    )}
+                  </div>
+                  <div className={styles.boxChangeImage}>
+                    <h4>
+                      Sube una selfie donde aparezcas desde tu pecho hasta la
+                      cabeza y mostrando en alguna de las manos tu cedula por el
+                      lado frontal
+                    </h4>
+                    <div className={styles.centerBoxChangeImg}>
+                      <label
+                        htmlFor="file-upload-pic"
+                        className={styles.customFileUpload}
+                      >
+                        <div className={styles.centerlabel}>
+                          <div className={styles.boxIconLabel}>
+                            <TbPhotoUp
+                              size={20}
+                              className={styles.iconUpdateAvatar}
+                            />
+                          </div>
+                          <p>Cambiar</p>
+                        </div>
+                      </label>
+                      <input
+                        id="file-upload-pic"
+                        className={styles.btnChangeImage}
+                        type="file"
+                        onChange={handleImageWithCC}
+                        accept="image/*"
+                      />
+                      <div
+                        className={styles.btnDeleteAvatar}
+                        onClick={handleDeleteImgWithCC}
+                      >
+                        <div className={styles.centerBtnDeleteAvatar}>
+                          <div className={styles.boxIconLabel}>
+                            <TbPhotoCancel
+                              className={styles.iconCancelAvatar}
+                              size={20}
+                            />
+                          </div>
+                          <p>Eliminar</p>
+                        </div>
+                      </div>
+                      {selectedImageWithCC !== null && (
+                        <div
+                          onClick={handleUpdateImgWithCC}
+                          className={styles.btnUpdateFinal}
+                        >
+                          Actualizar
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

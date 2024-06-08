@@ -1,5 +1,6 @@
 import TokenService from "@/classes/TokenServices";
 import UserService from "@/classes/UserServices";
+import cloudinary from "@/lib/cloudinary-conf";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -27,11 +28,17 @@ export async function POST(req: Request) {
 
     const { userId } = await req.json();
 
-    if (!userId) {
-      throw new Error("userId is required");
-    }
+    console.log(userId);
 
-    const response = await UserService.listDocuments(userId);
+    const nameFile = `avatars_users/avatar.${userId}`;
+
+    const response = await UserService.avatarToUndefined(userId);
+
+    console.log(response);
+
+    cloudinary.v2.uploader.destroy(nameFile, (result) => {
+      console.log(result);
+    });
 
     return NextResponse.json({ success: true, data: response });
   } catch (error) {

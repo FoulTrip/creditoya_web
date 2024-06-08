@@ -25,13 +25,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
 
-    const { userId } = await req.json();
+    const { img, userId } = await req.json();
 
-    if (!userId) {
-      throw new Error("userId is required");
-    }
-
-    const response = await UserService.listDocuments(userId);
+    const response = await UserService.avatarUpdate({
+      userId,
+      img,
+    });
 
     return NextResponse.json({ success: true, data: response });
   } catch (error) {

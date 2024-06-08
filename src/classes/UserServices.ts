@@ -46,6 +46,14 @@ class UserService {
     return await prisma.user.update({ where: { id }, data: userData });
   }
 
+  // Update Avatar
+  static async avatarUpdate({ userId, img }: { userId: string; img: string }) {
+    return await prisma.user.update({
+      where: { id: userId },
+      data: { avatar: img },
+    });
+  }
+
   // Update user password method
   static async updatePassword(id: string, password: string): Promise<User> {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -140,6 +148,30 @@ class UserService {
     });
 
     return document;
+  }
+
+  static async imageWithCCUpdate(
+    docId: string,
+    image: string
+  ): Promise<Document | null> {
+    return await prisma.document.update({
+      where: { id: docId },
+      data: { imageWithCC: image },
+    });
+  }
+
+  static async imageWithCCToUndefined(docId: string): Promise<Document | null> {
+    return await prisma.document.update({
+      where: { id: docId },
+      data: { imageWithCC: "No definido" },
+    });
+  }
+
+  static async avatarToUndefined(userId: string): Promise<User | null> {
+    return await prisma.user.update({
+      where: { id: userId },
+      data: { avatar: "No definido" },
+    });
   }
 
   static async setDocumentToUndefined(

@@ -25,13 +25,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
 
-    const { userId } = await req.json();
+    const { docId, image } = await req.json();
 
-    if (!userId) {
-      throw new Error("userId is required");
-    }
+    if (!docId) throw new Error("docId is required");
+    if (!image) throw new Error("image is required");
 
-    const response = await UserService.listDocuments(userId);
+    const response = await UserService.imageWithCCUpdate(docId, image);
 
     return NextResponse.json({ success: true, data: response });
   } catch (error) {
