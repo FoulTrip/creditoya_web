@@ -187,8 +187,18 @@ export type ScalarDocument = {
   documentFront: string | undefined;
   documentBack: string | undefined;
   imageWithCC: string | undefined;
+  laborCardId: string | undefined;
   number: string | undefined;
   createdAt: Date;
+  updatedAt: Date;
+};
+
+export type ScalarLaborCard = {
+  id: string;
+  userId: string;
+  filePart: string;
+  order: number;
+  createAt: Date;
   updatedAt: Date;
 };
 

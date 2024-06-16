@@ -1,14 +1,23 @@
 // Importar las declaraciones necesarias
+
 import { prisma } from "@/prisma/db";
 import { LoanApplication } from "@prisma/client";
-import { ScalarLoanApplication } from "@/types/User";
+import { ScalarLoanApplication, Status } from "../types/User";
 
 // Clase para el servicio de LoanApplication
 class LoanApplicationService {
   // Método para crear una solicitud de préstamo
   static async create(data: ScalarLoanApplication): Promise<LoanApplication> {
+    const { userId, ...loanApplicationDataWithoutUserId } = data;
     const loanApplicationData = {
-      ...data,
+      ...loanApplicationDataWithoutUserId,
+      court: new Date(data.court).toISOString(),
+      date_relationship: new Date(data.date_relationship).toISOString(),
+      user: {
+        connect: {
+          id: data.userId,
+        },
+      },
     };
     return prisma.loanApplication.create({ data: loanApplicationData });
   }
@@ -48,11 +57,30 @@ class LoanApplicationService {
     });
   }
 
+  // Metodo para cambiar Status de una solicitud
+  static async changeStatus(loanApplicationId: string, newStatus: Status) {
+    return prisma.loanApplication.update({
+      where: { id: loanApplicationId },
+      data: { status: newStatus },
+    });
+  }
+
   // Metodo para cambiar rejectReason de una solicitud
   static async changeReject(loanApplicationId: string, reason: string) {
     return prisma.loanApplication.update({
       where: { id: loanApplicationId },
       data: { reasonReject: reason },
+    });
+  }
+
+  // Método para llenar el campo "employeeId" de una solicitud de préstamo específica
+  static async fillEmployeeId(
+    loanId: string,
+    employeeId: string
+  ): Promise<LoanApplication> {
+    return prisma.loanApplication.update({
+      where: { id: loanId },
+      data: { employeeId },
     });
   }
 }

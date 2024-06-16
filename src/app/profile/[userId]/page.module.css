@@ -20,7 +20,10 @@
   border-radius: 8px;
   width: 200px;
   height: auto;
-  z-index: -1;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
 }
 
 .barPicturesAuth {
@@ -63,6 +66,12 @@
 }
 
 .centerInfoUserAvatar {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+}
+
+.centerInfoUserSelfie {
   display: flex;
   flex-wrap: wrap;
   gap: 2em;
@@ -287,11 +296,20 @@
   z-index: 1;
 }
 
+.textWarnAvatar {
+  display: flex;
+  justify-content: flex-start;
+  text-align: center;
+  margin-bottom: 1em;
+  font-weight: 500;
+  color: var(--green-900);
+}
+
 .boxTitleSelfie {
   display: flex;
   justify-content: space-between;
   padding: 10px;
-  margin-bottom: 1em;
+  margin-bottom: 2em;
 }
 
 .centerBoxTitleSelfie {
@@ -303,9 +321,9 @@
 .centerBoxTitleSelfie p {
   display: grid;
   place-content: center;
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 600;
-  color: var(--white-600);
+  color: var(--green-900);
 }
 
 .boxIconAuthSelfie {
@@ -314,16 +332,16 @@
 }
 
 .iconLock {
-  color: var(--blue-700);
+  color: var(--green-900);
   filter: drop-shadow(0px 0px 10px #000000);
 }
 
-.boxChangeImage .iconCheck {
-  color: green;
+.iconCheck {
+  color: var(--green-600);
   filter: drop-shadow(0px 0px 10px #000000);
 }
 
-.cardLaboral {
+.avatarIcon .cardLaboral {
   flex-basis: 400px;
   flex-grow: 1;
 }
@@ -425,6 +443,11 @@
     flex: 1;
     display: grid;
     place-content: center;
+  }
+
+  .centerInfoUserSelfie {
+    display: flex;
+    flex-direction: column;
   }
 
   .centerBoxTitleSelfie p {

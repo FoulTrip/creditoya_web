@@ -1,5 +1,5 @@
+import CardLaborServices from "@/classes/EmploymentLetterServices";
 import TokenService from "@/classes/TokenServices";
-import UserService from "@/classes/UserServices";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -16,9 +16,7 @@ export async function POST(req: Request) {
 
     const token = authorizationHeader.split(" ")[1];
 
-    console.log(token)
-
-    const decodedToken = await TokenService.verifyToken(
+    const decodedToken = TokenService.verifyToken(
       token,
       process.env.JWT_SECRET as string
     ); // Reemplaza "tu-clave-secreta" con tu clave secreta
@@ -27,15 +25,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
 
-    const { userId } = await req.json();
+    const {
+      userId,
+      documentId,
+      fileParts,
+    }: { userId: string; documentId: string; fileParts: string[] } =
+      await req.json();
 
-    if (!userId) {
-      throw new Error("userId is required");
+    console.log(userId, documentId);
+
+    const response = await CardLaborServices.create(
+      userId,
+      documentId,
+      fileParts
+    );
+
+    console.log(response);
+
+    if (!response) throw new Error("Error al Procesar tu documento");
+
+    if (response) {
+      return NextResponse.json({ success: true, data: response });
     }
-
-    const response = await UserService.listDocuments(userId);
-
-    return NextResponse.json({ success: true, data: response });
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ success: false, error: error.message });

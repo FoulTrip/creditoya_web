@@ -58,6 +58,11 @@
   cursor: pointer;
 }
 
+.avatar {
+  object-fit: cover;
+  filter: drop-shadow(0px 0px 10px var(--white-300));
+}
+
 .optsBox {
   flex-basis: 400px;
   flex-grow: 1;

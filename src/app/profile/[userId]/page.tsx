@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect, ChangeEvent } from "react";
 import { useDropzone } from "react-dropzone";
 import styles from "./page.module.css";
 import CopyText from "@/components/accesories/CopyText";
+import { Document, Page } from "react-pdf";
 import Avatar from "react-avatar";
 import Image from "next/image";
 import axios from "axios";
@@ -18,7 +19,6 @@ import ImageDefault from "@/assets/avatar-default.jpg";
 import {
   TbCircleCheckFilled,
   TbFaceId,
-  TbFileSearch,
   TbInfoCircle,
   TbLicense,
   TbLock,
@@ -30,13 +30,17 @@ import {
 } from "react-icons/tb";
 import LoadingPage from "@/components/Loaders/LoadingPage";
 import Modal from "@/components/modal/Modal";
+import { pdfjs } from "react-pdf";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 function Profile({ params }: { params: { userId: string } }) {
   const { user, setUserData } = useGlobalContext();
+  console.log(user);
   const [imagePreview1, setImagePreview1] = useState("");
   const [imagePreview2, setImagePreview2] = useState("");
   const [imagePreview3, setImagePreview3] = useState("");
-  const [infoUser, setInfoUser] = useState<ScalarDocument[]>();
+  const [infoUser, setInfoUser] = useState<ScalarDocument>();
   const [loading, setLoading] = useState(true);
   const [completeInfoUser, setCompleteInfoUser] = useState<ScalarUser | null>(
     null
@@ -68,6 +72,9 @@ function Profile({ params }: { params: { userId: string } }) {
   const [loadingProccessImg02, setLoadingProccessImg02] = useState(false);
   const [loadingProccessImg03, setLoadingProccessImg03] = useState(false);
 
+  const [pdfFile, setPdfFile] = useState<string | null>(null);
+  const [openViewPdf, setOpenViewPdf] = useState<boolean>(false);
+
   const [openDocs, setOpenDocs] = useState<boolean>(false);
   const [contentOpenDoc, setContentOpenDoc] = useState<
     string | undefined | null
@@ -77,48 +84,69 @@ function Profile({ params }: { params: { userId: string } }) {
 
   useEffect(() => {
     const getInfoUserDocs = async () => {
-      const response = await axios.post(
-        "/api/user/list_docs",
-        {
-          userId: params.userId,
-        },
-        { headers: { Authorization: `Bearer ${user?.token}` } }
-      );
-      // console.log(response.data);
-      setInfoUser(response.data.data);
-      if (response.data && response.data.data && response.data.data[0]) {
-        setImagePreview1(response.data.data[0].documentFront);
-        setImagePreview2(response.data.data[0].documentBack);
-      }
-      setLoading(false);
-    };
+      try {
+        if (user && user.token) {
+          const response = await axios.post(
+            "/api/user/list_docs",
+            {
+              userId: params.userId,
+            },
+            { headers: { Authorization: `Bearer ${user.token}` } }
+          );
+          console.log(response.data);
+          setInfoUser(response.data.data[0]);
+          if (response.data && response.data.data && response.data.data[0]) {
+            const data: ScalarDocument = response.data.data[0];
+            setImagePreview1(data.documentFront as string);
+            setImagePreview2(data.documentBack as string);
+            setImagePreview3(data.laborCardId as string);
+          }
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
 
-    const getInfoUser = async () => {
-      const response = await axios.post(
-        "/api/user/id",
-        {
-          userId: params.userId,
-        },
-        { headers: { Authorization: `Bearer ${user?.token}` } }
-      );
-      // console.log(response);
-      const data: ScalarUser = response.data.data;
-      // console.log(data);
-      setName(data.names);
-      setFirstLastName(data.firstLastName);
-      setSecondLastName(data.secondLastName);
-      setCelPhone(data.phone as string);
-      setResidenceNumber(data.residence_phone_number as string);
-      setGenre(data.genre as string);
-      setCelPhoneWs(data.phone_whatsapp as string);
-      setBirthday(new Date(data.birth_day as Date));
-      setCityResidence(data.city as string);
-      setCompleteInfoUser(data);
+        if (error instanceof Error) {
+          console.log(error.cause);
+        }
+      }
     };
 
     getInfoUserDocs();
+  }, [params.userId, user?.token]);
+
+  useEffect(() => {
+    const getInfoUser = async () => {
+      try {
+        if (user && user.token) {
+          const response = await axios.post(
+            "/api/user/id",
+            {
+              userId: user && user.id,
+            },
+            { headers: { Authorization: `Bearer ${user.token}` } }
+          );
+          // console.log(response);
+          const data: ScalarUser = response.data.data;
+          // console.log(data);
+          setName(data.names);
+          setFirstLastName(data.firstLastName);
+          setSecondLastName(data.secondLastName);
+          setCelPhone(data.phone as string);
+          setResidenceNumber(data.residence_phone_number as string);
+          setGenre(data.genre as string);
+          setCelPhoneWs(data.phone_whatsapp as string);
+          setBirthday(new Date(data.birth_day as Date));
+          setCityResidence(data.city as string);
+          setCompleteInfoUser(data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     getInfoUser();
-  }, [params.userId, user]);
+  }, [params.userId, user?.token]);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
 
@@ -192,8 +220,46 @@ function Profile({ params }: { params: { userId: string } }) {
     setContentOpenDoc(image);
   };
 
+  const handleSetViewLaborCard = async ({
+    laborCardId,
+  }: {
+    laborCardId: string;
+  }) => {
+    try {
+      console.log(laborCardId);
+      const response = await axios.post(
+        "/api/user/get_labor_letter",
+        { laborCardId },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+
+      console.log(response);
+
+      const fileParts = response.data.data;
+
+      console.log(fileParts);
+
+      const base64data = fileParts.filePart;
+
+      console.log(base64data);
+
+      // setPdfFile(`data:application/pdf;base64,${base64data}`);
+      setPdfFile(
+        "https://res.cloudinary.com/dvquomppa/image/upload/v1718052969/gkzzfbye5ly34pxzyw7n.pdf"
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  console.log(pdfFile);
+
   const handleOpenViewDocImg = () => {
     setOpenDocs(!openDocs);
+  };
+
+  const handleOpenViewPdf = () => {
+    setOpenViewPdf(!openViewPdf);
   };
 
   const handleUpdateAvatar = async () => {
@@ -265,7 +331,7 @@ function Profile({ params }: { params: { userId: string } }) {
       const response = await axios.post(
         "/api/upload/pic_with_cc",
         {
-          docId: infoUser && infoUser[0] && infoUser[0].id,
+          docId: infoUser && infoUser.id,
           img: selectedImageWithCC,
         },
         { headers: { Authorization: `Bearer ${user?.token}` } }
@@ -279,7 +345,7 @@ function Profile({ params }: { params: { userId: string } }) {
         const resAddPic = await axios.post(
           "/api/user/img_with_cc",
           {
-            docId: infoUser && infoUser[0] && infoUser[0].id,
+            docId: infoUser && infoUser.id,
             image: secure_url,
           },
           { headers: { Authorization: `Bearer ${user?.token}` } }
@@ -305,7 +371,7 @@ function Profile({ params }: { params: { userId: string } }) {
     const response = await axios.post(
       "/api/upload/delete_pic_with_cc",
       {
-        docId: infoUser && infoUser[0] && infoUser[0].id,
+        docId: infoUser && infoUser.id,
       },
       { headers: { Authorization: `Bearer ${user?.token}` } }
     );
@@ -408,31 +474,55 @@ function Profile({ params }: { params: { userId: string } }) {
   const onDrop3 = useCallback(
     async (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
+      // console.log(file);
       setLoadingProccessImg03(true);
       if (file) {
-        const formData = new FormData();
-        formData.append("img", file);
-        formData.append("userId", user?.id as string);
-        formData.append("type", "letter");
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
-          formData,
-          {
-            headers: {
-              // Authorization: `Bearer ${user?.token}`,
-              "Content-Type": "multipart/form-data",
-            },
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const data = reader.result as string;
+          // console.log(data);
+          const base64data = data.split(",")[1];
+          // console.log(base64data);
+          const maxPartSize = 5000000;
+          // console.log(maxPartSize);
+          const fileParts: string[] = [];
+          // console.log(fileParts);
+
+          for (let i = 0; i < base64data.length; i += maxPartSize) {
+            fileParts.push(base64data.slice(i, i + maxPartSize));
           }
-        );
-        await handleSubmitImageBack({
-          image: response.data,
-        });
-        // console.log(response);
-        setLoadingProccessImg03(false);
-        setImagePreview3(response.data);
+
+          const userId = user?.id;
+          const documentId = infoUser && infoUser.id;
+          console.log(documentId);
+
+          try {
+            if (user && user.token) {
+              const response = await axios.post(
+                "/api/user/labor_letter",
+                {
+                  userId,
+                  fileParts,
+                  documentId,
+                },
+                { headers: { Authorization: `Bearer ${user.token}` } }
+              );
+
+              console.log(response);
+
+              if (response.data.success == true) {
+                toast.success("Carta laboral subida");
+                setImagePreview3(response.data.data);
+              }
+            }
+          } catch (error) {
+            console.error("Error uploading file:", error);
+          }
+        };
+        reader.readAsDataURL(file);
       }
     },
-    [user, handleSubmitImageBack]
+    [user]
   );
 
   const { getRootProps: getRootProps1, getInputProps: getInputProps1 } =
@@ -543,6 +633,9 @@ function Profile({ params }: { params: { userId: string } }) {
           <div className={styles.boxImagePerfil}>
             <div className={styles.barPicturesAuth}>
               <div className={styles.boxInfoUserAvatar}>
+                <h2 className={styles.textWarnAvatar}>
+                  Cambia tu foto de perfil
+                </h2>
                 <div className={styles.centerInfoUserAvatar}>
                   <div className={styles.boxIconAvatar}>
                     {selectedImagePerfil == null && (
@@ -550,7 +643,7 @@ function Profile({ params }: { params: { userId: string } }) {
                         className={styles.avatarIcon}
                         src={user.avatar}
                         round={true}
-                        size={isTabletOrMobile ? "200px" : "300px"}
+                        size={isTabletOrMobile ? "100px" : "200px"}
                       />
                     )}
                     {selectedImagePerfil !== null && (
@@ -616,7 +709,7 @@ function Profile({ params }: { params: { userId: string } }) {
                 <div className={styles.boxTitleSelfie}>
                   <div className={styles.centerBoxTitleSelfie}>
                     <div className={styles.boxIconAuthSelfie}>
-                      <TbLock size={25} className={styles.iconLock} />
+                      <TbLock className={styles.iconLock} />
                     </div>
                     <p>Autenticación con Selfie y Documento</p>
                   </div>
@@ -624,20 +717,19 @@ function Profile({ params }: { params: { userId: string } }) {
                     <TbInfoCircle className={styles.iconInfoSelf} size={20} />
                   </div>
                 </div>
-                <div className={styles.centerInfoUserAvatar}>
+                <div className={styles.centerInfoUserSelfie}>
                   <div className={styles.boxIconAvatar}>
                     {selectedImageWithCC == null && (
                       <Image
+                        priority={true}
                         className={styles.avatarIcon}
                         src={
-                          infoUser &&
-                          infoUser[0] &&
-                          infoUser[0].imageWithCC !== "No definido"
-                            ? (infoUser[0].imageWithCC as string)
+                          infoUser && infoUser.imageWithCC !== "No definido"
+                            ? (infoUser.imageWithCC as string)
                             : ImageDefault
                         }
-                        width={600}
-                        height={600}
+                        width={300}
+                        height={300}
                         alt="logo"
                       />
                     )}
@@ -1036,7 +1128,7 @@ function Profile({ params }: { params: { userId: string } }) {
                   value={
                     numberCc !== null
                       ? numberCc
-                      : (infoUser && infoUser[0] && infoUser[0].number) || ""
+                      : (infoUser && infoUser.number) || ""
                   }
                   onChange={(e) => setNumberCc(e.target.value)}
                 />
@@ -1171,10 +1263,7 @@ function Profile({ params }: { params: { userId: string } }) {
                   </div>
                 )}
               </div>
-            </div>
 
-            <div className={styles.cardLaboral}>
-              {/* <h2>Ingresa tu carta laboral actualizada</h2> */}
               <div
                 className={styles.boxInfoUser}
                 {...(imagePreview3 === "No definido" ? getRootProps3() : {})}
@@ -1182,26 +1271,39 @@ function Profile({ params }: { params: { userId: string } }) {
                 {imagePreview3 === "No definido" && (
                   <input {...getInputProps3()} />
                 )}
-                {imagePreview3 && imagePreview3 != "No definido" ? (
+                {imagePreview3 && imagePreview3 !== "No definido" ? (
                   <>
-                    <div className={styles.barStatusDocs}>
-                      <div className={styles.headerCardStatus}>
-                        <div className={styles.boxIconStatus}>
-                          <TbCircleCheckFilled className={styles.iconCheck} />
+                    <div className={styles.supraBarStatus}>
+                      <div className={styles.barStatusDocs}>
+                        <div className={styles.headerCardStatus}>
+                          <div className={styles.boxIconStatus}>
+                            <TbCircleCheckFilled className={styles.iconCheck} />
+                          </div>
+                          <p className={styles.warninCC}>
+                            Carta laboral subido
+                          </p>
                         </div>
-                        <p className={styles.warninCC}>Carta laboral subida</p>
                       </div>
                       <div className={styles.boxIconsStatus}>
                         <div
-                          className={styles.boxIcon}
                           onClick={() => {
-                            handleOpenViewDocImg();
-                            handleSetViewDocImg({ image: imagePreview3 });
+                            handleOpenViewPdf();
+                            handleSetViewLaborCard({
+                              // laborCardId: imagePreview3,
+                              laborCardId: imagePreview3,
+                            });
                           }}
+                          className={styles.boxIcon}
                         >
-                          <TbFileSearch className={styles.viewIcon} size={20} />
+                          <TbPhotoSearch
+                            className={styles.viewIcon}
+                            size={20}
+                          />
                         </div>
-                        <div className={styles.boxIcon}>
+                        <div
+                          className={styles.boxIcon}
+                          onClick={() => handleDeleteDoc("back")}
+                        >
                           <TbTrash className={styles.trashIcon} size={20} />
                         </div>
                       </div>
@@ -1233,6 +1335,13 @@ function Profile({ params }: { params: { userId: string } }) {
                 className={styles.imgPrevDoc}
               />
             </div>
+          </Modal>
+
+          <Modal isOpen={openViewPdf} onClose={handleOpenViewPdf}>
+            <iframe
+              src={pdfFile as string}
+              style={{ width: "100%", height: "100%" }}
+            />
           </Modal>
         </main>
       </>

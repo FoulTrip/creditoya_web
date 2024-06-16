@@ -3,11 +3,37 @@ import { ScalarUser } from "@/types/User";
 import { NextResponse } from "next/server";
 
 /**
- * Función para manejar las solicitudes POST para crear un nuevo usuario.
- *
- * @param req - Se espera que sea un objeto JSON que contenga los campos { email, password, firstName y lastName }
- *
- * @returns - Si la creación del usuario es exitosa, la respuesta será un objeto JSON que representa al nuevo usuario. Si ocurre un error, la respuesta será un objeto JSON que contiene un mensaje de error.
+ * @swagger
+ * /api/user:
+ *   post:
+ *     description: Crea un nuevo usuario
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               names:
+ *                 type: string
+ *               firstLastName:
+ *                 type: string
+ *               secondLastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *             required:
+ *               - names
+ *               - firstLastName
+ *               - secondLastName
+ *               - email
+ *               - password
+ *     responses:
+ *       200:
+ *         description: Usuario creado exitosamente
+ *       400:
+ *         description: Error al crear el usuario
  */
 export async function POST(req: Request) {
   try {
@@ -20,7 +46,7 @@ export async function POST(req: Request) {
       password,
     }: ScalarUser = await req.json();
 
-    console.log(names, firstLastName, secondLastName, email, password)
+    console.log(names, firstLastName, secondLastName, email, password);
 
     // Creamos un nuevo usuario utilizando el servicio de usuario
     const newUser = await UserService.create({
@@ -31,7 +57,7 @@ export async function POST(req: Request) {
       password,
     });
 
-    console.log(newUser)
+    console.log(newUser);
 
     // Si todo va bien, devolvemos una respuesta con el nuevo usuario en formato JSON
     return NextResponse.json({ success: true, data: newUser });

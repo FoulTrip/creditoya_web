@@ -1,0 +1,452 @@
+[
+    {
+        "type": "email",
+        "explain": "Correo electrónico del solicitante",
+        "isMandatory": true,
+        "category": "contact"
+    },
+    {
+        "type": "signature",
+        "explain": "Firma del solicitante",
+        "isMandatory": true,
+        "category": "legal"
+    },
+    {
+        "type": "principal_debtor",
+        "explain": "Deudor principal",
+        "isMandatory": true,
+        "category": "personal"
+    },
+    {
+        "type": "co_debtor",
+        "explain": "Codeudor",
+        "isMandatory": true,
+        "category": "personal"
+    },
+    {
+        "type": "affiliated_company",
+        "explain": "Empresa afiliada",
+        "isMandatory": true,
+        "category": "business"
+    },
+    {
+        "type": "nit",
+        "explain": "Número de identificación tributaria (NIT)",
+        "isMandatory": true,
+        "category": "business"
+    },
+    {
+        "type": "requested_amount",
+        "explain": "Monto solicitado",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "deadline",
+        "explain": "Plazo",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "typePayment",
+        "explain": "Tipo de pago",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "quota_value",
+        "explain": "Valor de la cuota",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "firtLastName",
+        "explain": "Primer apellido",
+        "isMandatory": true,
+        "category": "personal"
+    },
+    {
+        "type": "secondLastName",
+        "explain": "Segundo apellido",
+        "isMandatory": true,
+        "category": "personal"
+    },
+    {
+        "type": "names",
+        "explain": "Nombres",
+        "isMandatory": true,
+        "category": "personal"
+    },
+    {
+        "type": "occupation",
+        "explain": "Ocupación",
+        "isMandatory": true,
+        "category": "professional"
+    },
+    {
+        "type": "typeDocument",
+        "explain": "Tipo de documento",
+        "isMandatory": true,
+        "category": "identification"
+    },
+    {
+        "type": "numberDocument",
+        "explain": "Número de documento",
+        "isMandatory": true,
+        "category": "identification"
+    },
+    {
+        "type": "persons_in_charge",
+        "explain": "Personas a cargo",
+        "isMandatory": true,
+        "category": "personal"
+    },
+    {
+        "type": "monthly_expenses",
+        "explain": "Gastos mensuales",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "birthDate",
+        "explain": "Fecha de nacimiento",
+        "isMandatory": true,
+        "category": "personal"
+    },
+    {
+        "type": "place_birth",
+        "explain": "Lugar de nacimiento",
+        "isMandatory": true,
+        "category": "personal"
+    },
+    {
+        "type": "destination_resources",
+        "explain": "Destino de los recursos",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "city",
+        "explain": "Ciudad",
+        "isMandatory": true,
+        "category": "contact"
+    },
+    {
+        "type": "genre",
+        "explain": "Género",
+        "isMandatory": true,
+        "category": "personal"
+    },
+    {
+        "type": "marital_status",
+        "explain": "Estado civil",
+        "isMandatory": true,
+        "category": "personal"
+    },
+    {
+        "type": "cellPhone",
+        "explain": "Teléfono celular",
+        "isMandatory": true,
+        "category": "contact"
+    },
+    {
+        "type": "residence_address",
+        "explain": "Dirección de residencia",
+        "isMandatory": true,
+        "category": "contact"
+    },
+    {
+        "type": "residence_phone",
+        "explain": "Teléfono de residencia",
+        "isMandatory": true,
+        "category": "contact"
+    },
+    {
+        "type": "housing_type",
+        "explain": "Tipo de vivienda",
+        "isMandatory": true,
+        "category": "housing"
+    },
+    {
+        "type": "vehicle",
+        "explain": "Posee vehículo",
+        "isMandatory": true,
+        "category": "personal"
+    },
+    {
+        "type": "whatsapp_number",
+        "explain": "Número de WhatsApp",
+        "isMandatory": true,
+        "category": "contact"
+    },
+    {
+        "type": "pignorado",
+        "explain": "Pignorado",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "commercial_value",
+        "explain": "Valor comercial",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "other_personal_commercial_value",
+        "explain": "Valor comercial personal adicional",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "family_members_in_company_agreement",
+        "explain": "Miembros familiares en el convenio de la empresa",
+        "isMandatory": true,
+        "category": "personal"
+    },
+    {
+        "type": "is_currently_codebtor",
+        "explain": "Actualmente es codeudor",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "other_economy_activity_principal",
+        "explain": "Otra actividad económica principal",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "complete_name_spouse",
+        "explain": "Nombre completo del cónyuge",
+        "isMandatory": false,
+        "category": "personal"
+    },
+    {
+        "type": "number_document_spouse",
+        "explain": "Número de documento del cónyuge",
+        "isMandatory": false,
+        "category": "personal"
+    },
+    {
+        "type": "phone_spouse",
+        "explain": "Teléfono del cónyuge",
+        "isMandatory": false,
+        "category": "contact"
+    },
+    {
+        "type": "landline_telephone_spouse",
+        "explain": "Teléfono fijo del cónyuge",
+        "isMandatory": true,
+        "category": "contact"
+    },
+    {
+        "type": "name_company_spouse",
+        "explain": "Nombre de la empresa del cónyuge",
+        "isMandatory": false,
+        "category": "business"
+    },
+    {
+        "type": "phone_company_spoue",
+        "explain": "Teléfono de la empresa del cónyuge",
+        "isMandatory": false,
+        "category": "contact"
+    },
+    {
+        "type": "total_monthly_income",
+        "explain": "Ingreso mensual total",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "total_assets",
+        "explain": "Total de activos",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "total_liabilities",
+        "explain": "Total de pasivos",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "patrimony",
+        "explain": "Patrimonio",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "court",
+        "explain": "Fecha de corte",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "number_employees",
+        "explain": "Número de empleados",
+        "isMandatory": true,
+        "category": "business"
+    },
+    {
+        "type": "other_income_other_principal",
+        "explain": "Otros ingresos del principal",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "personal_reference_name",
+        "explain": "Nombre de la referencia personal",
+        "isMandatory": true,
+        "category": "reference"
+    },
+    {
+        "type": "personal_reference_work_company_name",
+        "explain": "Nombre de la empresa de la referencia personal",
+        "isMandatory": true,
+        "category": "reference"
+    },
+    {
+        "type": "personal_reference_city",
+        "explain": "Ciudad de la referencia personal",
+        "isMandatory": true,
+        "category": "reference"
+    },
+    {
+        "type": "personal_reference_address",
+        "explain": "Dirección de la referencia personal",
+        "isMandatory": true,
+        "category": "reference"
+    },
+    {
+        "type": "personal_reference_number_residence",
+        "explain": "Número de residencia de la referencia personal",
+        "isMandatory": false,
+        "category": "reference"
+    },
+    {
+        "type": "personal_reference_number_phone",
+        "explain": "Teléfono de la referencia personal",
+        "isMandatory": true,
+        "category": "reference"
+    },
+    {
+        "type": "family_reference_name",
+        "explain": "Nombre de la referencia familiar",
+        "isMandatory": true,
+        "category": "reference"
+    },
+    {
+        "type": "family_reference_work_company_name",
+        "explain": "Nombre de la empresa de la referencia familiar",
+        "isMandatory": true,
+        "category": "reference"
+    },
+    {
+        "type": "family_reference_city",
+        "explain": "Ciudad de la referencia familiar",
+        "isMandatory": true,
+        "category": "reference"
+    },
+    {
+        "type": "family_reference_address",
+        "explain": "Dirección de la referencia familiar",
+        "isMandatory": true,
+        "category": "reference"
+    },
+    {
+        "type": "family_reference_number_residence",
+        "explain": "Número de residencia de la referencia familiar",
+        "isMandatory": false,
+        "category": "reference"
+    },
+    {
+        "type": "family_reference_number_phone",
+        "explain": "Teléfono de la referencia familiar",
+        "isMandatory": true,
+        "category": "reference"
+    },
+    {
+        "type": "Status",
+        "explain": "Estado de la solicitud",
+        "isMandatory": true,
+        "category": "status"
+    },
+    {
+        "type": "labor_seniority_contracts",
+        "explain": "Antigüedad laboral de los contratos",
+        "isMandatory": true,
+        "category": "professional"
+    },
+    {
+        "type": "date_relationship",
+        "explain": "Fecha de relación laboral",
+        "isMandatory": true,
+        "category": "professional"
+    },
+    {
+        "type": "labor_seniority",
+        "explain": "Antigüedad laboral",
+        "isMandatory": true,
+        "category": "professional"
+    },
+    {
+        "type": "average_variable_salary",
+        "explain": "Salario variable promedio",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "monthly_discounts",
+        "explain": "Descuentos mensuales",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "current_loans_affecting",
+        "explain": "Préstamos actuales afectando",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "bankCurrentAccount",
+        "explain": "Cuenta corriente bancaria",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "bankSavingAccount",
+        "explain": "Cuenta de ahorros bancaria",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "bankNumberAccount",
+        "explain": "Número de cuenta bancaria",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "entity",
+        "explain": "Entidad bancaria",
+        "isMandatory": true,
+        "category": "financial"
+    },
+    {
+        "type": "terms_and_conditions",
+        "explain": "Términos y condiciones aceptados",
+        "isMandatory": true,
+        "category": "legal"
+    },
+    {
+        "type": "createdAt",
+        "explain": "Fecha de creación",
+        "isMandatory": true,
+        "category": "metadata"
+    },
+    {
+        "type": "updatedAt",
+        "explain": "Fecha de actualización",
+        "isMandatory": true,
+        "category": "metadata"
+    }
+]

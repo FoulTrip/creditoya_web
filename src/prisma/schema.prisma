@@ -57,9 +57,9 @@ model LoanApplication {
     userId                                          String
     employeeId                                      String?        @default("Standby")
     user                                            User           @relation(fields: [userId], references: [id])
-    email                                           String
-    principal_debtor                                String
-    co_debtor                                       String
+    email                                           String         @unique
+    principal_debtor                                String         @unique
+    co_debtor                                       String         @unique
     affiliated_company                              String
     nit                                             String
     requested_amount                                String
@@ -133,8 +133,8 @@ model LoanApplication {
     reasonReject                                    String?
     signature                                       String
     other_economy_activity_principal                ifOrNot
-    which_other_economy_activity_principal          String
-    monthly_income_other_economy_activity_principal String
+    which_other_economy_activity_principal          String?        @default("No")
+    monthly_income_other_economy_activity_principal String?        @default("No")
     date_relationship                               DateTime
     labor_seniority                                 String
     contract_termination_date                       String?
@@ -183,10 +183,22 @@ model Document {
     documentFront String        @default("No definido")
     documentBack  String        @default("No definido")
     imageWithCC   String        @default("No definido")
+    cardLabor     CardLabor     @relation(fields: [laborCardId], references: [id])
     typeDocument  TypesDocument @default(CC)
     number        String        @default("No definido")
     createdAt     DateTime      @default(now())
     updatedAt     DateTime      @updatedAt
+    laborCardId   String        @default("No definido")
+}
+
+model CardLabor {
+    id        String     @id @default(uuid()) @map("_id")
+    userId    String     @unique
+    filePart  String
+    order     Int
+    createAt  DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    Document  Document[]
 }
 
 enum StatusPayment {

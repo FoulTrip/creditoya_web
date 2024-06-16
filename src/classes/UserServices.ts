@@ -95,7 +95,9 @@ class UserService {
       (document) =>
         document.documentFront !== "No definido" &&
         document.documentBack !== "No definido" &&
-        document.number !== "No definido"
+        document.number !== "No definido" &&
+        document.imageWithCC !== "No definido" &&
+        document.laborCardId != "No definido"
     );
   }
 

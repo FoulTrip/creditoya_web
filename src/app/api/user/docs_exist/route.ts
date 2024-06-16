@@ -4,22 +4,29 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { userId } = await req.json();
-    const authToken = req.headers.get("authorization");
-    const token = authToken?.split(" ")[1];
+    // Verificar la autenticación JWT
+    const authorizationHeader = req.headers.get("Authorization");
 
-    if (!token) {
-      throw new Error("Token is required");
+    if (!authorizationHeader) {
+      return NextResponse.json(
+        { message: "Token de autorización no proporcionado" },
+        { status: 401 }
+      );
     }
 
-    const payload = TokenService.verifyToken(
-      token as string,
+    const token = authorizationHeader.split(" ")[1];
+
+    const decodedToken = TokenService.verifyToken(
+      token,
       process.env.JWT_SECRET as string
-    );
+    ); // Reemplaza "tu-clave-secreta" con tu clave secreta
 
-    if (!payload) {
-      throw new Error("Token inválido");
+    if (!decodedToken) {
+      return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
+
+    const { userId } = await req.json();
+
     const response = await UserService.hasDocumentData(userId);
     return NextResponse.json({ success: true, data: response });
   } catch (error) {

@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx prisma generate --schema=./src/prisma/schema.prisma && next build",
+    "build": "npx next-ws-cli@latest patch && npx prisma generate --schema=./src/prisma/schema.prisma && next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@cloudinary/react": "^1.13.0",
     "@cloudinary/url-gen": "^1.19.0",
+    "@google-cloud/storage": "^7.11.2",
     "@imgly/background-removal": "^1.4.5",
     "@prisma/client": "^5.13.0",
     "@types/js-cookie": "^3.0.6",
@@ -28,6 +29,8 @@
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^2.5.1",
     "next": "13.5.6",
+    "next-swagger-doc": "^0.4.0",
+    "next-ws": "^1.0.1",
     "nodemailer": "^6.9.13",
     "primereact": "^10.6.3",
     "react": "^18",
@@ -40,7 +43,9 @@
     "react-signature-canvas": "^1.0.6",
     "socket.io-client": "^4.7.5",
     "sonner": "^1.4.41",
-    "utf-8-validate": "^5.0.10"
+    "swagger-ui-react": "^5.17.14",
+    "utf-8-validate": "^5.0.10",
+    "ws": "^8.17.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -49,6 +54,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/react-signature-canvas": "^1.0.5",
+    "@types/swagger-ui-react": "^4.18.3",
     "eslint": "^8",
     "eslint-config-next": "13.5.6",
     "typescript": "^5"

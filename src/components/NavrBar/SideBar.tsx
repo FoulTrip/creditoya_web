@@ -68,6 +68,7 @@ function SideBar() {
                 <div className={styles.infoUser}>
                   <div className={styles.boxIconAcount}>
                     <Avatar
+                      className={styles.avatar}
                       src={user.avatar}
                       alt={"Avatar"}
                       size={"25"}

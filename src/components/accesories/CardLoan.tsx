@@ -3,26 +3,15 @@ import React, { useEffect, useState } from "react";
 import styles from "./styles/cardLoan.module.css";
 import {
   TbArrowBarToDown,
-  TbArrowNarrowDown,
   TbArrowUpRight,
-  TbChevronDown,
-  TbChevronRight,
-  TbChevronUp,
-  TbCircleCheck,
-  TbClockSearch,
-  TbEye,
   TbFileFilled,
-  TbFileTypePdf,
   TbMailFilled,
   TbPhoneFilled,
   TbViewportWide,
 } from "react-icons/tb";
-import EditInfo from "./EditInfo";
-import socket from "@/Socket/Socket";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
-import { toast } from "sonner";
 import Avatar from "react-avatar";
 
 function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
@@ -62,10 +51,6 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
 
     getEmployee();
   }, [user?.token, loan.employeeId]);
-
-  useEffect(() => {
-    socket.on("updateLoanClient", (data) => {});
-  }, []);
 
   const toggleDetails = () => {
     setOpenDetails(!openDetails);

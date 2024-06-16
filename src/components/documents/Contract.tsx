@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "./Contract.module.css";
 import { useGlobalContext } from "@/context/Auth";
 import { TbInfoCircle } from "react-icons/tb";
@@ -24,12 +24,12 @@ import {
 } from "./partsContract/KeysLoan";
 
 import { isRequired, sectionInputs } from "@/handlers/ContractHandlers";
-import socket from "@/Socket/Socket";
 import Modal from "../modal/Modal";
 import PreEnvio from "./PreEnvio";
-import { useContractContext } from "@/context/Contract";
+import { useWebSocket } from "next-ws/client";
 
 function Contract({ toggleContract }: { toggleContract: () => void }) {
+  const ws = useWebSocket();
   const [openFirstPart, setOpenFirstPart] = useState<boolean>(false);
   const [openSecondPart, setOpenSecondPart] = useState<boolean>(false);
   const [openThreePart, setOpenThreePart] = useState<boolean>(false);
@@ -45,11 +45,6 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
 
   const [openInfo, setOpenInfo] = useState<boolean>(false);
   const [infoModel, setInfoModel] = useState<string | null>(null);
-  const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    socket.emit("connected", "Hello from Contract");
-  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -74,7 +69,25 @@ function Contract({ toggleContract }: { toggleContract: () => void }) {
     try {
       setOpenPreSend(false);
       console.log(formData);
-      socket.emit("create_loan_request", formData);
+
+      const response = await axios.post(
+        "/api/loan/create",
+        {
+          loanData: formData,
+        },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+
+      console.log(response)
+
+      if (response.data.success == true) {
+        ws?.send(
+          JSON.stringify({
+            type: "new_loan",
+            owner: user?.id,
+          })
+        );
+      }
     } catch (error) {
       console.error("Error:", error);
       toast.error("Error al enviar la solicitud");

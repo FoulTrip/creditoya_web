@@ -68,6 +68,23 @@
   color: var(--white-600);
 }
 
+.avatar {
+  object-fit: cover;
+}
+
+.p-sidebar-close {
+  /* Cambia el color del icono de cierre */
+  color: #ff0000; /* rojo */
+  /* Cambia el tamaño del icono de cierre */
+  font-size: 25px; /* tamaño del icono */
+  /* Cambia el fondo del botón de cierre */
+  background-color: #ffffff; /* blanco */
+  /* Añade un borde al botón de cierre */
+  border: 2px solid #818181; /* gris */
+  /* Añade un borde redondeado al botón de cierre */
+  border-radius: 50%; /* borde redondeado */
+}
+
 .boxOption {
   display: grid;
   place-content: center;

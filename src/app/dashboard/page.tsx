@@ -2,7 +2,7 @@
 
 import { useGlobalContext } from "@/context/Auth";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 import { TbAccessPoint, TbFingerprint } from "react-icons/tb";
@@ -12,9 +12,10 @@ import { ScalarLoanApplication } from "@/types/User";
 
 import CardLoan from "@/components/accesories/CardLoan";
 import LoadingPage from "@/components/Loaders/LoadingPage";
-import socket from "@/Socket/Socket";
 import { ContractProvider } from "@/context/Contract";
 import { toast } from "sonner";
+import { useWebSocket } from "next-ws/client";
+import { EventClient } from "@/types/ws";
 
 function Dashboard() {
   const router = useRouter();
@@ -23,6 +24,8 @@ function Dashboard() {
   const [completeDocs, setCompleteDocs] = useState<boolean | null>(null);
   const [openContract, setOpenContract] = useState<boolean>(false);
   const [Loans, setLoans] = useState<ScalarLoanApplication[] | null>(null);
+
+  const ws = useWebSocket();
 
   useEffect(() => {
     const documentsVerify = async () => {
@@ -61,16 +64,19 @@ function Dashboard() {
     getAllLoans();
   }, [user]);
 
-  useEffect(() => {
-    socket.on("updateLoan", (data: ScalarLoanApplication[]) => {
-      console.log("from server: ", data);
-      setLoans(data);
-    });
+  // const newLoan = useCallback((event: MessageEvent<Blob>) => {
+  //   console.log(event);
+  //   event.data.text().then((payload) => {
+  //     console.log(payload);
+  //     const { type, data }: EventClient = JSON.parse(payload);
+  //     if (type == "updateLoan") setLoans(data as ScalarLoanApplication[]);
+  //   });
+  // }, []);
 
-    return () => {
-      socket.off("updateLoanClient");
-    };
-  }, []);
+  // useEffect(() => {
+  //   ws?.addEventListener("message", newLoan);
+  //   return () => ws?.removeEventListener("message", newLoan);
+  // }, [newLoan, ws]);
 
   const handleOpenContract = () => {
     // if (Loans?.length == 1) toast.error("Ya tienes un prestamo activo");
@@ -105,9 +111,6 @@ function Dashboard() {
                           <p>Solicitar Prestamo</p>
                         </div>
                       )}
-                      {openContract && (
-                        <Contract toggleContract={toggleContract} />
-                      )}
                       <div className={styles.warnNoLoan}>
                         <div className={styles.canterWarnLoan}>
                           <div className={styles.boxIconNoLoan}>
@@ -122,16 +125,22 @@ function Dashboard() {
                     </>
                   )}
 
-                  <h1 className={styles.titleLoan}>Tus Prestamos</h1>
-                  <div className={styles.listLoans}>
-                    {Loans?.filter((loan) => loan.userId === user.id).map(
-                      (loan) => (
-                        <CardLoan key={loan.id} loan={loan} />
-                      )
-                    )}
-                  </div>
+                  {Loans?.length !== 0 && (
+                    <>
+                      <h1 className={styles.titleLoan}>Tus Prestamos</h1>
+                      <div className={styles.listLoans}>
+                        {Loans?.filter((loan) => loan.userId === user.id).map(
+                          (loan) => (
+                            <CardLoan key={loan.id} loan={loan} />
+                          )
+                        )}
+                      </div>
+                    </>
+                  )}
                 </>
               )}
+
+              {openContract && <Contract toggleContract={toggleContract} />}
             </main>
           </ContractProvider>
         </>

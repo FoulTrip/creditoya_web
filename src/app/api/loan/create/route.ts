@@ -1,5 +1,6 @@
+import LoanApplicationService from "@/classes/LoanApplicationServices";
 import TokenService from "@/classes/TokenServices";
-import UserService from "@/classes/UserServices";
+import { ScalarLoanApplication } from "@/types/User";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -16,26 +17,26 @@ export async function POST(req: Request) {
 
     const token = authorizationHeader.split(" ")[1];
 
-    console.log(token)
-
-    const decodedToken = await TokenService.verifyToken(
+    const decodedToken = TokenService.verifyToken(
       token,
       process.env.JWT_SECRET as string
-    ); // Reemplaza "tu-clave-secreta" con tu clave secreta
+    );
 
     if (!decodedToken) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
 
-    const { userId } = await req.json();
+    const { loanData }: { loanData: ScalarLoanApplication } = await req.json();
 
-    if (!userId) {
-      throw new Error("userId is required");
+    console.log(loanData)
+
+    const response = await LoanApplicationService.create(loanData);
+
+    console.log(response)
+
+    if (response) {
+      return NextResponse.json({ success: true, data: response });
     }
-
-    const response = await UserService.listDocuments(userId);
-
-    return NextResponse.json({ success: true, data: response });
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ success: false, error: error.message });
