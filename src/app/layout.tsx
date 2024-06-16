@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <WebSocketProvider url={`${process.env.NEXT_PUBLIC_ENDPOINT_WS}`}>
+        <WebSocketProvider url={`${process.env.ENDPOINT_WS}`}>
           <GlobalProvider>
             <Toaster richColors />
             <NavBar />
