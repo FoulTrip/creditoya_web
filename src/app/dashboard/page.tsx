@@ -64,19 +64,31 @@ function Dashboard() {
     getAllLoans();
   }, [user]);
 
-  // const newLoan = useCallback((event: MessageEvent<Blob>) => {
-  //   console.log(event);
-  //   event.data.text().then((payload) => {
-  //     console.log(payload);
-  //     const { type, data }: EventClient = JSON.parse(payload);
-  //     if (type == "updateLoan") setLoans(data as ScalarLoanApplication[]);
-  //   });
-  // }, []);
+  const newLoan = useCallback(async (event: MessageEvent<Blob>) => {
+    console.log(event);
+    const JsonEvent = JSON.parse(String(event.data));
 
-  // useEffect(() => {
-  //   ws?.addEventListener("message", newLoan);
-  //   return () => ws?.removeEventListener("message", newLoan);
-  // }, [newLoan, ws]);
+    console.log(JsonEvent);
+
+    if (JsonEvent.type == "onNewState") {
+      const response = await axios.post(
+        "/api/user/loans",
+        {
+          userId: user?.id,
+        },
+        {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        }
+      );
+
+      setLoans(response.data.data);
+    }
+  }, []);
+
+  useEffect(() => {
+    ws?.addEventListener("message", newLoan);
+    return () => ws?.removeEventListener("message", newLoan);
+  }, [newLoan, ws]);
 
   const handleOpenContract = () => {
     // if (Loans?.length == 1) toast.error("Ya tienes un prestamo activo");
@@ -97,52 +109,30 @@ function Dashboard() {
     if (completeDocs) {
       return (
         <>
-          <ContractProvider>
-            <main className={styles.containerDashboard}>
-              {!openContract && (
-                <>
-                  {Loans?.length == 0 && (
-                    <>
-                      {!openContract && (
-                        <div
-                          className={styles.btnNew}
-                          onClick={handleOpenContract}
-                        >
-                          <p>Solicitar Prestamo</p>
-                        </div>
-                      )}
-                      <div className={styles.warnNoLoan}>
-                        <div className={styles.canterWarnLoan}>
-                          <div className={styles.boxIconNoLoan}>
-                            <TbAccessPoint
-                              className={styles.iconNoLoan}
-                              size={25}
-                            />
-                          </div>
-                          <p>Sin Prestamos activos</p>
-                        </div>
-                      </div>
-                    </>
-                  )}
+          <main className={styles.containerDashboard}>
+            {!openContract && (
+              <>
+                {!openContract && (
+                  <div className={styles.btnNew} onClick={handleOpenContract}>
+                    <p>Solicitar Prestamo</p>
+                  </div>
+                )}
 
-                  {Loans?.length !== 0 && (
-                    <>
-                      <h1 className={styles.titleLoan}>Tus Prestamos</h1>
-                      <div className={styles.listLoans}>
-                        {Loans?.filter((loan) => loan.userId === user.id).map(
-                          (loan) => (
-                            <CardLoan key={loan.id} loan={loan} />
-                          )
-                        )}
-                      </div>
-                    </>
+                <h1 className={styles.titleLoan}>Tus Prestamos</h1>
+                <div className={styles.listLoans}>
+                  {Loans?.filter((loan) => loan.userId === user.id).map(
+                    (loan) => (
+                      <CardLoan key={loan.id} loan={loan} />
+                    )
                   )}
-                </>
-              )}
+                </div>
+              </>
+            )}
 
-              {openContract && <Contract toggleContract={toggleContract} />}
-            </main>
-          </ContractProvider>
+            {openContract && (
+              <Contract toggleContract={toggleContract} userId={user.id} />
+            )}
+          </main>
         </>
       );
     }

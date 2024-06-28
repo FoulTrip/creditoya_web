@@ -59,9 +59,18 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
   return (
     <>
       <div className={styles.cardLoan}>
-        <div className={styles.boxAmount}>
-          <p>Cantidad Solicitada</p>
-          <h1>{formattedPrice(loan.requested_amount)}</h1>
+        <div className={styles.requirements}>
+          <div className={styles.boxAmount}>
+            <p>Cantidad Solicitada</p>
+            <h1>{formattedPrice(loan.requested_amount)}</h1>
+          </div>
+
+          <div className={styles.boxAmount}>
+            <p>Carta Laboral</p>
+            <div className={styles.verifyDocument}>
+              <div></div>
+            </div>
+          </div>
         </div>
 
         <div className={styles.widgetsViews}>
@@ -74,38 +83,6 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
                 <p className={styles.subTextBarView}>Datos completos</p>
                 <div className={styles.boxChevron}>
                   <TbArrowUpRight className={styles.iconChevron} size={20} />
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.barViewDetails}>
-              <div
-                className={styles.subBarView}
-                onClick={() => router.push(`/req/${loan.id}/payments`)}
-              >
-                <p className={styles.subTextBarView}>Pagos</p>
-                <div className={styles.boxChevron}>
-                  <TbArrowUpRight className={styles.iconChevron} size={20} />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.DocsLists}>
-            <div className={styles.btnDoc}>
-              <div className={styles.infoBtn}>
-                <div className={styles.boxIconDoc}>
-                  <TbFileFilled className={styles.iconFileDoc} size={20} />
-                </div>
-                <p>Documento de pago</p>
-              </div>
-
-              <div className={styles.actBtns}>
-                <div className={styles.boxIconAct}>
-                  <TbArrowBarToDown className={styles.iconAct} size={20} />
-                </div>
-                <div className={styles.boxIconAct}>
-                  <TbViewportWide className={styles.iconAct} size={20} />
                 </div>
               </div>
             </div>

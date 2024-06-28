@@ -1,0 +1,24 @@
+.typeAccount h5 {
+  text-align: start;
+  font-weight: 500;
+  color: var(--white-400);
+}
+
+.title {
+    margin-bottom: 5px;
+}
+
+.barOptions {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-start;
+  padding-top: 5px;
+}
+
+.label {
+  display: flex;
+  gap: 5px;
+  font-weight: 400px;
+  color: var(--white-800);
+}

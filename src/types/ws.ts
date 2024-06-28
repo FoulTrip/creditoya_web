@@ -3,6 +3,8 @@ import { ScalarLoanApplication, Status } from "./User";
 export type EventClient = {
   type: EventsClient;
   data: ScalarLoanApplication | ScalarLoanApplication[] | reqChangeState;
+  for?: string;
+  by?: string;
 };
 
 export type reqChangeState = {
@@ -15,4 +17,4 @@ export type reqChangeState = {
   reason: string | null;
 };
 
-type EventsClient = "updateLoan";
+type EventsClient = "updateLoan" | "newApprove" | "onNewState";

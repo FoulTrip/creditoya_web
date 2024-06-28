@@ -17,9 +17,10 @@
   padding: 20px;
   border-radius: 4px;
   width: 80%;
+  height: 600px;
   max-width: 900px;
   position: relative;
-  max-height: 80vh;
+  max-height: 100vh;
   overflow-y: auto;
 }
 
@@ -31,6 +32,6 @@
 
 @media screen and (max-width: 700px) {
   .modal_content {
-    max-width: 300px;
+    max-width: 400px;
   }
 }

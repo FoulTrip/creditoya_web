@@ -1,0 +1,16 @@
+.entity {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.entity h5 {
+  text-align: start;
+  font-weight: 500;
+  color: var(--white-400);
+}
+
+.select {
+  color: var(--white-400);
+}

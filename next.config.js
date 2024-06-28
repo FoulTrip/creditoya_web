@@ -1,9 +1,12 @@
-require('next-ws/server').verifyPatch();
+require("next-ws/server").verifyPatch();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["res.cloudinary.com"],
+    domains: ["res.cloudinary.com", "storage.googleapis.com"],
+  },
+  experimental: {
+    serverMinification: false,
   },
 };
 

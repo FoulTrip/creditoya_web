@@ -1,11 +1,128 @@
-.containerContract {
+.ContractContainer {
   min-height: 100dvh;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 2em;
+}
+
+.partBox {
+  flex-basis: 400px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.accountInput {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.accountInput h5 {
+  flex: 1;
+  text-align: start;
+  font-weight: 500;
+  color: var(--white-400);
+}
+
+.accountInput input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  outline: none;
+  border: 1px solid var(--white-300);
+  font-size: 16px;
+}
+
+.partPrice {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.partPrice h5 {
+  flex: 1;
+  text-align: start;
+  font-weight: 500;
+  color: var(--white-400);
+}
+
+.inputPrice {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  outline: none;
+  border: 1px solid var(--white-300);
+  border-radius: 6px;
 }
 
 .barContract {
   display: flex;
   flex-direction: row;
   margin-bottom: 2em;
+}
+
+.supraBarStatus {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+  background: var(--white-50);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+.headerCardStatus {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.boxIconStatus {
+  display: grid;
+  place-content: center;
+}
+
+.boxIconsStatus {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.boxDoc {
+  display: grid;
+  place-content: center;
+  height: 250px;
+}
+
+.prevDoc {
+  width: 100%;
+  height: auto;
+  transform: rotate(-90deg);
+}
+
+.boxIcon {
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+
+.boxIcon:hover {
+  filter: drop-shadow(0px 0px 10px var(--green-500));
+}
+
+.iconCheck {
+  color: var(--green-500);
+  filter: drop-shadow(0px 0px 10px var(--green-500));
+}
+
+.warninCC {
+  font-weight: 400;
+  color: var(--white-600);
 }
 
 .titleActions {
@@ -94,6 +211,47 @@
   cursor: pointer;
 }
 
+.iconPreview {
+  color: var(--green-500);
+  filter: drop-shadow(0px 0px 10px var(--green-300));
+}
+
+.titleVolants {
+  font-weight: 400;
+  color: var(--white-600);
+  text-align: start;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
+.textPreview {
+  font-weight: 500;
+  color: var(--white-400);
+}
+
+.columnCards {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.boxInfoUser {
+  padding: 10px;
+  background: var(--green-50);
+  border-radius: 8px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--green-100);
+}
+
+.boxInfoPay {
+  padding: 10px;
+  background: var(--green-50);
+  border-radius: 8px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--green-100);
+  cursor: pointer;
+}
+
 .inputInfo {
   padding: 10px;
   outline: none;
@@ -121,6 +279,41 @@
   color: var(--white-900);
 }
 
+.btnOpenDoc {
+  background: var(--green-100);
+  border: 1px solid var(--green-500);
+  padding: 10px;
+  border-radius: 8px;
+  color: var(--green-600);
+  font-weight: 400;
+  cursor: pointer;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.btnOpenDoc:hover {
+  background: var(--green-200);
+}
+
 .btnSoli:hover {
   background: var(--white-200);
+}
+
+.boxTerms {
+  margin-top: 3em;
+  margin-bottom: 3em;
+  display: grid;
+  place-content: center;
+}
+
+.centerBoxTerms {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+@media screen and (max-width: 900px) {
+  .prevDoc {
+    width: 250px;
+    height: auto;
+  }
 }

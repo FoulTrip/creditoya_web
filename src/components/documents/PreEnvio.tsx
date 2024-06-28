@@ -6,17 +6,25 @@ import { MaskedMail } from "@/handlers/MaskedEmails";
 import axios from "axios";
 import { toast } from "sonner";
 import Signature from "./signature";
-import { ScalarLoanApplication } from "@/types/User";
+import { ScalarLoanApplication, ScalarUser } from "@/types/User";
 
 interface PreEnvioProps {
   data: ScalarLoanApplication;
   Success: () => void;
   token: string;
   signature: (url: string) => void;
+  completeName: string;
+  mail: string;
 }
 
-function PreEnvio({ data, Success, token, signature }: PreEnvioProps) {
-  console.log(data.email);
+function PreEnvio({
+  data,
+  Success,
+  token,
+  signature,
+  completeName,
+  mail,
+}: PreEnvioProps) {
   const [verifyNumber, setVerifyNumber] = useState<Array<string>>(
     Array(5).fill("")
   );
@@ -29,11 +37,11 @@ function PreEnvio({ data, Success, token, signature }: PreEnvioProps) {
   useEffect(() => {
     const sendCodeMail = async ({ code }: { code: string }) => {
       const numberCode: number = Number(code);
-      const name: string = `${data.names} ${data.firtLastName} ${data.secondLastName}`;
+      const name: string = completeName;
       const response = await axios.post(
         "/api/mail/2f",
         {
-          addressee: data.email,
+          addressee: mail,
           name,
           code: numberCode,
         },
@@ -74,7 +82,7 @@ function PreEnvio({ data, Success, token, signature }: PreEnvioProps) {
     }
   };
 
-  const maskedEmail = MaskedMail(data.email);
+  const maskedEmail = MaskedMail(mail);
 
   const handleSuccessSignature = () => {
     setSuccessSignature(true);

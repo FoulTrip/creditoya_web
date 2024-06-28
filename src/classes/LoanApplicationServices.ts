@@ -11,8 +11,6 @@ class LoanApplicationService {
     const { userId, ...loanApplicationDataWithoutUserId } = data;
     const loanApplicationData = {
       ...loanApplicationDataWithoutUserId,
-      court: new Date(data.court).toISOString(),
-      date_relationship: new Date(data.date_relationship).toISOString(),
       user: {
         connect: {
           id: data.userId,
