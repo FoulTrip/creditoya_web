@@ -58,7 +58,7 @@ function PreEnvio({
       setVerifyNumber(Array.from(String(newKey)));
       sendCodeMail({ code: newKey });
     }
-  }, [data, token]);
+  }, [data, token, codeSent, completeName, mail]);
 
   const handleChange =
     (position: number) => (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -27,6 +27,7 @@ import PreEnvio from "./PreEnvio";
 import { useWebSocket } from "next-ws/client";
 import AccountType from "../accesories/TypeAccount";
 import Link from "next/link";
+import LoadingPage from "../Loaders/LoadingPage";
 
 function Contract({
   userId,
@@ -89,7 +90,6 @@ function Contract({
 
   console.log(userId);
 
-  const [laborCard, setLaborCard] = useState<File | null>(null);
   const [loading, setLoading] = useState(true);
   const [imagePreview1, setImagePreview1] = useState("No definido");
   const [imagePreview2, setImagePreview2] = useState("No definido");
@@ -99,7 +99,6 @@ function Contract({
   const [imagePreview6, setImagePreview6] = useState("No definido");
 
   const [cantity, setCantity] = useState<string | null>(null);
-  console.log(cantity);
 
   const router = useRouter();
 
@@ -133,10 +132,6 @@ function Contract({
 
   const handleCloseModel = () => {
     setOpenViewPdf(false);
-  };
-
-  const handleClosePre = () => {
-    setOpenPreSend(false);
   };
 
   const [openDocs, setOpenDocs] = useState<boolean>(false);
@@ -486,7 +481,7 @@ function Contract({
     useDropzone({ onDrop: onDrop6 });
 
   if (loading) {
-    <p>Loading...</p>
+    return <LoadingPage />
   }
 
   return (

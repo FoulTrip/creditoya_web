@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -13,11 +13,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
-
-const metadata: Metadata = {
-  title: "Credito Ya",
-  description: "Developed by TripCode",
-};
 
 export default function RootLayout({
   children,

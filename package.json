@@ -46,7 +46,6 @@
     "react-signature-canvas": "^1.0.6",
     "socket.io-client": "^4.7.5",
     "sonner": "^1.4.41",
-    "swagger-ui-react": "^5.17.14",
     "utf-8-validate": "^5.0.10",
     "ws": "^8.17.0"
   },

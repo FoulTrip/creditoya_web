@@ -25,6 +25,7 @@ function Dashboard() {
   const ws = useWebSocket();
 
   useEffect(() => {
+    setLoading(true)
     const documentsVerify = async () => {
       const response = await axios.post(
         "/api/user/docs_exist",
@@ -32,15 +33,18 @@ function Dashboard() {
         { headers: { Authorization: `Bearer ${user?.token}` } }
       );
       setCompleteDocs(response.data.data);
-      setLoading(false);
     };
 
     if (user) {
       documentsVerify();
+      setLoading(false)
     } else {
       setLoading(false);
+      setLoading(false)
     }
-  }, [user?.id, user?.token]);
+
+
+  }, [user, user?.token, user?.id]);
 
   useEffect(() => {
     const getAllLoans = async () => {
@@ -59,7 +63,7 @@ function Dashboard() {
     };
 
     getAllLoans();
-  }, [user?.id, user?.token]);
+  }, [user, user?.token, user?.id]);
 
   const newLoan = useCallback(async (event: MessageEvent<Blob>) => {
     console.log(event);
@@ -102,57 +106,56 @@ function Dashboard() {
     return <LoadingPage />; // Aquí puedes reemplazar con tu componente de carga
   }
 
-  if (user) {
-    if (completeDocs) {
-      return (
-        <>
-          <main className={styles.containerDashboard}>
-            {!openContract && (
-              <>
-                {!openContract && (
-                  <div className={styles.btnNew}>
-                    <h5 onClick={handleOpenContract}>Solicitar Prestamo</h5>
-                  </div>
-                )}
-                <div className={styles.listLoans}>
-                  {Loans?.filter((loan) => loan.userId === user.id).map(
-                    (loan) => (
-                      <CardLoan key={loan.id} loan={loan} />
-                    )
-                  )}
+  if (!loading && completeDocs) {
+    return (
+      <>
+        <main className={styles.containerDashboard}>
+          {!openContract && (
+            <>
+              {!openContract && (
+                <div className={styles.btnNew}>
+                  <h5 onClick={handleOpenContract}>Solicitar Prestamo</h5>
                 </div>
-              </>
-            )}
-
-            {openContract && (
-              <Contract toggleContract={toggleContract} userId={user.id} />
-            )}
-          </main>
-        </>
-      );
-    }
-
-    if (!completeDocs) {
-      return (
-        <>
-          <div className={styles.mainVoidDocuments}>
-            <div className={styles.centerMainVoid}>
-              <div className={styles.boxIconVoid}>
-                <TbFingerprint className={styles.fingerIcon} size={300} />
+              )}
+              <div className={styles.listLoans}>
+                {Loans?.filter((loan) => loan.userId === user?.id).map(
+                  (loan) => (
+                    <CardLoan key={loan.id} loan={loan} />
+                  )
+                )}
               </div>
-              <p>Completa tus datos antes de requerir un prestamo</p>
-              <div className={styles.boxBtnComplete}>
-                <button onClick={() => router.push(`/profile/${user.id}`)}>
-                  Completar
-                </button>
-              </div>
+            </>
+          )}
+
+          {openContract && (
+            <Contract
+              toggleContract={toggleContract}
+              userId={user?.id as string}
+            />
+          )}
+        </main>
+      </>
+    );
+  }
+
+  if (!loading && !completeDocs) {
+    return (
+      <>
+        <div className={styles.mainVoidDocuments}>
+          <div className={styles.centerMainVoid}>
+            <div className={styles.boxIconVoid}>
+              <TbFingerprint className={styles.fingerIcon} size={300} />
+            </div>
+            <p>Completa tus datos antes de requerir un prestamo</p>
+            <div className={styles.boxBtnComplete}>
+              <button onClick={() => router.push(`/profile/${user?.id}`)}>
+                Completar
+              </button>
             </div>
           </div>
-        </>
-      );
-    }
-  } else {
-    router.push("/auth");
+        </div>
+      </>
+    );
   }
 }
 
