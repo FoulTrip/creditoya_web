@@ -1,23 +1,13 @@
 import { ScalarEmployee, ScalarLoanApplication } from "@/types/User";
 import React, { useEffect, useState } from "react";
 import styles from "./styles/cardLoan.module.css";
-import {
-  TbArrowBarToDown,
-  TbArrowNarrowRight,
-  TbArrowUpRight,
-  TbChecklist,
-  TbFileFilled,
-  TbMailFilled,
-  TbPhoneFilled,
-  TbViewportWide,
-} from "react-icons/tb";
+import { TbChecklist, TbMailFilled, TbPhoneFilled } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
 import Avatar from "react-avatar";
 
 function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
-  const [openDetails, setOpenDetails] = useState<boolean>(false);
   const router = useRouter();
   const { user } = useGlobalContext();
   const [infoEmployee, setInfoEmployee] = useState<ScalarEmployee | null>(null);
@@ -36,25 +26,23 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
     return formattedNumber;
   };
 
-  if (loan.employeeId !== "Standby") {
-    useEffect(() => {
-      const getEmployee = async () => {
-        const response = await axios.post(
-          "/api/employee/id",
-          {
-            employeeId: loan.employeeId,
-          },
-          {
-            headers: { Authorization: `Bearer ${user?.token}` },
-          }
-        );
-        console.log(response.data);
-        if (response.data.success) setInfoEmployee(response.data.data);
-      };
+  useEffect(() => {
+    const getEmployee = async () => {
+      const response = await axios.post(
+        "/api/employee/id",
+        {
+          employeeId: loan.employeeId,
+        },
+        {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        }
+      );
+      console.log(response.data);
+      if (response.data.success) setInfoEmployee(response.data.data);
+    };
 
-      getEmployee();
-    }, [user?.token, loan.employeeId]);
-  }
+    getEmployee();
+  }, [user?.token, loan.employeeId]);
 
   return (
     <>

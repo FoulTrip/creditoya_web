@@ -3,8 +3,6 @@
 import React, { useState, useCallback, useEffect, ChangeEvent } from "react";
 import { useDropzone } from "react-dropzone";
 import styles from "./page.module.css";
-import CopyText from "@/components/accesories/CopyText";
-import { Document, Page } from "react-pdf";
 import Avatar from "react-avatar";
 import Image from "next/image";
 import axios from "axios";
@@ -508,7 +506,7 @@ function Profile({ params }: { params: { userId: string } }) {
         console.log(imagePreview1);
       }
     },
-    [user?.token, handleSubmitImageFront]
+    [user?.token, user?.id, handleSubmitImageFront, imagePreview1]
   );
 
   const onDrop2 = useCallback(
@@ -550,7 +548,7 @@ function Profile({ params }: { params: { userId: string } }) {
         setImagePreview2(response.data.data);
       }
     },
-    [user, handleSubmitImageBack]
+    [user, handleSubmitImageBack, ]
   );
 
   const onDrop3 = useCallback(

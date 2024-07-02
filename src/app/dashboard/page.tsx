@@ -5,17 +5,14 @@ import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-import { TbAccessPoint, TbFingerprint } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import Contract from "@/components/documents/Contract";
 import { ScalarLoanApplication } from "@/types/User";
 
 import CardLoan from "@/components/accesories/CardLoan";
 import LoadingPage from "@/components/Loaders/LoadingPage";
-import { ContractProvider } from "@/context/Contract";
-import { toast } from "sonner";
 import { useWebSocket } from "next-ws/client";
-import { EventClient } from "@/types/ws";
+import { TbFingerprint } from "react-icons/tb";
 
 function Dashboard() {
   const router = useRouter();
@@ -43,7 +40,7 @@ function Dashboard() {
     } else {
       setLoading(false);
     }
-  }, [user]);
+  }, [user?.id, user?.token]);
 
   useEffect(() => {
     const getAllLoans = async () => {
@@ -62,7 +59,7 @@ function Dashboard() {
     };
 
     getAllLoans();
-  }, [user]);
+  }, [user?.id, user?.token]);
 
   const newLoan = useCallback(async (event: MessageEvent<Blob>) => {
     console.log(event);
