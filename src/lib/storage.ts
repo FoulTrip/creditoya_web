@@ -1,5 +1,4 @@
 import { Storage } from "@google-cloud/storage";
-import credentials from "../../credentials/deft-condition-404103-d030580a86e2.json";
 import crediental from "@/components/Jsons/cloud.json";
 import DecryptJson from "@/handlers/decryptJson";
 

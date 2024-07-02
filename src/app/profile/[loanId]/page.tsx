@@ -97,9 +97,6 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
     loanInfo();
   }, [params.loanId, user?.token]);
 
-  const dateTimeNow = infoLoan?.created_at.toString();
-  console.log(dateTimeNow);
-
   if (loading) {
     return <LoadingPage />;
   }

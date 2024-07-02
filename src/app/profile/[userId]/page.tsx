@@ -382,6 +382,88 @@ function Profile({ params }: { params: { userId: string } }) {
     }
   };
 
+  const handleUpdatePreviewLoads = async (
+    updateData: Partial<Omit<ScalarUser, "password">>
+  ): Promise<void> => {
+    try {
+      // console.log(updateData);
+
+      // Filtrar las propiedades de updateData que no sean "password" y sean de tipo string
+      const filteredUpdateData: Partial<Omit<ScalarUser, "password">> =
+        Object.fromEntries(
+          Object.entries(updateData).filter(
+            ([key, value]) =>
+              key !== "password" &&
+              (typeof value === "string" || value instanceof Date)
+          )
+        );
+
+      // console.log(filteredUpdateData);
+
+      // Enviar solo las propiedades definidas en updateData
+      const response = await axios.put(
+        "/api/loan/update",
+        {
+          userId: user?.id as string,
+          data: filteredUpdateData,
+        },
+        {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        }
+      );
+
+      console.log(response.data.error);
+
+      if (response.data.success === true) {
+        toast.success("Dato actualizado");
+      } else if (response.data.success === false) {
+        throw new Error("Error al actualizar dato");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
+
+  const handleSubmitNumberCc = async () => {
+    const response = await axios.post(
+      "/api/user/docs_update",
+      {
+        userId: params.userId,
+        number: numberCc,
+      },
+      { headers: { Authorization: `Bearer ${user?.token}` } }
+    );
+    if (response.data.success == true) {
+      toast.success("Numero de cedula actualizado");
+    }
+    // console.log(response);
+  };
+
+  const handleDeleteDoc = async (type: string) => {
+    const response = await axios.post(
+      "/api/user/delete_doc",
+      {
+        userId: params.userId,
+        type,
+      },
+      {
+        headers: { Authorization: `Bearer ${user?.token}` },
+      }
+    );
+
+    // console.log(response);
+
+    if (response.data.success) {
+      setImagePreview1(response.data.data[0].documentFront);
+      setImagePreview2(response.data.data[0].documentBack);
+      toast.success("Documento eliminado");
+    } else if (response.data.success == false) {
+      toast.error("Imposible eliminar documento");
+    }
+  };
+
   const onDrop1 = useCallback(
     async (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
@@ -531,88 +613,6 @@ function Profile({ params }: { params: { userId: string } }) {
     useDropzone({ onDrop: onDrop2 });
   const { getRootProps: getRootProps3, getInputProps: getInputProps3 } =
     useDropzone({ onDrop: onDrop3 });
-
-  const handleUpdatePreviewLoads = async (
-    updateData: Partial<Omit<ScalarUser, "password">>
-  ): Promise<void> => {
-    try {
-      // console.log(updateData);
-
-      // Filtrar las propiedades de updateData que no sean "password" y sean de tipo string
-      const filteredUpdateData: Partial<Omit<ScalarUser, "password">> =
-        Object.fromEntries(
-          Object.entries(updateData).filter(
-            ([key, value]) =>
-              key !== "password" &&
-              (typeof value === "string" || value instanceof Date)
-          )
-        );
-
-      // console.log(filteredUpdateData);
-
-      // Enviar solo las propiedades definidas en updateData
-      const response = await axios.put(
-        "/api/loan/update",
-        {
-          userId: user?.id as string,
-          data: filteredUpdateData,
-        },
-        {
-          headers: { Authorization: `Bearer ${user?.token}` },
-        }
-      );
-
-      console.log(response.data.error);
-
-      if (response.data.success === true) {
-        toast.success("Dato actualizado");
-      } else if (response.data.success === false) {
-        throw new Error("Error al actualizar dato");
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
-    }
-  };
-
-  const handleSubmitNumberCc = async () => {
-    const response = await axios.post(
-      "/api/user/docs_update",
-      {
-        userId: params.userId,
-        number: numberCc,
-      },
-      { headers: { Authorization: `Bearer ${user?.token}` } }
-    );
-    if (response.data.success == true) {
-      toast.success("Numero de cedula actualizado");
-    }
-    // console.log(response);
-  };
-
-  const handleDeleteDoc = async (type: string) => {
-    const response = await axios.post(
-      "/api/user/delete_doc",
-      {
-        userId: params.userId,
-        type,
-      },
-      {
-        headers: { Authorization: `Bearer ${user?.token}` },
-      }
-    );
-
-    // console.log(response);
-
-    if (response.data.success) {
-      setImagePreview1(response.data.data[0].documentFront);
-      setImagePreview2(response.data.data[0].documentBack);
-      toast.success("Documento eliminado");
-    } else if (response.data.success == false) {
-      toast.error("Imposible eliminar documento");
-    }
-  };
 
   if (loading) {
     return <LoadingPage />; // Aquí puedes reemplazar con tu componente de carga
@@ -1325,7 +1325,7 @@ function Profile({ params }: { params: { userId: string } }) {
             </div>
           </div>
 
-          <Modal isOpen={openDocs} onClose={handleOpenViewDocImg}>
+          <Modal isOpen={openDocs} onClose={handleOpenViewDocImg} link={null}>
             <div className={styles.boxImageDocPrev}>
               <Image
                 src={contentOpenDoc as string}
@@ -1337,7 +1337,7 @@ function Profile({ params }: { params: { userId: string } }) {
             </div>
           </Modal>
 
-          <Modal isOpen={openViewPdf} onClose={handleOpenViewPdf}>
+          <Modal isOpen={openViewPdf} onClose={handleOpenViewPdf} link={null}>
             <iframe
               src={pdfFile as string}
               style={{ width: "100%", height: "100%" }}
