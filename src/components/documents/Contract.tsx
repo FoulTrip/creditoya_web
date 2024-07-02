@@ -153,6 +153,7 @@ function Contract({
   };
 
   useEffect(() => {
+    setLoading(true)
     const getInfoUserDocs = async () => {
       try {
         if (user && user.token) {
@@ -168,8 +169,8 @@ function Contract({
             const data: ScalarDocument = response.data.data[0];
             setImagePreview1(data.documentFront as string);
             setImagePreview2(data.documentBack as string);
+            setLoading(false);
           }
-          setLoading(false);
         }
       } catch (error) {
         console.log(error);
@@ -184,6 +185,7 @@ function Contract({
   }, [userId, user?.token]);
 
   useEffect(() => {
+    setLoading(true)
     const getInfoUser = async () => {
       try {
         if (user && user.token) {
@@ -202,6 +204,7 @@ function Contract({
             ...(prevDataContract as ScalarLoanApplication),
             userId: data.id as string,
           }));
+          setLoading(false);
         }
       } catch (error) {
         console.log(error);
@@ -361,8 +364,6 @@ function Contract({
       formData.append("name", "paid_flyer_01");
       if (user) formData.append("userid", user.id);
 
-      // const success = await UploadFile(formData);
-
       const response = await axios.post("/api/upload/google/create", formData, {
         headers: {
           Authorization: `Bearer ${user?.token}`,
@@ -484,13 +485,16 @@ function Contract({
   const { getRootProps: getRootProps6, getInputProps: getInputProps6 } =
     useDropzone({ onDrop: onDrop6 });
 
-  console.log(dataContract);
+  if (loading) {
+    <p>Loading...</p>
+  }
 
   return (
     <>
-      <div>
-        <p onClick={toggleContract}>Cerrar</p>
+      <div className={styles.btnClose}>
+        <p onClick={toggleContract}>Cancelar</p>
       </div>
+
       <div className={styles.ContractContainer}>
         <div className={styles.partBox}>
           <div className={styles.partSelect}>

@@ -1,0 +1,304 @@
+.mainLoan {
+  margin-top: 7em;
+  width: 90%;
+  margin-left: 5%;
+}
+
+.DateContainer {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.dateLoan {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.boxIconDate,
+.dateLoan p {
+  display: grid;
+  place-content: center;
+}
+
+.listDetails {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* .firstTitle {
+  margin-top: 1em;
+} */
+
+.secondTitle {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border: 1px solid transparent;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.secondTitleActive {
+  background: var(--green-100);
+  margin-top: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px 15px;
+  border: 1px solid transparent;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.secondTitleActive h3 {
+  font-weight: 500;
+  color: var(--green-900);
+}
+
+.secondTitle h3 {
+  font-weight: 500;
+  color: var(--green-900);
+}
+
+.secondTitle:hover {
+  background: var(--green-50);
+  border: 1px solid var(--green-100);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.boxChevron {
+  display: grid;
+  place-content: center;
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  /* border-radius: 8px; */
+  padding: 5px 10px;
+}
+
+.cardInfo:hover {
+  background: var(--green-50);
+}
+
+.boxIconAction,
+.barAction {
+  display: grid;
+  place-content: center;
+}
+
+.iconPensil {
+  color: var(--green-600);
+  cursor: pointer;
+}
+
+.iconPensil:hover {
+  filter: drop-shadow(0px 0px 10px #000000);
+}
+
+.barBack {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1em;
+}
+
+.centerBarBack {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  padding: 5px 10px;
+  background: var(--white-100);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.centerBarBack:hover {
+  background: var(--white-200);
+  border-radius: 8px;
+}
+
+.boxIcon {
+  display: grid;
+  place-content: center;
+}
+
+.iconArrow {
+  color: var(--white-600);
+}
+
+.boxTextEmployee {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.centerTextEmployee {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.nameEmployee {
+  display: grid;
+  place-content: center;
+}
+
+.headerTitle {
+  margin-bottom: 1em;
+  margin-top: 2em;
+  font-weight: 500;
+  color: var(--white-500);
+}
+
+.barCards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.containerPayments {
+  margin-top: 2em;
+}
+
+.containerPayments h3 {
+  margin-bottom: 1em;
+}
+
+.subtitlePayment02 {
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+.barBtns {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.barDocuments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.boxImgDoc {
+  display: grid;
+  place-content: center;
+  transform: rotate(-90deg);
+  height: 40vh;
+}
+
+.imgDoc {
+  width: 300px;
+  height: 400px;
+  filter: drop-shadow(0px 0px 10px #000000);
+  object-fit: cover;
+}
+
+.cardDocs {
+  flex-basis: 400px;
+  flex-grow: 1;
+  border: 1px solid var(--white-200);
+  padding: 10px;
+  border-radius: 16px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.titleCardDocs {
+  font-weight: 500;
+  color: var(--white-400);
+  padding: 10px;
+  background: var(--white-200);
+  border-radius: 8px;
+  border: 1px solid var(--white-300);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.cardFlyer {
+  flex-basis: 300px;
+  flex-grow: 1;
+  /* background: var(--green-50); */
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px solid var(--white-100);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.headerCardFlyer {
+  background: var(--red-300);
+  padding: 20px 15px;
+  display: grid;
+  place-content: center;
+  border-radius: 8px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.centerHeaderFlyer {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.boxDocument {
+  display: grid;
+  place-content: center;
+}
+
+.iconDocument {
+  color: var(--white-100);
+}
+
+.textHeader {
+  font-weight: 400;
+  display: grid;
+  place-content: center;
+  color: var(--white-50);
+  filter: drop-shadow(0px 0px 10px var(--white-400));
+}
+
+.infoBox {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 1em;
+}
+
+.infoBox p {
+  display: grid;
+  place-content: center;
+  font-weight: 400;
+  color: var(--white-600);
+}
+
+.infoBox button {
+  padding: 5px 20px;
+  border: 1px solid var(--white-200);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--white-500);
+  font-weight: 500;
+}
+
+.infoBox button:hover {
+  border: 1px solid var(--white-300);
+}
+
+.subtitlePayment {
+  font-weight: 500;
+  color: var(--white-500);
+}
+
+@media screen and (max-width: 900px) {
+  .imgDoc {
+    width: 250px;
+    height: 350px;
+  }
+}

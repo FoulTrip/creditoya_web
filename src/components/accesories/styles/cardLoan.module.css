@@ -1,4 +1,130 @@
-.ContractContainer {
+.cardLoan {
   display: flex;
   flex-wrap: wrap;
+  gap: 10px;
+  /* background: var(--white-100); */
+  padding: 20px;
+  /* border-radius: 16px; */
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* border: 1px solid var(--white-200); */
+}
+
+.titleCardLoan {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.requirements {
+  flex-basis: 200px;
+  flex-grow: 1;
+  background: var(--white-50);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--green-100);
+}
+
+.prevInfo h5 {
+  font-size: 15px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.prevInfo h4 {
+  display: flex;
+  justify-content: flex-start;
+  text-align: start;
+  font-weight: 500;
+  color: var(--green-800);
+}
+
+.requirements:hover {
+  scale: 1.01;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.widgetsViews {
+  flex-basis: 200px;
+  flex-grow: 1;
+  background: var(--white-50);
+  padding: 5px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  border: 1px solid var(--green-100);
+}
+
+.widgetsViews:hover {
+  scale: 1.01;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.subTextBarView {
+  flex: 1;
+  display: grid;
+  place-content: center;
+}
+
+.centerList p {
+  font-weight: 500;
+  color: var(--white-400);
+}
+
+.iconListCheck {
+  color: var(--white-600);
+}
+
+.boxChevron {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.boxBtnsDesicion {
+  flex-basis: 200px;
+  flex-grow: 1;
+  background: var(--white-50);
+  padding: 20px;
+  border-radius: 8px;
+  display: grid;
+  place-content: center;
+  border: 1px solid var(--green-100);
+}
+
+.boxBtnsDesicion:hover {
+  scale: 1.01;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.boxStatusLoan h5 {
+  font-weight: 500;
+  color: var(--white-600);
+}
+
+.statusTextPendiente {
+  color: var(--white-400);
+}
+
+.statusTextSuccess {
+  color: var(--green-400);
+}
+
+.statusTextReject {
+  color: var(--red-400);
+}
+
+.boxAmount p {
+  font-weight: 500;
+  color: var(--white-400);
+}
+
+.boxAmount h1 {
+  font-weight: 500;
+  color: var(--white-600);
+}
+
+@media screen and (max-width: 900px) {
+  .subTextBarView {
+    padding: 30px 5px;
+  }
 }

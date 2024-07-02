@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const decodedToken = TokenService.verifyToken(
       token,
       process.env.JWT_SECRET as string
-    );
+    ); // Reemplaza "tu-clave-secreta" con tu clave secreta
 
     if (!decodedToken) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
@@ -29,7 +29,10 @@ export async function POST(req: Request) {
 
     if (!loanId) throw new Error("loanId is required!");
     const response = await LoanApplicationService.get(loanId);
-    return NextResponse.json({ success: true, data: response });
+    return NextResponse.json(
+      { success: true, data: response },
+      { status: 201 }
+    );
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ success: false, error: error.message });

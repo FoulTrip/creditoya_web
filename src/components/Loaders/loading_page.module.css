@@ -3,3 +3,27 @@
   display: grid;
   place-content: center;
 }
+
+.boxIconLoader {
+  display: grid;
+  place-content: center;
+}
+
+.iconLoader {
+  animation: spin 2s linear infinite;
+  color: var(--white-600);
+}
+
+.textLoader {
+  font-weight: 400;
+  color: var(--white-400);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

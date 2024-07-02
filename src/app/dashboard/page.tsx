@@ -117,8 +117,6 @@ function Dashboard() {
                     <p>Solicitar Prestamo</p>
                   </div>
                 )}
-
-                <h1 className={styles.titleLoan}>Tus Prestamos</h1>
                 <div className={styles.listLoans}>
                   {Loans?.filter((loan) => loan.userId === user.id).map(
                     (loan) => (

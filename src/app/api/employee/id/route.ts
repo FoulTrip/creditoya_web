@@ -24,13 +24,18 @@ export async function POST(req: Request) {
 
     const { employeeId } = await req.json();
 
+    if (employeeId == "standby") throw new Error("sin asesor")
+
     console.log(employeeId);
 
     const response = await EmployeeServices.get(employeeId);
 
-    console.log(response)
+    console.log(response);
 
-    return NextResponse.json({ success: true, data: response });
+    return NextResponse.json(
+      { success: true, data: response },
+      { status: 201 }
+    );
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ success: false, error: error.message });

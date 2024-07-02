@@ -58,8 +58,8 @@ export type ScalarLoanApplication = {
   labor_card: string;
   entity: string;
   terms_and_conditions: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  created_at: Date;
+  updated_at: Date;
 };
 
 export type ScalarPdfLoan = {

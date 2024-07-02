@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 import styles from "./styles/cardLoan.module.css";
 import {
   TbArrowBarToDown,
+  TbArrowNarrowRight,
   TbArrowUpRight,
+  TbChecklist,
   TbFileFilled,
   TbMailFilled,
   TbPhoneFilled,
@@ -34,23 +36,25 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
     return formattedNumber;
   };
 
-  useEffect(() => {
-    const getEmployee = async () => {
-      const response = await axios.post(
-        "/api/employee/id",
-        {
-          employeeId: loan.employeeId,
-        },
-        {
-          headers: { Authorization: `Bearer ${user?.token}` },
-        }
-      );
-      console.log(response.data);
-      if (response.data.success) setInfoEmployee(response.data.data);
-    };
+  if (loan.employeeId !== "Standby") {
+    useEffect(() => {
+      const getEmployee = async () => {
+        const response = await axios.post(
+          "/api/employee/id",
+          {
+            employeeId: loan.employeeId,
+          },
+          {
+            headers: { Authorization: `Bearer ${user?.token}` },
+          }
+        );
+        console.log(response.data);
+        if (response.data.success) setInfoEmployee(response.data.data);
+      };
 
-    getEmployee();
-  }, [user?.token, loan.employeeId]);
+      getEmployee();
+    }, [user?.token, loan.employeeId]);
+  }
 
   const toggleDetails = () => {
     setOpenDetails(!openDetails);
@@ -59,32 +63,39 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
   return (
     <>
       <div className={styles.cardLoan}>
+        <h1 className={styles.titleCardLoan}>
+          <div className={styles.prevInfo}>
+            <h5>{loan.id}</h5>
+            <h4>Solicitud de prestamo</h4>
+          </div>
+        </h1>
         <div className={styles.requirements}>
           <div className={styles.boxAmount}>
             <p>Cantidad Solicitada</p>
-            <h1>{formattedPrice(loan.requested_amount)}</h1>
+            <h1>{formattedPrice(loan.cantity)}</h1>
           </div>
 
-          <div className={styles.boxAmount}>
+          {/* <div className={styles.boxAmount}>
             <p>Carta Laboral</p>
-            <div className={styles.verifyDocument}>
-              <div></div>
+            <div className={styles.supraBoxCheckerLabor}>
+              <div className={styles.centerBoxCheckerLabor}>
+                <div className={styles.boxIconCheck}></div>
+                <p>Carta laboral Subida</p>
+              </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
-        <div className={styles.widgetsViews}>
-          <div className={styles.listBtnsActions}>
-            <div className={styles.barViewDetails}>
-              <div
-                className={styles.subBarView}
-                onClick={() => router.push(`/req/${loan.id}`)}
-              >
-                <p className={styles.subTextBarView}>Datos completos</p>
-                <div className={styles.boxChevron}>
-                  <TbArrowUpRight className={styles.iconChevron} size={20} />
-                </div>
+        <div
+          className={styles.widgetsViews}
+          onClick={() => router.push(`/req/${loan.id}`)}
+        >
+          <div className={styles.subTextBarView}>
+            <div className={styles.centerList}>
+              <div className={styles.iconCheckList}>
+                <TbChecklist className={styles.iconListCheck} size={30} />
               </div>
+              <p>Datos completos</p>
             </div>
           </div>
         </div>
