@@ -56,47 +56,20 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
     }, [user?.token, loan.employeeId]);
   }
 
-  const toggleDetails = () => {
-    setOpenDetails(!openDetails);
-  };
-
   return (
     <>
       <div className={styles.cardLoan}>
         <h1 className={styles.titleCardLoan}>
           <div className={styles.prevInfo}>
-            <h5>{loan.id}</h5>
-            <h4>Solicitud de prestamo</h4>
+            <h5 className={styles.titleId}>Solicitud</h5>
+            <h5 className={styles.textId}>{loan.id}</h5>
+            {/* <h4>Prestamo</h4> */}
           </div>
         </h1>
         <div className={styles.requirements}>
           <div className={styles.boxAmount}>
             <p>Cantidad Solicitada</p>
             <h1>{formattedPrice(loan.cantity)}</h1>
-          </div>
-
-          {/* <div className={styles.boxAmount}>
-            <p>Carta Laboral</p>
-            <div className={styles.supraBoxCheckerLabor}>
-              <div className={styles.centerBoxCheckerLabor}>
-                <div className={styles.boxIconCheck}></div>
-                <p>Carta laboral Subida</p>
-              </div>
-            </div>
-          </div> */}
-        </div>
-
-        <div
-          className={styles.widgetsViews}
-          onClick={() => router.push(`/req/${loan.id}`)}
-        >
-          <div className={styles.subTextBarView}>
-            <div className={styles.centerList}>
-              <div className={styles.iconCheckList}>
-                <TbChecklist className={styles.iconListCheck} size={30} />
-              </div>
-              <p>Datos completos</p>
-            </div>
           </div>
         </div>
 
@@ -141,6 +114,20 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+
+        <div
+          className={styles.widgetsViews}
+          onClick={() => router.push(`/req/${loan.id}`)}
+        >
+          <div className={styles.subTextBarView}>
+            <div className={styles.centerList}>
+              <div className={styles.iconCheckList}>
+                <TbChecklist className={styles.iconListCheck} size={30} />
+              </div>
+              <p>Datos completos</p>
+            </div>
           </div>
         </div>
       </div>

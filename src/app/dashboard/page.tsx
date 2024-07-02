@@ -113,8 +113,8 @@ function Dashboard() {
             {!openContract && (
               <>
                 {!openContract && (
-                  <div className={styles.btnNew} onClick={handleOpenContract}>
-                    <p>Solicitar Prestamo</p>
+                  <div className={styles.btnNew}>
+                    <h5 onClick={handleOpenContract}>Solicitar Prestamo</h5>
                   </div>
                 )}
                 <div className={styles.listLoans}>

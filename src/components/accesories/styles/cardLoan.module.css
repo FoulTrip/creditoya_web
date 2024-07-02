@@ -5,8 +5,10 @@
   /* background: var(--white-100); */
   padding: 20px;
   /* border-radius: 16px; */
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  /* border: 1px solid var(--white-200); */
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+  /* border: 1px solid var(--white-100); */
+  border-bottom: 1px solid var(--white-300);
+  padding-bottom: 3em;
 }
 
 .titleCardLoan {
@@ -18,13 +20,22 @@
 .requirements {
   flex-basis: 200px;
   flex-grow: 1;
-  background: var(--white-50);
+  background: var(--white-100);
   padding: 20px;
   border-radius: 8px;
-  border: 1px solid var(--green-100);
+  border: 1px solid var(--white-200);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-.prevInfo h5 {
+.titleId {
+  font-weight: 500;
+  color: var(--white-600);
+  font-size: 15px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.textId {
   font-size: 15px;
   display: flex;
   justify-content: flex-start;
@@ -39,25 +50,24 @@
 }
 
 .requirements:hover {
-  scale: 1.01;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--white-300);
 }
 
 .widgetsViews {
   flex-basis: 200px;
   flex-grow: 1;
-  background: var(--white-50);
+  background: var(--white-100);
   padding: 5px;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  border: 1px solid var(--green-100);
+  border: 1px solid var(--white-200);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .widgetsViews:hover {
-  scale: 1.01;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--white-300);
 }
 
 .subTextBarView {
@@ -83,17 +93,17 @@
 .boxBtnsDesicion {
   flex-basis: 200px;
   flex-grow: 1;
-  background: var(--white-50);
+  background: var(--white-100);
   padding: 20px;
   border-radius: 8px;
   display: grid;
   place-content: center;
-  border: 1px solid var(--green-100);
+  border: 1px solid var(--white-200);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .boxBtnsDesicion:hover {
-  scale: 1.01;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--white-300);
 }
 
 .boxStatusLoan h5 {

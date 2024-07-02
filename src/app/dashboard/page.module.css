@@ -55,24 +55,26 @@
 }
 
 .btnNew {
-  background: var(--green-50);
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--green-100);
-  padding: 35px 10px;
   border-radius: 8px;
+  display: grid;
+  place-content: center;
+}
+
+.btnNew h5 {
+  background: var(--green-50);
+  font-weight: 400;
   text-align: center;
+  padding: 10px 20px;
+  border-radius: 8px;
   cursor: pointer;
-}
-
-.btnNew p {
-  font-weight: 500;
-  font-size: 20px;
-  filter: drop-shadow(0px 0px 10px var(--white-600));
+  font-size: 18px;
   color: var(--green-600);
+  border: 1px solid transparent;
+  box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
 }
 
-.btnNew:hover {
-  border: 1px solid var(--green-300);
+.btnNew h5:hover {
+  border: 1px solid var(--white-200);
 }
 
 .titleLoan {
