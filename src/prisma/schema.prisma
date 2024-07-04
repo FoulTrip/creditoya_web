@@ -51,8 +51,7 @@ model LoanApplication {
     third_flyer          String
     reasonReject         String?
     cantity              String
-    bankCurrentAccount   Boolean    @default(false)
-    bankSavingAccount    Boolean    @default(false)
+    bankSavingAccount    Boolean    @default(true)
     bankNumberAccount    String
     entity               String
     labor_card           String

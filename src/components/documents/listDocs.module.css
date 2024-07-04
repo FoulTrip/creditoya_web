@@ -1,0 +1,46 @@
+.listDocs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 50px;
+  margin-top: 2em;
+}
+
+.cardDoc {
+  background: var(--red-400);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+}
+
+.cardDoc:hover {
+  background: var(--red-500);
+  border: 1px solid var(--red-500);
+}
+
+.headerCardDoc {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.headerCardDoc p {
+    color: var(--white-50);
+}
+
+.iconPdf {
+    color: var(--white-50);
+}
+
+.boxIconPdf {
+  display: grid;
+  place-content: center;
+}
+
+@media screen and (max-width: 900px) {
+  .listDocs {
+    display: flex;
+    flex-direction: column;
+  }
+}

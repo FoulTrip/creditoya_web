@@ -7,7 +7,6 @@ const DateToPretty = (dateString: string, hour: boolean): string => {
     };
 
     const date = new Date(dateString);
-    console.log(date)
     return date.toLocaleDateString("es-ES", options);
   }
 

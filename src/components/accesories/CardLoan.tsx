@@ -37,7 +37,6 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
           headers: { Authorization: `Bearer ${user?.token}` },
         }
       );
-      console.log(response.data);
       if (response.data.success) setInfoEmployee(response.data.data);
     };
 

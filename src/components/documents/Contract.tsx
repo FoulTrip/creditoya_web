@@ -21,13 +21,14 @@ import SelectBanks from "../accesories/SelectBanks";
 import Image from "next/image";
 
 import { CiMoneyCheck1 } from "react-icons/ci";
-import { useRouter } from "next/navigation";
 import Modal from "../modal/Modal";
 import PreEnvio from "./PreEnvio";
 import { useWebSocket } from "next-ws/client";
 import AccountType from "../accesories/TypeAccount";
 import Link from "next/link";
 import LoadingPage from "../Loaders/LoadingPage";
+import Signature from "./signature";
+import ListPdfsAutogenerate from "./ListPdfsAutogenerate";
 
 function Contract({
   userId,
@@ -78,6 +79,7 @@ function Contract({
           throw new Error("Sube tu carta laboral actualizada");
         if (!dataContract.terms_and_conditions)
           throw new Error("Acepta los terminos y condiciones");
+        if (!dataContract.signature) throw new Error("Firma tu solicitud");
 
         setOpenPreSend(true);
       }
@@ -88,8 +90,6 @@ function Contract({
     }
   };
 
-  console.log(userId);
-
   const [loading, setLoading] = useState(true);
   const [imagePreview1, setImagePreview1] = useState("No definido");
   const [imagePreview2, setImagePreview2] = useState("No definido");
@@ -98,9 +98,7 @@ function Contract({
   const [imagePreview5, setImagePreview5] = useState("No definido");
   const [imagePreview6, setImagePreview6] = useState("No definido");
 
-  const [cantity, setCantity] = useState<string | null>(null);
-
-  const router = useRouter();
+  const [successSignature, setSuccessSignature] = useState<boolean>(false);
 
   const [contentOpenDoc, setContentOpenDoc] = useState<
     string | undefined | null
@@ -148,7 +146,7 @@ function Contract({
   };
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     const getInfoUserDocs = async () => {
       try {
         if (user && user.token) {
@@ -180,7 +178,7 @@ function Contract({
   }, [userId, user?.token]);
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     const getInfoUser = async () => {
       try {
         if (user && user.token) {
@@ -274,27 +272,15 @@ function Contract({
     }));
   };
 
+  const handleSuccessSignature = () => {
+    setSuccessSignature(true);
+  };
+
   const handleOptionBank = (option: string) => {
     setDataContract((prevDataContract) => ({
       ...(prevDataContract as ScalarLoanApplication),
       entity: option,
     }));
-  };
-
-  const handleTypeBank = (type: string) => {
-    if (type == "current") {
-      setDataContract((prevDataContract) => ({
-        ...(prevDataContract as ScalarLoanApplication),
-        bankCurrentAccount: true,
-        bankSavingAccount: false,
-      }));
-    } else if (type == "saving") {
-      setDataContract((prevDataContract) => ({
-        ...(prevDataContract as ScalarLoanApplication),
-        bankSavingAccount: true,
-        bankCurrentAccount: false,
-      }));
-    }
   };
 
   const onDrop1 = useCallback(async (acceptedFiles: File[]) => {
@@ -480,8 +466,9 @@ function Contract({
   const { getRootProps: getRootProps6, getInputProps: getInputProps6 } =
     useDropzone({ onDrop: onDrop6 });
 
+  console.log(dataContract);
   if (loading) {
-    return <LoadingPage />
+    return <LoadingPage />;
   }
 
   return (
@@ -504,22 +491,18 @@ function Contract({
             />
           </div>
 
-          <AccountType onSelectAccountType={handleTypeBank} />
-
           <div className={styles.partPrice}>
-            <h5>Cuanto necesitas?</h5>
+            <h5>Valor solicitud</h5>
             <CurrencyInput
               className={styles.inputPrice}
               placeholder="Ingresa la cantidad"
               defaultValue={0}
               decimalsLimit={2}
               onValueChange={(value, name, values) => {
-                setCantity(value as string);
                 setDataContract((prevDataContract) => ({
                   ...(prevDataContract as ScalarLoanApplication),
                   cantity: value as string,
                 }));
-                console.log(value, name, values);
               }}
               prefix="$"
             />
@@ -527,7 +510,7 @@ function Contract({
 
           <div>
             <h3 className={styles.titleVolants}>
-              Tres ultimos bolantes de pago
+              Tres ultimos volantes de pago
             </h3>
             <div className={styles.columnCards}>
               <div
@@ -592,8 +575,8 @@ function Contract({
                       <CiMoneyCheck1 className={styles.iconPreview} size={60} />
                     </div>
                     <p className={styles.textPreview}>
-                      {loadingProccessImg04 && "Processando tu bolante..."}
-                      {!loadingProccessImg04 && "Subir primer bolante de pago"}
+                      {loadingProccessImg04 && "Procesando tu volante..."}
+                      {!loadingProccessImg04 && "Subir primer volante de pago"}
                     </p>
                   </div>
                 )}
@@ -615,7 +598,7 @@ function Contract({
                             <TbCircleCheckFilled className={styles.iconCheck} />
                           </div>
                           <p className={styles.warninCC}>
-                            Segundo bolante de pago subido
+                            Segundo volante de pago subido
                           </p>
                         </div>
                       </div>
@@ -661,8 +644,8 @@ function Contract({
                       <CiMoneyCheck1 className={styles.iconPreview} size={60} />
                     </div>
                     <p className={styles.textPreview}>
-                      {loadingProccessImg05 && "Processando tu documento..."}
-                      {!loadingProccessImg05 && "Subir segundo bolante de pago"}
+                      {loadingProccessImg05 && "Procesando tu volante..."}
+                      {!loadingProccessImg05 && "Subir segundo volante de pago"}
                     </p>
                   </div>
                 )}
@@ -684,7 +667,7 @@ function Contract({
                             <TbCircleCheckFilled className={styles.iconCheck} />
                           </div>
                           <p className={styles.warninCC}>
-                            Tercer bolante de pago subido
+                            Tercer volante de pago subido
                           </p>
                         </div>
                       </div>
@@ -730,8 +713,84 @@ function Contract({
                       <CiMoneyCheck1 className={styles.iconPreview} size={60} />
                     </div>
                     <p className={styles.textPreview}>
-                      {loadingProccessImg06 && "Processando tu bolante..."}
-                      {!loadingProccessImg06 && "Subir tercer bolante de pago"}
+                      {loadingProccessImg06 && "Procesando tu volante..."}
+                      {!loadingProccessImg06 && "Subir tercer volante de pago"}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <h3 className={styles.titleVolantsCard}>
+                Carta laboral actualizada
+              </h3>
+
+              <div
+                className={styles.boxInfoUserCard}
+                {...(imagePreview3 === "No definido" ? getRootProps3() : {})}
+              >
+                {imagePreview3 === "No definido" && (
+                  <input {...getInputProps3()} />
+                )}
+                {imagePreview3 && imagePreview3 != "No definido" ? (
+                  <>
+                    <div className={styles.supraBarStatus}>
+                      <div className={styles.barStatusDocs}>
+                        <div className={styles.headerCardStatus}>
+                          <div className={styles.boxIconStatus}>
+                            <TbCircleCheckFilled className={styles.iconCheck} />
+                          </div>
+                          <p className={styles.warninCC}>
+                            Carta laboral subido
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className={styles.boxDoc}>
+                        <button
+                          className={styles.btnOpenDoc}
+                          onClick={() =>
+                            handlerOpenModel({
+                              link: imagePreview3,
+                            })
+                          }
+                        >
+                          Ver documento
+                        </button>
+                      </div>
+
+                      <div className={styles.boxIconsStatus}>
+                        <div
+                          className={styles.boxIcon}
+                          onClick={() => {
+                            handleOpenViewDocImg();
+                            handleSetViewDocImg({ image: imagePreview3 });
+                          }}
+                        >
+                          <TbPhotoSearch
+                            className={styles.viewIcon}
+                            size={20}
+                          />
+                        </div>
+                        <div
+                          className={styles.boxIcon}
+                          onClick={() => handleDeleteDoc("front")}
+                        >
+                          <TbTrash className={styles.trashIcon} size={20} />
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className={styles.containerDropDocuments}>
+                    <div className={styles.boxIconPreview}>
+                      <TbFileCertificate
+                        className={styles.iconPreview}
+                        size={60}
+                      />
+                    </div>
+                    <p className={styles.textPreview}>
+                      {loadingProccessImg03 && "Processando tu documento..."}
+                      {!loadingProccessImg03 && "Carga tu carta laboral aqui"}
                     </p>
                   </div>
                 )}
@@ -739,202 +798,27 @@ function Contract({
             </div>
           </div>
         </div>
-
-        <div className={styles.partBox}>
-          <div
-            className={styles.boxInfoUser}
-            {...(imagePreview1 === "No definido" ? getRootProps1() : {})}
-          >
-            {imagePreview1 === "No definido" && <input {...getInputProps1()} />}
-            {imagePreview1 && imagePreview1 != "No definido" ? (
-              <>
-                <div className={styles.supraBarStatus}>
-                  <div className={styles.barStatusDocs}>
-                    <div className={styles.headerCardStatus}>
-                      <div className={styles.boxIconStatus}>
-                        <TbCircleCheckFilled className={styles.iconCheck} />
-                      </div>
-                      <p className={styles.warninCC}>
-                        Documento frontal subido
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className={styles.boxDoc}>
-                    <Image
-                      src={imagePreview1}
-                      alt="dc"
-                      className={styles.prevDoc}
-                      width={200}
-                      height={100}
-                    />
-                  </div>
-
-                  <div className={styles.boxIconsStatus}>
-                    <div
-                      className={styles.boxIcon}
-                      onClick={() => {
-                        handleOpenViewDocImg();
-                        handleSetViewDocImg({ image: imagePreview1 });
-                      }}
-                    >
-                      <TbPhotoSearch className={styles.viewIcon} size={20} />
-                    </div>
-                    <div
-                      className={styles.boxIcon}
-                      onClick={() => handleDeleteDoc("front")}
-                    >
-                      <TbTrash className={styles.trashIcon} size={20} />
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className={styles.containerDropDocuments}>
-                <div className={styles.boxIconPreview}>
-                  <TbFaceId className={styles.iconPreview} size={60} />
-                </div>
-                <p className={styles.textPreview}>
-                  {loadingProccessImg01 && "Processando tu documento..."}
-                  {!loadingProccessImg01 &&
-                    "Toma una foto clara de la parte frontal de tu cedula"}
-                </p>
-              </div>
-            )}
-          </div>
-
-          <div
-            className={styles.boxInfoUser}
-            {...(imagePreview2 === "No definido" ? getRootProps2() : {})}
-          >
-            {imagePreview2 === "No definido" && <input {...getInputProps2()} />}
-            {imagePreview2 && imagePreview2 != "No definido" ? (
-              <>
-                <div className={styles.supraBarStatus}>
-                  <div className={styles.barStatusDocs}>
-                    <div className={styles.headerCardStatus}>
-                      <div className={styles.boxIconStatus}>
-                        <TbCircleCheckFilled className={styles.iconCheck} />
-                      </div>
-                      <p className={styles.warninCC}>
-                        Documento trasero subido
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className={styles.boxDoc}>
-                    <Image
-                      src={imagePreview2}
-                      alt="dc"
-                      className={styles.prevDoc}
-                      width={200}
-                      height={100}
-                    />
-                  </div>
-
-                  <div className={styles.boxIconsStatus}>
-                    <div
-                      className={styles.boxIcon}
-                      onClick={() => {
-                        handleOpenViewDocImg();
-                        handleSetViewDocImg({ image: imagePreview2 });
-                      }}
-                    >
-                      <TbPhotoSearch className={styles.viewIcon} size={20} />
-                    </div>
-                    <div
-                      className={styles.boxIcon}
-                      onClick={() => handleDeleteDoc("front")}
-                    >
-                      <TbTrash className={styles.trashIcon} size={20} />
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className={styles.containerDropDocuments}>
-                <div className={styles.boxIconPreview}>
-                  <TbFaceId className={styles.iconPreview} size={60} />
-                </div>
-                <p className={styles.textPreview}>
-                  {loadingProccessImg02 && "Processando tu documento..."}
-                  {!loadingProccessImg02 &&
-                    "Toma una foto clara de la parte frontal de tu cedula"}
-                </p>
-              </div>
-            )}
-          </div>
-
-          <div
-            className={styles.boxInfoUser}
-            {...(imagePreview3 === "No definido" ? getRootProps3() : {})}
-          >
-            {imagePreview3 === "No definido" && <input {...getInputProps3()} />}
-            {imagePreview3 && imagePreview3 != "No definido" ? (
-              <>
-                <div className={styles.supraBarStatus}>
-                  <div className={styles.barStatusDocs}>
-                    <div className={styles.headerCardStatus}>
-                      <div className={styles.boxIconStatus}>
-                        <TbCircleCheckFilled className={styles.iconCheck} />
-                      </div>
-                      <p className={styles.warninCC}>Carta laboral subido</p>
-                    </div>
-                  </div>
-
-                  <div className={styles.boxDoc}>
-                    <button
-                      className={styles.btnOpenDoc}
-                      onClick={() =>
-                        handlerOpenModel({
-                          link: imagePreview3,
-                        })
-                      }
-                    >
-                      Ver documento
-                    </button>
-                  </div>
-
-                  <div className={styles.boxIconsStatus}>
-                    <div
-                      className={styles.boxIcon}
-                      onClick={() => {
-                        handleOpenViewDocImg();
-                        handleSetViewDocImg({ image: imagePreview3 });
-                      }}
-                    >
-                      <TbPhotoSearch className={styles.viewIcon} size={20} />
-                    </div>
-                    <div
-                      className={styles.boxIcon}
-                      onClick={() => handleDeleteDoc("front")}
-                    >
-                      <TbTrash className={styles.trashIcon} size={20} />
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className={styles.containerDropDocuments}>
-                <div className={styles.boxIconPreview}>
-                  <TbFileCertificate className={styles.iconPreview} size={60} />
-                </div>
-                <p className={styles.textPreview}>
-                  {loadingProccessImg03 && "Processando tu documento..."}
-                  {!loadingProccessImg03 && "Carga tu carta laboral aqui"}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
+
+      <h3 className={styles.titleVolantsSignal}>Firma tu solicitud</h3>
+
+      <Signature
+        success={handleSuccessSignature}
+        src={handleSaveSignature}
+        userId={userId}
+      />
+
+      {successSignature && (
+        <>
+          <ListPdfsAutogenerate data={dataContract as ScalarLoanApplication} />
+        </>
+      )}
 
       <div className={styles.boxTerms}>
         <div className={styles.centerBoxTerms}>
           <input type="checkbox" onChange={handleAcceptTerms} />
           <h5>
-            Estoy de acuerdo con los{" "}
-            <Link href={""}>Terminos y Condiciones</Link>
+            Acepto <Link href={""}>Terminos y Condiciones</Link>
           </h5>
         </div>
       </div>
@@ -955,7 +839,6 @@ function Contract({
           data={dataContract as ScalarLoanApplication}
           Success={handleAuthLoan}
           token={user?.token as string}
-          signature={handleSaveSignature}
           completeName={`${userInfo?.names} ${userInfo?.firstLastName} ${userInfo?.secondLastName}`}
           mail={userInfo?.email as string}
         />
