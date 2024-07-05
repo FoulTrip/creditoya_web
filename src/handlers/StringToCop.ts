@@ -4,8 +4,6 @@ export const stringToPriceCOP = (price: string) => {
   const formatter = new Intl.NumberFormat("es-CO", {
     style: "currency",
     currency: "COP",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
   });
 
   const formattedNumber = formatter.format(number);

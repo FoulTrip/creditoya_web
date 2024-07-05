@@ -43,7 +43,7 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
         </div>
       </div>
 
-      <Modal
+      {/* <Modal */}
     </>
   );
 }

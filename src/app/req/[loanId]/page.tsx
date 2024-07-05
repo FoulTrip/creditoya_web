@@ -118,174 +118,313 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
         <h1>Informacion Completa</h1>
         <p>Solicitud: {infoLoan?.id}</p>
 
-        <div className={styles.containerInfo}>
-          <h5 className={styles.headerTitle}>Estatus de solicitud</h5>
-          <h1>{infoLoan?.status}</h1>
-        </div>
+        <div className={styles.barPrevInfo}>
+          <div className={styles.containerInfo}>
+            <h5 className={styles.headerTitle}>Estatus de solicitud</h5>
+            <h2>{infoLoan?.status}</h2>
+          </div>
 
-        <div className={styles.containerInfo}>
-          <h5 className={styles.headerTitle}>Fecha de solicitud</h5>
-          <h2>
-            {DateToPretty(infoLoan?.created_at.toString() as string, false)}
-          </h2>
-        </div>
+          <div className={styles.containerInfo}>
+            <h5 className={styles.headerTitle}>Fecha de solicitud</h5>
+            <h2>
+              {DateToPretty(infoLoan?.created_at.toString() as string, false)}
+            </h2>
+          </div>
 
-        <div className={styles.containerInfo}>
-          <h5 className={styles.headerTitle}>Solicitud requerida</h5>
-          <h2>{stringToPriceCOP(infoLoan?.cantity as string)}</h2>
-        </div>
+          <div className={styles.containerInfo}>
+            <h5 className={styles.headerTitle}>Solicitud requerida</h5>
+            <h2>{stringToPriceCOP(infoLoan?.cantity as string)}</h2>
+          </div>
 
-        <div className={styles.containerInfo}>
-          <h5 className={styles.headerTitle}>Asesor Encargado</h5>
-          <div className={styles.boxTextEmployee}>
-            <div className={styles.centerTextEmployee}>
-              <div className={styles.boxAvatarEmployee}>
-                <Avatar src={infoEmployee?.avatar} round={true} size={"40"} />
-              </div>
-
-              <div className={styles.contactInfo}>
-                <h5>Nombre</h5>
-                <p className={styles.nameEmployee}>
-                  {infoEmployee == null
-                    ? "Sin Asesor"
-                    : `${infoEmployee.name} ${infoEmployee.lastNames}`}
-                </p>
-              </div>
-
-              {infoEmployee && (
-                <div className={styles.contactInfo}>
-                  <h5>Numero Celular</h5>
-                  <p>{infoEmployee?.phone}</p>
+          <div className={styles.containerInfo}>
+            <h5 className={styles.headerTitle}>Asesor Encargado</h5>
+            <div className={styles.boxTextEmployee}>
+              <div className={styles.centerTextEmployee}>
+                <div className={styles.boxAvatarEmployee}>
+                  <Avatar src={infoEmployee?.avatar} round={true} size={"30"} />
                 </div>
-              )}
+
+                <div className={styles.contactInfo}>
+                  <p className={styles.nameEmployee}>
+                    {infoEmployee == null
+                      ? "Sin Asesor"
+                      : `${infoEmployee.name} ${infoEmployee.lastNames}`}
+                  </p>
+                </div>
+
+                {infoEmployee && (
+                  <div className={styles.contactInfo}>
+                    <h5>Numero Celular</h5>
+                    <p>{infoEmployee?.phone}</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
         <div className={styles.containerPayments}>
-          <h3 className={styles.subtitlePayment}>Ultimos volantes de pago</h3>
-
-          <div className={styles.barCards}>
-            <div className={styles.cardFlyer}>
-              <div className={styles.headerCardFlyer}>
-                <div className={styles.centerHeaderFlyer}>
-                  <div className={styles.boxDocument}>
-                    <HiOutlineDocumentChartBar
-                      size={20}
-                      className={styles.iconDocument}
-                    />
-                  </div>
-                  <h4 className={styles.textHeader}>Volante de Pago</h4>
-                </div>
-              </div>
-              <div className={styles.infoBox}>
-                <p>Primer Volante de pago</p>
-                <div className={styles.barBtns}>
-                  <button
-                    onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                  >
-                    Ver
-                  </button>
-
-                  <button
-                    onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                  >
-                    Descargar
-                  </button>
-                </div>
-              </div>
+          <div>
+            <div className={styles.titleSection}>
+              <h3>Carta Laboral</h3>
             </div>
-
-            <div className={styles.cardFlyer}>
-              <div className={styles.headerCardFlyer}>
-                <div className={styles.centerHeaderFlyer}>
-                  <div className={styles.boxDocument}>
-                    <HiOutlineDocumentChartBar
-                      className={styles.iconDocument}
-                    />
+            <div className={styles.boxLaborCard}>
+              <div className={styles.cardLabor}>
+                <div className={styles.headerCardFlyer}>
+                  <div className={styles.centerHeaderFlyer}>
+                    <div className={styles.boxDocument}>
+                      <HiOutlineDocumentChartBar
+                        size={20}
+                        className={styles.iconDocument}
+                      />
+                    </div>
+                    <h4 className={styles.textHeader}>Documento PDF</h4>
                   </div>
-                  <p className={styles.textHeader}>Documento PDF</p>
                 </div>
-              </div>
-              <div className={styles.infoBox}>
-                <p>Segundo Volante de pago</p>
-                <div className={styles.barBtns}>
-                  <button
-                    onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                  >
-                    Ver
-                  </button>
+                <div className={styles.infoBox}>
+                  <p>Carta Laboral</p>
+                  <div className={styles.barBtns}>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Ver
+                    </button>
 
-                  <button
-                    onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                  >
-                    Descargar
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.cardFlyer}>
-              <div className={styles.headerCardFlyer}>
-                <div className={styles.centerHeaderFlyer}>
-                  <div className={styles.boxDocument}>
-                    <HiOutlineDocumentChartBar
-                      className={styles.iconDocument}
-                    />
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
                   </div>
-                  <p className={styles.textHeader}>Documento PDF</p>
-                </div>
-              </div>
-              <div className={styles.infoBox}>
-                <p>Tercer Volante de pago</p>
-                <div className={styles.barBtns}>
-                  <button
-                    onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                  >
-                    Ver
-                  </button>
-
-                  <button
-                    onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                  >
-                    Descargar
-                  </button>
                 </div>
               </div>
             </div>
           </div>
 
-          <h3 className={styles.subtitlePayment02}>
-            Documentos de identidad
-          </h3>
-          <div className={styles.barDocuments}>
-            <div className={styles.cardDocs}>
-              <h5 className={styles.titleCardDocs}>
-                Documento Identidad (Parte frontal)
-              </h5>
-              <div className={styles.boxImgDoc}>
-                <Image
-                  className={styles.imgDoc}
-                  src={documentsInfo?.documentFront as string}
-                  alt="document"
-                  width={300}
-                  height={400}
-                />
+          <div className={styles.backgroundCarts}>
+            <div className={styles.titleSection}>
+              <h3>Ultimos volantes de pago</h3>
+            </div>
+            <div className={styles.barCards}>
+              <div className={styles.cardFlyer}>
+                <div className={styles.headerCardFlyer}>
+                  <div className={styles.centerHeaderFlyer}>
+                    <div className={styles.boxDocument}>
+                      <HiOutlineDocumentChartBar
+                        size={20}
+                        className={styles.iconDocument}
+                      />
+                    </div>
+                    <h4 className={styles.textHeader}>Documento PDF</h4>
+                  </div>
+                </div>
+                <div className={styles.infoBox}>
+                  <p>Primer Volante de pago</p>
+                  <div className={styles.barBtns}>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Ver
+                    </button>
+
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.cardFlyer}>
+                <div className={styles.headerCardFlyer}>
+                  <div className={styles.centerHeaderFlyer}>
+                    <div className={styles.boxDocument}>
+                      <HiOutlineDocumentChartBar
+                        className={styles.iconDocument}
+                      />
+                    </div>
+                    <p className={styles.textHeader}>Documento PDF</p>
+                  </div>
+                </div>
+                <div className={styles.infoBox}>
+                  <p>Segundo Volante de pago</p>
+                  <div className={styles.barBtns}>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Ver
+                    </button>
+
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.cardFlyer}>
+                <div className={styles.headerCardFlyer}>
+                  <div className={styles.centerHeaderFlyer}>
+                    <div className={styles.boxDocument}>
+                      <HiOutlineDocumentChartBar
+                        className={styles.iconDocument}
+                      />
+                    </div>
+                    <p className={styles.textHeader}>Documento PDF</p>
+                  </div>
+                </div>
+
+                <div className={styles.infoBox}>
+                  <p>Tercer Volante de pago</p>
+                  <div className={styles.barBtns}>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Ver
+                    </button>
+
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div className={styles.cardDocs}>
-              <h5 className={styles.titleCardDocs}>
-                Documento Identidad (Parte Trasera)
-              </h5>
-              <div className={styles.boxImgDoc}>
-                <Image
-                  className={styles.imgDoc}
-                  src={documentsInfo?.documentBack as string}
-                  alt="document"
-                  width={300}
-                  height={400}
-                />
+          <div className={styles.backgroundDocs}>
+            <div className={styles.titleSection}>
+              <h3>Documentos de identidad</h3>
+            </div>
+            <div className={styles.barDocuments}>
+              <div className={styles.cardDocs}>
+                <h5 className={styles.titleCardDocs}>
+                  Documento Identidad (Parte frontal)
+                </h5>
+                <div className={styles.boxImgDoc}>
+                  <Image
+                    className={styles.imgDoc}
+                    src={documentsInfo?.documentFront as string}
+                    alt="document"
+                    width={300}
+                    height={400}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.cardDocs}>
+                <h5 className={styles.titleCardDocs}>
+                  Documento Identidad (Parte Trasera)
+                </h5>
+                <div className={styles.boxImgDoc}>
+                  <Image
+                    className={styles.imgDoc}
+                    src={documentsInfo?.documentBack as string}
+                    alt="document"
+                    width={300}
+                    height={400}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.backgroundOtherFiles}>
+            <div className={styles.titleSection}>
+              <h3>Otros documentos</h3>
+            </div>
+            <div className={styles.barCards}>
+              <div className={styles.cardFlyer}>
+                <div className={styles.headerCardFlyer}>
+                  <div className={styles.centerHeaderFlyer}>
+                    <div className={styles.boxDocument}>
+                      <HiOutlineDocumentChartBar
+                        size={20}
+                        className={styles.iconDocument}
+                      />
+                    </div>
+                    <h4 className={styles.textHeader}>Volante de Pago</h4>
+                  </div>
+                </div>
+                <div className={styles.infoBox}>
+                  <p>Primer Volante de pago</p>
+                  <div className={styles.barBtns}>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Ver
+                    </button>
+
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.cardFlyer}>
+                <div className={styles.headerCardFlyer}>
+                  <div className={styles.centerHeaderFlyer}>
+                    <div className={styles.boxDocument}>
+                      <HiOutlineDocumentChartBar
+                        className={styles.iconDocument}
+                      />
+                    </div>
+                    <p className={styles.textHeader}>Documento PDF</p>
+                  </div>
+                </div>
+                <div className={styles.infoBox}>
+                  <p>Segundo Volante de pago</p>
+                  <div className={styles.barBtns}>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Ver
+                    </button>
+
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.cardFlyer}>
+                <div className={styles.headerCardFlyer}>
+                  <div className={styles.centerHeaderFlyer}>
+                    <div className={styles.boxDocument}>
+                      <HiOutlineDocumentChartBar
+                        className={styles.iconDocument}
+                      />
+                    </div>
+                    <p className={styles.textHeader}>Documento PDF</p>
+                  </div>
+                </div>
+                <div className={styles.infoBox}>
+                  <p>Tercer Volante de pago</p>
+                  <div className={styles.barBtns}>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Ver
+                    </button>
+
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

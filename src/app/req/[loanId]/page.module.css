@@ -21,6 +21,13 @@
   place-content: center;
 }
 
+.barPrevInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 1em;
+}
+
 .listDetails {
   margin-top: 10px;
   display: flex;
@@ -152,10 +159,10 @@
 }
 
 .headerTitle {
-  margin-bottom: 1em;
-  margin-top: 2em;
-  font-weight: 500;
-  color: var(--white-500);
+  margin-bottom: 5px;
+  margin-top: 1em;
+  font-weight: 600;
+  color: var(--white-700);
 }
 
 .barCards {
@@ -164,8 +171,28 @@
   gap: 10px;
 }
 
+.containerInfo {
+  flex-basis: 200px;
+  flex-grow: 1;
+  background: var(--green-50);
+  border: 1px solid var(--green-100);
+  padding-bottom: 13px;
+  padding-left: 10px;
+  padding-right: 5px;
+  border-radius: 16px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.containerInfo h2 {
+  font-weight: 400;
+  color: var(--white-500);
+}
+
 .containerPayments {
   margin-top: 2em;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .containerPayments h3 {
@@ -181,6 +208,16 @@
   display: flex;
   flex-direction: row;
   gap: 10px;
+}
+
+.barBtns button {
+  background: var(--blue-50);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.barBtns button:hover {
+  background: var(--blue-100);
+  border: 1px solid var(--blue-600);
 }
 
 .barDocuments {
@@ -229,7 +266,11 @@
   padding: 10px;
   border-radius: 16px;
   border: 1px solid var(--white-100);
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+}
+
+.cardFlyer:hover {
+  border: 1px solid var(--white-200);
 }
 
 .headerCardFlyer {
@@ -267,6 +308,7 @@
 .infoBox {
   display: flex;
   flex-direction: row;
+  gap: 10px;
   justify-content: space-between;
   margin-top: 1em;
 }
@@ -296,9 +338,58 @@
   color: var(--white-500);
 }
 
+.contactInfo {
+  display: grid;
+  place-content: center;
+}
+
+.boxLaborCard {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 3em;
+}
+
+.cardLabor {
+  /* background: var(--green-50); */
+  padding: 10px;
+  border-radius: 16px;
+}
+
+.cardLabor:hover {
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.titleSection {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.titleSection h3 {
+  padding: 10px 20px;
+  background: var(--green-50);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* border-radius: 16px; */
+  border: 1px solid var(--white-100);
+  color: var(--green-500);
+  font-weight: 500;
+}
+
+.backgroundDocs {
+  margin-top: 1em;
+}
+
+.backgroundOtherFiles {
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+
 @media screen and (max-width: 900px) {
   .imgDoc {
     width: 250px;
     height: 350px;
+  }
+
+  .cardLabor {
+    flex-grow: 1;
   }
 }
