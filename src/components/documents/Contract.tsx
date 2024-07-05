@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./Contract.module.css";
@@ -166,7 +166,7 @@ function Contract({
     };
 
     getInfoUserDocs();
-  }, [userId, user?.token]);
+  }, [userId, user && user.token]);
 
   useEffect(() => {
     setLoading(true);
@@ -196,7 +196,7 @@ function Contract({
     };
 
     getInfoUser();
-  }, [userId, user?.token]);
+  }, [userId, user && user.token]);
 
   const handleDeleteDoc = async (type: string) => {
     const response = await axios.post(
@@ -800,8 +800,9 @@ function Contract({
         isOpen={openViewPdf}
         onClose={handleCloseModel}
         link={link as string}
-        children={null}
-      ></Modal>
+      >
+        <p>hola</p>
+      </Modal>
 
       <Modal isOpen={openPreSend} onClose={handleAuthLoan} link={null}>
         <PreEnvio

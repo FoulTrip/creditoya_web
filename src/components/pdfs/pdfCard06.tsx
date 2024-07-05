@@ -38,7 +38,7 @@ function PdfView({
       (updatedJsonData.numberDocument = numberDocument);
 
     setJsonData(updatedJsonData);
-  }, [name, datePay, numberDocument, signature]);
+  }, [name, datePay, numberDocument, signature, expirationDay, payQuantity]);
 
   useEffect(() => {
     const doc = new jsPDF();
