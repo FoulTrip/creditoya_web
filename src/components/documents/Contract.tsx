@@ -1,9 +1,10 @@
+"use client"
+
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./Contract.module.css";
 import { useDropzone } from "react-dropzone";
 import {
   TbCircleCheckFilled,
-  TbFaceId,
   TbFileCertificate,
   TbPhotoSearch,
   TbTrash,
@@ -18,13 +19,11 @@ import {
 } from "@/types/User";
 import CurrencyInput from "react-currency-input-field";
 import SelectBanks from "../accesories/SelectBanks";
-import Image from "next/image";
 
 import { CiMoneyCheck1 } from "react-icons/ci";
 import Modal from "../modal/Modal";
 import PreEnvio from "./PreEnvio";
 import { useWebSocket } from "next-ws/client";
-import AccountType from "../accesories/TypeAccount";
 import Link from "next/link";
 import LoadingPage from "../Loaders/LoadingPage";
 import Signature from "./signature";
@@ -91,8 +90,6 @@ function Contract({
   };
 
   const [loading, setLoading] = useState(true);
-  const [imagePreview1, setImagePreview1] = useState("No definido");
-  const [imagePreview2, setImagePreview2] = useState("No definido");
   const [imagePreview3, setImagePreview3] = useState("No definido");
   const [imagePreview4, setImagePreview4] = useState("No definido");
   const [imagePreview5, setImagePreview5] = useState("No definido");
@@ -106,10 +103,6 @@ function Contract({
 
   const [link, setLink] = useState<string>();
 
-  const [loadingProccessImg01, setLoadingProccessImg01] =
-    useState<boolean>(false);
-  const [loadingProccessImg02, setLoadingProccessImg02] =
-    useState<boolean>(false);
   const [loadingProccessImg03, setLoadingProccessImg03] =
     useState<boolean>(false);
   const [loadingProccessImg04, setLoadingProccessImg04] =
@@ -160,8 +153,6 @@ function Contract({
           console.log(response.data);
           if (response.data && response.data.data && response.data.data[0]) {
             const data: ScalarDocument = response.data.data[0];
-            setImagePreview1(data.documentFront as string);
-            setImagePreview2(data.documentBack as string);
             setLoading(false);
           }
         }
@@ -222,8 +213,6 @@ function Contract({
     // console.log(response);
 
     if (response.data.success) {
-      setImagePreview1(response.data.data[0].documentFront);
-      setImagePreview2(response.data.data[0].documentBack);
       toast.success("Documento eliminado");
     } else if (response.data.success == false) {
       toast.error("Imposible eliminar documento");
@@ -282,20 +271,6 @@ function Contract({
       entity: option,
     }));
   };
-
-  const onDrop1 = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      setLoadingProccessImg01(true);
-      const file = acceptedFiles[0];
-    }
-  }, []);
-
-  const onDrop2 = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      setLoadingProccessImg02(true);
-      const file = acceptedFiles[0];
-    }
-  }, []);
 
   const onDrop3 = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -447,12 +422,6 @@ function Contract({
       console.log(response.data.success);
     }
   }, []);
-
-  const { getRootProps: getRootProps1, getInputProps: getInputProps1 } =
-    useDropzone({ onDrop: onDrop1 });
-
-  const { getRootProps: getRootProps2, getInputProps: getInputProps2 } =
-    useDropzone({ onDrop: onDrop2 });
 
   const { getRootProps: getRootProps3, getInputProps: getInputProps3 } =
     useDropzone({ onDrop: onDrop3 });

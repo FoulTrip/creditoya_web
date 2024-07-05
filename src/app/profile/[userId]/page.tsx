@@ -111,7 +111,7 @@ function Profile({ params }: { params: { userId: string } }) {
     };
 
     getInfoUserDocs();
-  }, [params.userId, user?.token]);
+  }, [params.userId, user && user.token]);
 
   useEffect(() => {
     const getInfoUser = async () => {
@@ -180,22 +180,27 @@ function Profile({ params }: { params: { userId: string } }) {
     }
   };
 
-  const handleSubmitImageFront = async ({ image }: { image: string }) => {
-    const response = await axios.post(
-      "/api/user/docs_update",
-      {
-        userId: params.userId,
-        documentFront: image,
-      },
-      { headers: { Authorization: `Bearer ${user?.token}` } }
-    );
+  const handleSubmitImageFront = useCallback(
+    async ({ image }: { image: string }) => {
+      try {
+        const response = await axios.post(
+          "/api/user/docs_update",
+          {
+            userId: params.userId,
+            documentFront: image,
+          },
+          { headers: { Authorization: `Bearer ${user?.token}` } }
+        );
 
-    // console.log(response);
-
-    if (response.data.success) {
-      toast.success("Parte frontal actualizada");
-    }
-  };
+        if (response.data.success) {
+          toast.success("Parte frontal actualizada");
+        }
+      } catch (error) {
+        console.error("Error updating document front:", error);
+      }
+    },
+    [params.userId, user && user.token]
+  );
 
   const handleSubmitImageBack = async ({ image }: { image: string }) => {
     const response = await axios.post(
@@ -548,7 +553,7 @@ function Profile({ params }: { params: { userId: string } }) {
         setImagePreview2(response.data.data);
       }
     },
-    [user, handleSubmitImageBack, ]
+    [user, handleSubmitImageBack]
   );
 
   const onDrop3 = useCallback(
@@ -1257,65 +1262,6 @@ function Profile({ params }: { params: { userId: string } }) {
                       {loadingProccessImg02 && "Processando tu documento..."}
                       {!loadingProccessImg02 &&
                         "Toma una foto clara de la parte trasera de tu cedula"}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              <div
-                className={styles.boxInfoUser}
-                {...(imagePreview3 === "No definido" ? getRootProps3() : {})}
-              >
-                {imagePreview3 === "No definido" && (
-                  <input {...getInputProps3()} />
-                )}
-                {imagePreview3 && imagePreview3 !== "No definido" ? (
-                  <>
-                    <div className={styles.supraBarStatus}>
-                      <div className={styles.barStatusDocs}>
-                        <div className={styles.headerCardStatus}>
-                          <div className={styles.boxIconStatus}>
-                            <TbCircleCheckFilled className={styles.iconCheck} />
-                          </div>
-                          <p className={styles.warninCC}>
-                            Carta laboral subido
-                          </p>
-                        </div>
-                      </div>
-                      <div className={styles.boxIconsStatus}>
-                        <div
-                          onClick={() => {
-                            handleOpenViewPdf();
-                            handleSetViewLaborCard({
-                              // laborCardId: imagePreview3,
-                              laborCardId: imagePreview3,
-                            });
-                          }}
-                          className={styles.boxIcon}
-                        >
-                          <TbPhotoSearch
-                            className={styles.viewIcon}
-                            size={20}
-                          />
-                        </div>
-                        <div
-                          className={styles.boxIcon}
-                          onClick={() => handleDeleteDoc("back")}
-                        >
-                          <TbTrash className={styles.trashIcon} size={20} />
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className={styles.containerDropDocuments}>
-                    <div className={styles.boxIconPreview}>
-                      <TbLicense className={styles.iconPreview} size={60} />
-                    </div>
-                    <p className={styles.textPreview}>
-                      {loadingProccessImg03 && "Processando tu documento"}
-                      {!loadingProccessImg03 &&
-                        "Sube tu carta laboral actualizada"}
                     </p>
                   </div>
                 )}

@@ -25,7 +25,7 @@ function Dashboard() {
   const ws = useWebSocket();
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     const documentsVerify = async () => {
       const response = await axios.post(
         "/api/user/docs_exist",
@@ -37,13 +37,11 @@ function Dashboard() {
 
     if (user) {
       documentsVerify();
-      setLoading(false)
+      setLoading(false);
     } else {
       setLoading(false);
-      setLoading(false)
+      setLoading(false);
     }
-
-
   }, [user, user?.token, user?.id]);
 
   useEffect(() => {
@@ -65,26 +63,29 @@ function Dashboard() {
     getAllLoans();
   }, [user, user?.token, user?.id]);
 
-  const newLoan = useCallback(async (event: MessageEvent<Blob>) => {
-    console.log(event);
-    const JsonEvent = JSON.parse(String(event.data));
+  const newLoan = useCallback(
+    async (event: MessageEvent<Blob>) => {
+      console.log(event);
+      const JsonEvent = JSON.parse(String(event.data));
 
-    console.log(JsonEvent);
+      console.log(JsonEvent);
 
-    if (JsonEvent.type == "onNewState") {
-      const response = await axios.post(
-        "/api/user/loans",
-        {
-          userId: user?.id,
-        },
-        {
-          headers: { Authorization: `Bearer ${user?.token}` },
-        }
-      );
+      if (JsonEvent.type == "onNewState") {
+        const response = await axios.post(
+          "/api/user/loans",
+          {
+            userId: user?.id,
+          },
+          {
+            headers: { Authorization: `Bearer ${user?.token}` },
+          }
+        );
 
-      setLoans(response.data.data);
-    }
-  }, []);
+        setLoans(response.data.data);
+      }
+    },
+    [user?.id, user?.token]
+  );
 
   useEffect(() => {
     ws?.addEventListener("message", newLoan);
