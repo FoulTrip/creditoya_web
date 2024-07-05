@@ -40,7 +40,7 @@ export async function POST(req: Request) {
       }
     );
 
-    if (uploadRes.success == true) {
+    if (uploadRes && uploadRes.success == true) {
       const bucketName = process.env.NAME_BUCKET_GOOGLE_STORAGE as string;
       return NextResponse.json({
         success: uploadRes,
