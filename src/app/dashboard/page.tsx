@@ -26,20 +26,26 @@ function Dashboard() {
 
   useEffect(() => {
     setLoading(true);
-    const documentsVerify = async () => {
-      const response = await axios.post(
-        "/api/user/docs_exist",
-        { userId: user?.id },
-        { headers: { Authorization: `Bearer ${user?.token}` } }
-      );
-      setCompleteDocs(response.data.data);
-    };
+    if (user) {
+      const documentsVerify = async () => {
+        const response = await axios.post(
+          "/api/user/docs_exist",
+          { userId: user?.id },
+          { headers: { Authorization: `Bearer ${user?.token}` } }
+        );
+
+        if (response.data.success) {
+          setCompleteDocs(response.data.data);
+          setLoading(false);
+        }
+      };
+
+      documentsVerify();
+    }
 
     if (user) {
-      documentsVerify();
       setLoading(false);
     } else {
-      setLoading(false);
       setLoading(false);
     }
   }, [user, user?.token, user?.id]);
@@ -100,14 +106,14 @@ function Dashboard() {
   };
 
   const toggleContract = () => {
-    setOpenContract(!openContract); // Cambia el estado de openContract al valor opuesto
+    setOpenContract(!openContract);
   };
 
   if (loading) {
-    return <LoadingPage />; // Aquí puedes reemplazar con tu componente de carga
+    return <LoadingPage />;
   }
 
-  if (!loading && completeDocs) {
+  if (!loading && completeDocs == true) {
     return (
       <>
         <main className={styles.containerDashboard}>
@@ -139,7 +145,7 @@ function Dashboard() {
     );
   }
 
-  if (!loading && !completeDocs) {
+  if (!loading && !completeDocs == false) {
     return (
       <>
         <div className={styles.mainVoidDocuments}>

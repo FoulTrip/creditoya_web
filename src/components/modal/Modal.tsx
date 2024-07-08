@@ -6,7 +6,7 @@ import { link } from "fs";
 
 interface modalProps {
   isOpen: boolean;
-  link: string | null;
+  link?: string | null;
   onClose: () => void;
   children: ReactNode | null;
 }

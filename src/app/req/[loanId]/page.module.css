@@ -175,7 +175,7 @@
   flex-basis: 200px;
   flex-grow: 1;
   background: var(--green-50);
-  border: 1px solid var(--green-100);
+  border: 1px solid var(--green-300);
   padding-bottom: 13px;
   padding-left: 10px;
   padding-right: 5px;
@@ -383,6 +383,23 @@
   margin-bottom: 2em;
 }
 
+.banckTitle {
+  font-weight: 500;
+  color: var(--white-600);
+  margin-top: 1em;
+  margin-bottom: 10px;
+}
+
+.cardInfoBank h5 {
+  font-weight: 500;
+}
+
+.boxCards {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
 @media screen and (max-width: 900px) {
   .imgDoc {
     width: 250px;
@@ -391,5 +408,11 @@
 
   .cardLabor {
     flex-grow: 1;
+  }
+
+  .boxCards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 }
