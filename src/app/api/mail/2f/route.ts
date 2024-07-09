@@ -31,21 +31,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
 
-    const data = await transporter
-      .sendMail({
-        from: `"Credito ya" ${process.env.GOOGLE_EMAIL} `,
-        to: addressee,
-        subject: "🔒 Tu código de confirmación de préstamo",
-        text: "¡Funciona!",
-        html: `
+    const data = await transporter.sendMail({
+      from: `"Credito ya" ${process.env.GOOGLE_EMAIL} `,
+      to: addressee,
+      subject: "🔒 Tu código de confirmación de préstamo",
+      text: "¡Funciona!",
+      html: `
         <div>
           <p>Hola ${name}</p>
           <p>tu codigo es: </p>
           <h3>${code}</h3>
         </div>
       `,
-      })
-      .then(() => transporter.close());
+    });
+
+    transporter.close();
 
     return NextResponse.json(data);
   } catch (error) {

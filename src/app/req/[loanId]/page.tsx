@@ -31,6 +31,11 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
   const router = useRouter();
 
   useEffect(() => {
+    if (!user) {
+      router.push("/auth");
+      return;
+    }
+
     const loanInfo = async () => {
       const loanId: string = params.loanId;
       const response = await axios
@@ -94,7 +99,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
     };
 
     loanInfo();
-  }, [params.loanId, user?.token]);
+  }, [params.loanId, user]);
 
   if (loading) {
     return <LoadingPage />;

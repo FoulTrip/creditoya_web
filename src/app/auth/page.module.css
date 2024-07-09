@@ -19,62 +19,26 @@
 .boxImageLogo {
   display: grid;
   place-content: center;
-  margin-bottom: 2em;
+  margin-bottom: 10px;
 }
 
 .logoIcon {
   width: 50px;
   height: auto;
-  filter: drop-shadow(5px 5px 10px #000000);
+  filter: drop-shadow(5px 5px 10px var(--white-900));
 }
 
-.optionAccess {
-  display: grid;
-  place-content: center;
-}
-
-.btnsCenter {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-}
-
-.btnInit {
-  padding: 10px;
-  cursor: pointer;
-  color: var(--green-950);
+.warnAccount {
+  text-align: center;
   font-weight: 500;
 }
 
-.btnInitSelected {
-  background: var(--green-50);
-  display: grid;
-  place-content: center;
-  padding: 10px;
-  border-radius: 8px;
+.bntWarn {
   cursor: pointer;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--green-50);
-  color: var(--green-600);
   font-weight: 500;
+  color: var(--white-500);
 }
 
-.btnregister {
-  padding: 10px;
-  cursor: pointer;
-  color: var(--green-950);
-  font-weight: 500;
-}
-
-.btnregisterSelected {
-  padding: 10px;
-  cursor: pointer;
-  background: var(--green-50);
-  display: grid;
-  place-content: center;
-  border-radius: 8px;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--green-50);
-  color: var(--green-600);
-  font-weight: 500;
+.bntWarn:hover {
+  color: var(--white-600);
 }

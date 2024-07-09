@@ -84,7 +84,7 @@ function Signup() {
         setUserData(authSession);
 
         if (authSession) {
-          toast.success("Usuario creado");
+          toast.success(`Bienvenido ${authSession.names}`);
 
           setTimeout(() => {
             route.push("/");
@@ -100,7 +100,6 @@ function Signup() {
 
   return (
     <>
-      <Toaster richColors />
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.boxInput}>
           <div className={styles.subBoxIconInput}>
