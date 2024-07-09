@@ -5,13 +5,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { userId } = await req.json();
     const authToken = req.headers.get("authorization");
     const token = authToken?.split(" ")[1];
-
-    if (!userId) {
-      throw new Error("userId is required");
-    }
 
     if (!token) {
       throw new Error("Token is required");
@@ -25,6 +20,10 @@ export async function POST(req: Request) {
     if (!payload) {
       throw new Error("Token inválido");
     }
+
+    const { userId } = await req.json();
+
+    if (!userId) throw new Error("userId is required");
 
     const response = await LoanApplicationService.getAllByUserId(userId);
 

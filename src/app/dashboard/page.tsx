@@ -24,34 +24,39 @@ function Dashboard() {
 
   const ws = useWebSocket();
 
+  const updateLoans = (data: ScalarLoanApplication[]) => {
+    setLoans(data);
+  };
+
   useEffect(() => {
-    if (!user) {
+    if (user == null) {
       router.push("/auth");
-      return;
     }
 
-    const documentsVerify = async () => {
-      try {
-        const response = await axios.post(
-          "/api/user/docs_exist",
-          { userId: user.id },
-          { headers: { Authorization: `Bearer ${user.token}` } }
-        );
+    if (user !== null) {
+      const documentsVerify = async () => {
+        try {
+          const response = await axios.post(
+            "/api/user/docs_exist",
+            { userId: user.id },
+            { headers: { Authorization: `Bearer ${user.token}` } }
+          );
 
-        if (response.data.success) {
-          setCompleteDocs(response.data.data);
-        } else {
+          if (response.data.success) {
+            setCompleteDocs(response.data.data);
+          } else {
+            setCompleteDocs(false);
+          }
+        } catch (error) {
+          console.error("Error verifying documents:", error);
           setCompleteDocs(false);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Error verifying documents:", error);
-        setCompleteDocs(false);
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
 
-    documentsVerify();
+      documentsVerify();
+    }
   }, [user, router]);
 
   useEffect(() => {
@@ -131,6 +136,7 @@ function Dashboard() {
           <Contract
             toggleContract={toggleContract}
             userId={user?.id as string}
+            success={updateLoans}
           />
         )}
       </main>
