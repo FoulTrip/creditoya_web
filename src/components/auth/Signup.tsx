@@ -8,6 +8,7 @@ import styles from "./auth.module.css";
 import { AuthUser, ScalarUser } from "@/types/User";
 import { useGlobalContext } from "@/context/Auth";
 import { TbKey, TbMail, TbUserCog } from "react-icons/tb";
+import { SendMailSignup } from "@/handlers/sendEmails/SendCreate";
 // import AvatarUpload from "../AvatarChange";
 
 interface UserTypes {
@@ -73,34 +74,48 @@ function Signup() {
       if (response.data.success == true) {
         console.log(response.data);
 
-        const bodySignin = {
-          email: data.email,
-          password: data.password,
-        };
+        const send = await axios.post(
+          "/api/mail/welcome",
+          {
+            name: `${data.names} ${data.firstLastName} ${data.secondLastName}`,
+            addressee: data.email,
+          },
+          { headers: { Authorization: `Bearer ${user?.token}` } }
+        );
 
-        const signinRes = await axios.post("/api/user/signin", bodySignin);
-        console.log(signinRes);
-        const authSession: AuthUser = signinRes.data.data;
-        setUserData(authSession);
+        console.log(send.data);
 
-        if (authSession) {
-          toast.success("Usuario creado");
+        if (send.data.success == true) {
+          const bodySignin = {
+            email: data.email,
+            password: data.password,
+          };
 
-          setTimeout(() => {
-            route.push("/");
-          }, 3000);
+          const signinRes = await axios.post("/api/user/signin", bodySignin);
+          console.log(signinRes);
+          const authSession: AuthUser = signinRes.data.data;
+          setUserData(authSession);
+
+          if (authSession) {
+            toast.success(`Bienvenido ${authSession.names}`);
+
+            setTimeout(() => {
+              route.push("/dashboard");
+            }, 2000);
+          }
         }
       } else {
-        toast.error("Error al crear usuario");
+        toast.error(response.data.error);
       }
     } catch (error) {
-      toast.error("Error al crear usuario");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
   };
 
   return (
     <>
-      <Toaster richColors />
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.boxInput}>
           <div className={styles.subBoxIconInput}>

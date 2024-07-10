@@ -74,33 +74,6 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
                 <h1 className={styles.statusTextReject}>{loan.status}</h1>
               )}
             </div>
-            {loan.status === "Aprobado" && (
-              <div className={styles.employeeInfo}>
-                <div className={styles.boxAvatar}>
-                  <Avatar src={infoEmployee?.avatar} round={true} size={"30"} />
-                </div>
-                <div className={styles.boxInfoAdvisor}>
-                  <div className={styles.boxInfoAdvisorCenter}>
-                    <h5>Asesor encargado</h5>
-                    <p>{`${infoEmployee?.name} ${infoEmployee?.lastNames}`}</p>
-                  </div>
-                </div>
-                <div className={styles.boxContactAses}>
-                  <div className={styles.boxAvatar}>
-                    <TbPhoneFilled
-                      className={styles.asesContactIcon}
-                      size={20}
-                    />
-                  </div>
-                  <div className={styles.boxAvatar}>
-                    <TbMailFilled
-                      size={20}
-                      className={styles.asesContactIcon}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 

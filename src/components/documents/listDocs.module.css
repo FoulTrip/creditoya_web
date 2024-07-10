@@ -1,21 +1,28 @@
+.tltleDoc {
+  font-weight: 400;
+  text-align: start;
+  color: var(--white-600);
+  margin-top: 2em;
+}
+
 .listDocs {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 50px;
-  margin-top: 2em;
+  gap: 10px;
+  margin-top: 1em;
 }
 
 .cardDoc {
   background: var(--red-400);
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: 16px;
   cursor: pointer;
-  box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .cardDoc:hover {
-  background: var(--red-500);
-  border: 1px solid var(--red-500);
+  background: var(--red-400);
+  border: 1px solid var(--red-600);
 }
 
 .headerCardDoc {
@@ -26,11 +33,23 @@
 }
 
 .headerCardDoc p {
-    color: var(--white-50);
+  color: var(--white-50);
+  font-size: 13px;
+  display: grid;
+  place-content: center;
+  font-weight: 500;
+  color: var(--white-50);
 }
 
-.iconPdf {
-    color: var(--white-50);
+.btnIcon {
+  border-radius: 8px;
+  padding: 5px 10px;
+  border: 1px solid var(--white-200);
+  cursor: pointer;
+}
+
+.btnIcon:hover {
+  border: 1px solid var(--white-400);
 }
 
 .boxIconPdf {

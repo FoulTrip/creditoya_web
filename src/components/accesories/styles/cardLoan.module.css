@@ -25,6 +25,8 @@
   border-radius: 8px;
   border: 1px solid var(--white-200);
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  display: grid;
+  place-content: center;
 }
 
 .titleId {
@@ -131,6 +133,11 @@
 .boxAmount h1 {
   font-weight: 500;
   color: var(--white-600);
+}
+
+.employeeInfo {
+  display: flex;
+  flex-direction: row;
 }
 
 @media screen and (max-width: 900px) {

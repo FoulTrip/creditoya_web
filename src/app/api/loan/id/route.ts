@@ -31,7 +31,6 @@ export async function POST(req: Request) {
     const response = await LoanApplicationService.get(loanId);
     return NextResponse.json(
       { success: true, data: response },
-      { status: 201 }
     );
   } catch (error) {
     if (error instanceof Error) {

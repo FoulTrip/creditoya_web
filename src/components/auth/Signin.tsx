@@ -36,7 +36,7 @@ function Signin() {
 
       if (data.token) {
         setUserData(data);
-        toast.success("Usuario encontrado");
+        toast.success(`Bienvenido de nuevo ${data.names}`);
         setTimeout(() => {
           route.push("/dashboard");
         }, 3000);
@@ -68,7 +68,7 @@ function Signin() {
               value={formData.email}
             />
           </div>
-          
+
           <div className={styles.boxInput}>
             <div className={styles.subBoxIconInput}>
               <TbLock className={styles.iconInput} size={20} />

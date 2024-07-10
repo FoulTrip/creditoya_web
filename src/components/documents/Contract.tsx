@@ -32,9 +32,11 @@ import ListPdfsAutogenerate from "./ListPdfsAutogenerate";
 function Contract({
   userId,
   toggleContract,
+  success,
 }: {
   userId: string;
   toggleContract: () => void;
+  success?: (data: ScalarLoanApplication[]) => void;
 }) {
   const { user } = useGlobalContext();
   const ws = useWebSocket();
@@ -150,7 +152,7 @@ function Contract({
             },
             { headers: { Authorization: `Bearer ${user.token}` } }
           );
-          console.log(response.data);
+          // console.log(response.data);
           if (response.data && response.data.data && response.data.data[0]) {
             const data: ScalarDocument = response.data.data[0];
             setLoading(false);
@@ -226,7 +228,7 @@ function Contract({
   const handleAuthLoan = async () => {
     try {
       setOpenPreSend(false);
-      console.log(dataContract);
+      // console.log(dataContract);
 
       const response = await axios.post(
         "/api/loan/create",
@@ -236,17 +238,44 @@ function Contract({
         { headers: { Authorization: `Bearer ${user?.token}` } }
       );
 
-      console.log(response);
+      // console.log(response);
 
       if (response.data.success == true) {
-        ws?.send(
-          JSON.stringify({
-            type: "new_loan",
-            owner: user?.id,
-          })
+        const data: ScalarLoanApplication = response.data.data;
+
+        const send = await axios.post(
+          "/api/mail/new_loan",
+          {
+            name: `${userInfo?.names} ${userInfo?.firstLastName} ${userInfo?.secondLastName}`,
+            addressee: userInfo?.email as string,
+            loanId: data?.id,
+          },
+          { headers: { Authorization: `Bearer ${user?.token}` } }
         );
 
-        toggleContract();
+        if (send.data.success == true) {
+          ws?.send(
+            JSON.stringify({
+              type: "new_loan",
+              owner: user?.id,
+            })
+          );
+
+          const allLoans = await axios.post(
+            "/api/user/loans",
+            {
+              userId,
+            },
+            { headers: { Authorization: `Bearer ${user?.token}` } }
+          );
+
+          if (allLoans.data.success) {
+            const data: ScalarLoanApplication[] = allLoans.data.data;
+
+            success && success(data);
+            toggleContract();
+          }
+        }
       }
     } catch (error) {
       console.error("Error:", error);
@@ -307,7 +336,7 @@ function Contract({
         toast.success("Archivo cargado exitosamente");
       }
 
-      console.log(response.data.success);
+      // console.log(response.data.success);
     }
   }, []);
 
@@ -344,7 +373,7 @@ function Contract({
         toast.success("Archivo cargado exitosamente");
       }
 
-      console.log(response.data.success);
+      // console.log(response.data.success);
     }
   }, []);
 
@@ -381,7 +410,7 @@ function Contract({
         toast.success("Archivo cargado exitosamente");
       }
 
-      console.log(response.data.success);
+      // console.log(response.data.success);
     }
   }, []);
 
@@ -419,7 +448,7 @@ function Contract({
         toast.success("Archivo cargado exitosamente");
       }
 
-      console.log(response.data.success);
+      // console.log(response.data.success);
     }
   }, []);
 
@@ -435,7 +464,7 @@ function Contract({
   const { getRootProps: getRootProps6, getInputProps: getInputProps6 } =
     useDropzone({ onDrop: onDrop6 });
 
-  console.log(dataContract);
+  // console.log(dataContract);
   if (loading) {
     return <LoadingPage />;
   }
@@ -792,7 +821,7 @@ function Contract({
         </div>
       </div>
 
-      <div>
+      <div className={styles.finalBtnCreate}>
         <button onClick={handleOpenPreSend}>Solicitar</button>
       </div>
 

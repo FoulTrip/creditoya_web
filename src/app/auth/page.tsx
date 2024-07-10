@@ -18,33 +18,31 @@ function OneContent() {
             <Image className={styles.logoIcon} src={logoTripCode} alt="logo" />
           </div>
           {/* <p>Accede a nuestros servicios</p> */}
-
-          <div className={styles.optionAccess}>
-            <div className={styles.btnsCenter}>
-              <p
-                className={
-                  selectLogin == "signin"
-                    ? styles.btnInitSelected
-                    : styles.btnInit
-                }
-                onClick={() => setSelectLogin("signin")}
-              >
-                Iniciar Sesion
-              </p>
-              <p
-                className={
-                  selectLogin == "signup"
-                    ? styles.btnregisterSelected
-                    : styles.btnregister
-                }
-                onClick={() => setSelectLogin("signup")}
-              >
-                Crear Cuenta
-              </p>
-            </div>
-          </div>
           {selectLogin == "signin" ? <Signin /> : null}
           {selectLogin == "signup" ? <Signup /> : null}
+
+          {selectLogin == "signin" && (
+            <p className={styles.warnAccount}>
+              No tienes cuenta?{" "}
+              <span
+                className={styles.bntWarn}
+                onClick={() => setSelectLogin("signup")}
+              >
+                Ingresa aqui
+              </span>
+            </p>
+          )}
+          {selectLogin == "signup" && (
+            <p className={styles.warnAccount}>
+              Ya tienes cuenta?{" "}
+              <span
+                className={styles.bntWarn}
+                onClick={() => setSelectLogin("signin")}
+              >
+                Ingresa aqui
+              </span>
+            </p>
+          )}
         </div>
       </main>
     </>

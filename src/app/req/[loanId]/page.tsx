@@ -31,35 +31,43 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
   const router = useRouter();
 
   useEffect(() => {
+    if (!user) {
+      router.push("/auth");
+      return;
+    }
+
     const loanInfo = async () => {
+      const loanId: string = params.loanId;
       const response = await axios
         .post(
           "/api/loan/id",
           {
-            loanId: params.loanId,
+            loanId,
           },
-          { headers: { Authorization: `Bearer ${user?.token}` } }
+          { headers: { Authorization: `Bearer ${user?.token as string}` } }
         )
         .catch((error) => console.log(error));
 
       if (response?.data.success) {
-        console.log(response);
+        // console.log(response);
 
         const loan: ScalarLoanApplication = response.data.data;
         setInfoLoan(loan);
-        console.log(loan);
+        // console.log(loan);
 
-        const responseDoc = await axios.post(
-          "/api/user/doc_id",
-          {
-            userId: loan.userId,
-          },
-          { headers: { Authorization: `Bearer ${user?.token}` } }
-        );
+        const responseDoc = await axios
+          .post(
+            "/api/user/doc_id",
+            {
+              userId: loan.userId,
+            },
+            { headers: { Authorization: `Bearer ${user?.token}` } }
+          )
+          .catch((error) => console.log(error));
 
-        if (responseDoc.data.success == true) {
+        if (responseDoc && responseDoc.data.success == true) {
           setDocumentsInfo(responseDoc.data.data);
-          console.log(responseDoc.data.data);
+          // console.log(responseDoc.data.data);
         }
 
         if (loan.employeeId == "Standby") console.log("Sin asesor");
@@ -73,11 +81,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
               },
               { headers: { Authorization: `Bearer ${user?.token}` } }
             )
-            .catch((error) => {
-              if (error instanceof Error) {
-                throw new Error(error.message);
-              }
-            });
+            .catch((error) => console.log(error));
 
           if (infoEmployee && infoEmployee.data.data == "Standby")
             setInfoEmployee(null);
@@ -95,7 +99,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
     };
 
     loanInfo();
-  }, [params.loanId, user?.token]);
+  }, [params.loanId, user]);
 
   if (loading) {
     return <LoadingPage />;
@@ -115,8 +119,26 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
             <p className={styles.labelBtn}>Volver</p>
           </div>
         </div>
-        <h1>Informacion Completa</h1>
+        <h1>Tu Prestamo</h1>
         <p>Solicitud: {infoLoan?.id}</p>
+
+        <h3 className={styles.banckTitle}>Informacion financiera</h3>
+        <div className={styles.boxCards}>
+          <div className={styles.cardInfoBank}>
+            <h5>Numero de cuenta</h5>
+            <p>{infoLoan?.bankNumberAccount}</p>
+          </div>
+
+          <div className={styles.cardInfoBank}>
+            <h5>Tipo de cuenta</h5>
+            <p>{infoLoan?.bankSavingAccount && "Cuenta Ahorros"}</p>
+          </div>
+
+          <div className={styles.cardInfoBank}>
+            <h5>Entidad bancaria</h5>
+            <p>{infoLoan?.entity}</p>
+          </div>
+        </div>
 
         <div className={styles.barPrevInfo}>
           <div className={styles.containerInfo}>

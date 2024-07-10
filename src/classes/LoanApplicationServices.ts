@@ -8,16 +8,7 @@ import { ScalarLoanApplication, Status } from "../types/User";
 class LoanApplicationService {
   // Método para crear una solicitud de préstamo
   static async create(data: ScalarLoanApplication): Promise<LoanApplication> {
-    const { userId, ...loanApplicationDataWithoutUserId } = data;
-    const loanApplicationData = {
-      ...loanApplicationDataWithoutUserId,
-      user: {
-        connect: {
-          id: data.userId,
-        },
-      },
-    };
-    return prisma.loanApplication.create({ data: loanApplicationData });
+    return prisma.loanApplication.create({ data });
   }
 
   // Método para obtener una solicitud de préstamo por su ID

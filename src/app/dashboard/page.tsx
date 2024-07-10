@@ -24,44 +24,60 @@ function Dashboard() {
 
   const ws = useWebSocket();
 
-  useEffect(() => {
-    setLoading(true);
-    const documentsVerify = async () => {
-      const response = await axios.post(
-        "/api/user/docs_exist",
-        { userId: user?.id },
-        { headers: { Authorization: `Bearer ${user?.token}` } }
-      );
-      setCompleteDocs(response.data.data);
-    };
+  const updateLoans = (data: ScalarLoanApplication[]) => {
+    setLoans(data);
+  };
 
-    if (user) {
-      documentsVerify();
-      setLoading(false);
-    } else {
-      setLoading(false);
-      setLoading(false);
+  useEffect(() => {
+    if (user == null) {
+      router.push("/auth");
     }
-  }, [user, user?.token, user?.id]);
+
+    if (user !== null) {
+      const documentsVerify = async () => {
+        try {
+          const response = await axios.post(
+            "/api/user/docs_exist",
+            { userId: user.id },
+            { headers: { Authorization: `Bearer ${user.token}` } }
+          );
+
+          if (response.data.success) {
+            setCompleteDocs(response.data.data);
+          } else {
+            setCompleteDocs(false);
+          }
+        } catch (error) {
+          console.error("Error verifying documents:", error);
+          setCompleteDocs(false);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      documentsVerify();
+    }
+  }, [user, router]);
 
   useEffect(() => {
-    const getAllLoans = async () => {
-      const response = await axios.post(
-        "/api/user/loans",
-        {
-          userId: user?.id,
-        },
-        {
-          headers: { Authorization: `Bearer ${user?.token}` },
+    if (user) {
+      const getAllLoans = async () => {
+        try {
+          const response = await axios.post(
+            "/api/user/loans",
+            { userId: user.id },
+            { headers: { Authorization: `Bearer ${user.token}` } }
+          );
+
+          setLoans(response.data.data);
+        } catch (error) {
+          console.error("Error fetching loans:", error);
         }
-      );
+      };
 
-      // console.log(response.data)
-      setLoans(response.data.data);
-    };
-
-    getAllLoans();
-  }, [user, user?.token, user?.id]);
+      getAllLoans();
+    }
+  }, [user]);
 
   const newLoan = useCallback(
     async (event: MessageEvent<Blob>) => {
@@ -70,15 +86,11 @@ function Dashboard() {
 
       console.log(JsonEvent);
 
-      if (JsonEvent.type == "onNewState") {
+      if (JsonEvent.type === "onNewState") {
         const response = await axios.post(
           "/api/user/loans",
-          {
-            userId: user?.id,
-          },
-          {
-            headers: { Authorization: `Bearer ${user?.token}` },
-          }
+          { userId: user?.id },
+          { headers: { Authorization: `Bearer ${user?.token}` } }
         );
 
         setLoans(response.data.data);
@@ -93,71 +105,63 @@ function Dashboard() {
   }, [newLoan, ws]);
 
   const handleOpenContract = () => {
-    // if (Loans?.length == 1) toast.error("Ya tienes un prestamo activo");
-    // if (Loans?.length == 0) setOpenContract(!openContract);
-
     setOpenContract(!openContract);
   };
 
   const toggleContract = () => {
-    setOpenContract(!openContract); // Cambia el estado de openContract al valor opuesto
+    setOpenContract(!openContract);
   };
 
   if (loading) {
-    return <LoadingPage />; // Aquí puedes reemplazar con tu componente de carga
+    return <LoadingPage />;
   }
 
-  if (!loading && completeDocs) {
+  if (completeDocs === true) {
     return (
-      <>
-        <main className={styles.containerDashboard}>
-          {!openContract && (
-            <>
-              {!openContract && (
-                <div className={styles.btnNew}>
-                  <h5 onClick={handleOpenContract}>Solicitar Prestamo</h5>
-                </div>
-              )}
-              <div className={styles.listLoans}>
-                {Loans?.filter((loan) => loan.userId === user?.id).map(
-                  (loan) => (
-                    <CardLoan key={loan.id} loan={loan} />
-                  )
-                )}
-              </div>
-            </>
-          )}
+      <main className={styles.containerDashboard}>
+        {!openContract && (
+          <>
+            <div className={styles.btnNew}>
+              <h5 onClick={handleOpenContract}>Solicitar Prestamo</h5>
+            </div>
+            <div className={styles.listLoans}>
+              {Loans?.filter((loan) => loan.userId === user?.id).map((loan) => (
+                <CardLoan key={loan.id} loan={loan} />
+              ))}
+            </div>
+          </>
+        )}
 
-          {openContract && (
-            <Contract
-              toggleContract={toggleContract}
-              userId={user?.id as string}
-            />
-          )}
-        </main>
-      </>
+        {openContract && (
+          <Contract
+            toggleContract={toggleContract}
+            userId={user?.id as string}
+            success={updateLoans}
+          />
+        )}
+      </main>
     );
   }
 
-  if (!loading && !completeDocs) {
+  if (completeDocs === false) {
     return (
-      <>
-        <div className={styles.mainVoidDocuments}>
-          <div className={styles.centerMainVoid}>
-            <div className={styles.boxIconVoid}>
-              <TbFingerprint className={styles.fingerIcon} size={300} />
-            </div>
-            <p>Completa tus datos antes de requerir un prestamo</p>
-            <div className={styles.boxBtnComplete}>
-              <button onClick={() => router.push(`/profile/${user?.id}`)}>
-                Completar
-              </button>
-            </div>
+      <div className={styles.mainVoidDocuments}>
+        <div className={styles.centerMainVoid}>
+          <div className={styles.boxIconVoid}>
+            <TbFingerprint className={styles.fingerIcon} size={300} />
+          </div>
+          <p>Completa tus datos antes de requerir un prestamo</p>
+          <div className={styles.boxBtnComplete}>
+            <button onClick={() => router.push(`/profile/${user?.id}`)}>
+              Completar
+            </button>
           </div>
         </div>
-      </>
+      </div>
     );
   }
+
+  return null;
 }
 
 export default Dashboard;

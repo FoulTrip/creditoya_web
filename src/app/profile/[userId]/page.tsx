@@ -81,6 +81,13 @@ function Profile({ params }: { params: { userId: string } }) {
   const router = useRouter();
 
   useEffect(() => {
+    if (!user) {
+      router.push("/auth");
+      return;
+    }
+  }, [user]);
+
+  useEffect(() => {
     const getInfoUserDocs = async () => {
       try {
         if (user && user.token) {
@@ -111,7 +118,7 @@ function Profile({ params }: { params: { userId: string } }) {
     };
 
     getInfoUserDocs();
-  }, [params.userId, user && user.token]);
+  }, [params.userId, user]);
 
   useEffect(() => {
     const getInfoUser = async () => {

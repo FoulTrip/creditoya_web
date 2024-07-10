@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     }
 
     const form = await req.formData();
-    console.log(form);
+    // console.log(form);
     const file = form.get("file") as File;
     const userId = form.get("userid") as string;
     const name = form.get("name") as string;
@@ -42,14 +42,19 @@ export async function POST(req: Request) {
 
     if (uploadRes && uploadRes.success == true) {
       const bucketName = process.env.NAME_BUCKET_GOOGLE_STORAGE as string;
-      return NextResponse.json({
-        success: uploadRes,
-        data: `https://storage.googleapis.com/${bucketName}/${uploadRes.public_name}`,
-      });
+      return NextResponse.json(
+        {
+          success: uploadRes,
+          data: `https://storage.googleapis.com/${bucketName}/${uploadRes.public_name}`,
+        },
+        { status: 201 }
+      );
     }
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ success: false, error: error.message });
     }
   }
+
+  return NextResponse.json({ message: "Unknown error" }, { status: 500 });
 }

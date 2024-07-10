@@ -3,42 +3,28 @@
 import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import skeletonPdf from "@/components/Jsons/promissory.json";
-import { DocumentPromissory } from "@/types/PDFs";
+import { DocumentTypes04 } from "@/types/PDFs";
 
 interface PdfViewProps {
   name: string;
-  datePay: string;
   numberDocument: string;
   signature?: string;
-  payQuantity: string;
-  expirationDay: string;
 }
 
-function PdfView({
-  name,
-  datePay,
-  numberDocument,
-  signature,
-  payQuantity,
-  expirationDay,
-}: PdfViewProps) {
-  const [jsonData, setJsonData] = useState<DocumentPromissory>(skeletonPdf);
+function Document04({ name, numberDocument, signature }: PdfViewProps) {
+  const [jsonData, setJsonData] = useState<DocumentTypes04>(skeletonPdf);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const updatedJsonData = { ...skeletonPdf };
 
-    updatedJsonData.fecha_vencimiento.date = expirationDay;
     updatedJsonData.firstParagraph.namePerson = name;
-    (updatedJsonData.firstParagraph.numberDocument = numberDocument),
-      (updatedJsonData.firstParagraph.payDay = datePay),
-      (updatedJsonData.firstParagraph.payQuantity = payQuantity);
-    (updatedJsonData.fiveParagraph.dayPay = datePay),
-      (updatedJsonData.signature = signature as string),
-      (updatedJsonData.numberDocument = numberDocument);
+    updatedJsonData.firstParagraph.numberDocument = numberDocument;
+    updatedJsonData.signature = signature as string;
+    updatedJsonData.numberDocument = numberDocument;
 
     setJsonData(updatedJsonData);
-  }, [name, datePay, numberDocument, signature, expirationDay, payQuantity]);
+  }, [name, numberDocument, signature]);
 
   useEffect(() => {
     const doc = new jsPDF();
@@ -57,21 +43,17 @@ function PdfView({
       doc.addImage(imgLogo, "PNG", 10, y, imgWidth, imgHeight);
       y += 28;
 
+      doc.text(jsonData.numero_pagare.publicText + ` _________________`, 10, y);
+      y += 10;
+
       doc.text(
-        jsonData.numero_pagare.publicText + jsonData.numero_pagare.publicId,
+        jsonData.fecha_vencimiento.publicText + `_________________`,
         10,
         y
       );
       y += 10;
 
-      doc.text(
-        jsonData.fecha_vencimiento.publicText + jsonData.fecha_vencimiento.date,
-        10,
-        y
-      );
-      y += 10;
-
-      const firstParagraph = `${jsonData.firstParagraph.namePerson} ${jsonData.firstParagraph.publicfirstText} ${jsonData.firstParagraph.numberDocument} ${jsonData.firstParagraph.publicSecondText}${jsonData.firstParagraph.payDay} ${jsonData.firstParagraph.publicFiveText}${jsonData.firstParagraph.payQuantity}`;
+      const firstParagraph = `${jsonData.firstParagraph.namePerson} ${jsonData.firstParagraph.publicfirstText} ${jsonData.firstParagraph.numberDocument} ${jsonData.firstParagraph.publicSecondText}_________________ ${jsonData.firstParagraph.publicFiveText}_________________`;
 
       doc.text(firstParagraph, 10, y, { maxWidth: 190 });
       y += 15;
@@ -85,7 +67,7 @@ function PdfView({
       doc.text(jsonData.fourParagraph, 10, y, { maxWidth: 180 });
       y += 85;
 
-      const fiveParagraph = `${jsonData.fiveParagraph.publicFirstText} ${jsonData.fiveParagraph.publicSecondText}${jsonData.fiveParagraph.dayPay}`;
+      const fiveParagraph = `${jsonData.fiveParagraph.publicFirstText} ${jsonData.fiveParagraph.publicSecondText}_________________`;
 
       doc.text(fiveParagraph, 10, y, { maxWidth: 190 });
       y += 10;
@@ -136,4 +118,4 @@ function PdfView({
   );
 }
 
-export default PdfView;
+export default Document04;

@@ -62,23 +62,6 @@ export type ScalarLoanApplication = {
   updated_at: Date;
 };
 
-export type ScalarPdfLoan = {
-  id?: string;
-  loanApplicationId: string;
-  headerTitle: string;
-  firstExplainText: string;
-  secondTitle: string;
-  optionAccount: Record<string, any>[];
-  threeTitle: string;
-  justifyText: string;
-  justifyUser: string;
-  numberOnce: string;
-  textOnce: string;
-  finalTitle: string;
-  subFinalText: string;
-  finalText: string;
-};
-
 // Tipo para Document
 export type ScalarDocument = {
   id: string;
@@ -90,15 +73,6 @@ export type ScalarDocument = {
   laborCardId: string | undefined;
   number: string | undefined;
   createdAt: Date;
-  updatedAt: Date;
-};
-
-export type ScalarLaborCard = {
-  id: string;
-  userId: string;
-  filePart: string;
-  order: number;
-  createAt: Date;
   updatedAt: Date;
 };
 

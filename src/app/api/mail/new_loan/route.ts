@@ -1,14 +1,10 @@
 import { transporter } from "@/lib/NodeMailer";
 import TokenService from "@/classes/TokenServices";
-// import { EmailTemplate } from "@/components/mail/Template";
 import { NextResponse } from "next/server";
+import { generateMailSignup } from "@/handlers/sendEmails/generates/GenerateCreateMail";
+import { generateMailCreateLoan } from "@/handlers/sendEmails/generates/GenerateCreateLoan";
 
 export async function POST(req: Request) {
-  const {
-    name,
-    addressee,
-    code,
-  }: { name: string; addressee: string; code: number } = await req.json();
   try {
     // Verificar la autenticación JWT
     const authorizationHeader = req.headers.get("Authorization");
@@ -31,16 +27,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
 
+    const {
+      name,
+      addressee,
+      loanId,
+    }: { name: string; addressee: string; loanId: string } = await req.json();
+
+    const content = generateMailCreateLoan({ completeName: name, loanId });
+
     const data = await transporter.sendMail({
-      from: `"Credito ya" ${process.env.GOOGLE_EMAIL} `,
+      from: `"Credito Ya" <${process.env.GOOGLE_EMAIL}>`,
       to: addressee,
-      subject: "🔒 Tu código de confirmación de préstamo",
-      text: "¡Funciona!",
-      html: `<b>Hola ${name}, tu codigo es: ${code}</b>`,
+      subject: "Nueva solicitud de prestamo",
+      text: "Thanks you for creating your account",
+      html: content,
     });
 
-    return NextResponse.json(data);
+    console.log(data);
+
+    return NextResponse.json({ success: true, data });
   } catch (error) {
-    return NextResponse.json({ error });
+    if (error instanceof Error) {
+      return NextResponse.json({ success: false, error: error.message });
+    }
   }
 }
