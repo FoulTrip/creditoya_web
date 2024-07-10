@@ -5,7 +5,6 @@ import {
 } from "@/types/User";
 import React, { useEffect, useState } from "react";
 import styles from "./listDocs.module.css";
-import { TbPdf } from "react-icons/tb";
 import Modal from "../modal/Modal";
 import Document00 from "../pdfs/pdfCard00";
 import axios from "axios";
