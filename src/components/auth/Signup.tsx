@@ -101,7 +101,7 @@ function Signup() {
 
             setTimeout(() => {
               route.push("/dashboard");
-            }, 3000);
+            }, 2000);
           }
         }
       } else {

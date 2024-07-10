@@ -1,8 +1,10 @@
 "use client";
 
-import React, { ReactNode, Dispatch, SetStateAction } from "react";
+import React, { ReactNode } from "react";
 import styles from "./modal.module.css";
-import { link } from "fs";
+import { Document, Page, pdfjs } from "react-pdf";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 interface modalProps {
   isOpen: boolean;
@@ -23,12 +25,9 @@ const Modal = ({ isOpen, onClose, children, link }: modalProps) => {
         {!link ? children : null}
 
         {link && (
-          <object
-            data={link}
-            type="application/pdf"
-            width="100%"
-            height="100%"
-          />
+          <Document file={link} className={styles.pdfDocument}>
+            <Page width={600} />
+          </Document>
         )}
 
         <button className={styles.close_button} onClick={onClose}>

@@ -1,3 +1,33 @@
+/** Document00 */
+
+interface TypeAccount {
+  name: string;
+  select: boolean;
+}
+
+interface OptionAccount {
+  numberAccount: string;
+  entityAccount: string;
+}
+
+export interface DocumentTypes00 {
+  TitlePrevExplain: string;
+  prevExplain: string;
+  headerTitle: string;
+  firstExplainText: string;
+  secondTitle: string;
+  optionAccount: OptionAccount;
+  threeTitle: string;
+  justifyText: string;
+  numberOnce: string;
+  textOnce: string;
+  finalTitle: string;
+  subFinalText: string;
+  finalText: string;
+}
+
+/** Types of Document04 */
+
 interface NumeroPagare {
   publicText: string;
   publicId: string;
@@ -24,7 +54,7 @@ interface FiveParagraph {
   dayPay: string;
 }
 
-export interface DocumentPromissory {
+export interface DocumentTypes04 {
   logoHeader: string;
   numero_pagare: NumeroPagare;
   fecha_vencimiento: FechaVencimiento;
