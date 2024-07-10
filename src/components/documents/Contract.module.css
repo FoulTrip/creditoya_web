@@ -368,6 +368,10 @@
   color: var(--white-600);
 }
 
+.inputPrice {
+  padding: 10px;
+}
+
 @media screen and (max-width: 900px) {
   .prevDoc {
     width: 250px;
