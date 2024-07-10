@@ -20,8 +20,9 @@ model User {
     phone_whatsapp         String            @default("No definido")
     birth_day              DateTime?
     genre                  String            @default("No definido")
-    residence_address      String            @default("No definidos")
-    city                   String            @default("No definidos")
+    residence_address      String            @default("No definido")
+    place_of_birth         String            @default("No definido")
+    city                   String            @default("No definido")
     Document               Document[]
     createdAt              DateTime          @default(now())
     updatedAt              DateTime          @updatedAt

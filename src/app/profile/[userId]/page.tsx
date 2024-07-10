@@ -34,10 +34,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 function Profile({ params }: { params: { userId: string } }) {
   const { user, setUserData } = useGlobalContext();
-  console.log(user);
+  // console.log(user);
   const [imagePreview1, setImagePreview1] = useState("");
   const [imagePreview2, setImagePreview2] = useState("");
-  const [imagePreview3, setImagePreview3] = useState("");
   const [infoUser, setInfoUser] = useState<ScalarDocument>();
   const [loading, setLoading] = useState(true);
   const [completeInfoUser, setCompleteInfoUser] = useState<ScalarUser | null>(
@@ -68,9 +67,7 @@ function Profile({ params }: { params: { userId: string } }) {
 
   const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
   const [loadingProccessImg02, setLoadingProccessImg02] = useState(false);
-  const [loadingProccessImg03, setLoadingProccessImg03] = useState(false);
 
-  const [pdfFile, setPdfFile] = useState<string | null>(null);
   const [openViewPdf, setOpenViewPdf] = useState<boolean>(false);
 
   const [openDocs, setOpenDocs] = useState<boolean>(false);
@@ -84,6 +81,10 @@ function Profile({ params }: { params: { userId: string } }) {
     if (!user) {
       router.push("/auth");
       return;
+    }
+
+    if (user.id !== params.userId) {
+      router.push("/");
     }
   }, [user]);
 
@@ -104,7 +105,6 @@ function Profile({ params }: { params: { userId: string } }) {
             const data: ScalarDocument = response.data.data[0];
             setImagePreview1(data.documentFront as string);
             setImagePreview2(data.documentBack as string);
-            setImagePreview3(data.laborCardId as string);
           }
           setLoading(false);
         }
@@ -230,46 +230,8 @@ function Profile({ params }: { params: { userId: string } }) {
     setContentOpenDoc(image);
   };
 
-  const handleSetViewLaborCard = async ({
-    laborCardId,
-  }: {
-    laborCardId: string;
-  }) => {
-    try {
-      console.log(laborCardId);
-      const response = await axios.post(
-        "/api/user/get_labor_letter",
-        { laborCardId },
-        { headers: { Authorization: `Bearer ${user?.token}` } }
-      );
-
-      console.log(response);
-
-      const fileParts = response.data.data;
-
-      console.log(fileParts);
-
-      const base64data = fileParts.filePart;
-
-      console.log(base64data);
-
-      // setPdfFile(`data:application/pdf;base64,${base64data}`);
-      setPdfFile(
-        "https://res.cloudinary.com/dvquomppa/image/upload/v1718052969/gkzzfbye5ly34pxzyw7n.pdf"
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  console.log(pdfFile);
-
   const handleOpenViewDocImg = () => {
     setOpenDocs(!openDocs);
-  };
-
-  const handleOpenViewPdf = () => {
-    setOpenViewPdf(!openViewPdf);
   };
 
   const handleUpdateAvatar = async () => {
@@ -563,66 +525,11 @@ function Profile({ params }: { params: { userId: string } }) {
     [user, handleSubmitImageBack]
   );
 
-  const onDrop3 = useCallback(
-    async (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-      // console.log(file);
-      setLoadingProccessImg03(true);
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = async () => {
-          const data = reader.result as string;
-          // console.log(data);
-          const base64data = data.split(",")[1];
-          // console.log(base64data);
-          const maxPartSize = 5000000;
-          // console.log(maxPartSize);
-          const fileParts: string[] = [];
-          // console.log(fileParts);
-
-          for (let i = 0; i < base64data.length; i += maxPartSize) {
-            fileParts.push(base64data.slice(i, i + maxPartSize));
-          }
-
-          const userId = user?.id;
-          const documentId = infoUser && infoUser.id;
-          console.log(documentId);
-
-          try {
-            if (user && user.token) {
-              const response = await axios.post(
-                "/api/user/labor_letter",
-                {
-                  userId,
-                  fileParts,
-                  documentId,
-                },
-                { headers: { Authorization: `Bearer ${user.token}` } }
-              );
-
-              console.log(response);
-
-              if (response.data.success == true) {
-                toast.success("Carta laboral subida");
-                setImagePreview3(response.data.data);
-              }
-            }
-          } catch (error) {
-            console.error("Error uploading file:", error);
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    },
-    [user]
-  );
 
   const { getRootProps: getRootProps1, getInputProps: getInputProps1 } =
     useDropzone({ onDrop: onDrop1 });
   const { getRootProps: getRootProps2, getInputProps: getInputProps2 } =
     useDropzone({ onDrop: onDrop2 });
-  const { getRootProps: getRootProps3, getInputProps: getInputProps3 } =
-    useDropzone({ onDrop: onDrop3 });
 
   if (loading) {
     return <LoadingPage />; // Aquí puedes reemplazar con tu componente de carga
@@ -1286,13 +1193,6 @@ function Profile({ params }: { params: { userId: string } }) {
                 className={styles.imgPrevDoc}
               />
             </div>
-          </Modal>
-
-          <Modal isOpen={openViewPdf} onClose={handleOpenViewPdf} link={null}>
-            <iframe
-              src={pdfFile as string}
-              style={{ width: "100%", height: "100%" }}
-            />
           </Modal>
         </main>
       </>
