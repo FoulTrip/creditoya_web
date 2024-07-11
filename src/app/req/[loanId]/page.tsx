@@ -134,7 +134,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
     };
 
     loanInfo();
-  }, [params.loanId, user, user?.token]);
+  }, [params.loanId, user, user?.token, infoLoan?.userId, router]);
 
   if (loading) {
     return <LoadingPage />;
