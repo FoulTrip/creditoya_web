@@ -9,7 +9,7 @@ import Modal from "../modal/Modal";
 import Document00 from "../pdfs/pdfCard00";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
-import Document04 from "../pdfs/pdfCard04";
+import Document04 from "../pdfs/pdfCard03";
 
 function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
   const [openModal, setOpenModal] = useState<boolean>(false);

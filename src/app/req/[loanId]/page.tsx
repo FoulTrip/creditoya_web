@@ -20,7 +20,9 @@ import { stringToPriceCOP } from "@/handlers/StringToCop";
 import LoadingPage from "@/components/Loaders/LoadingPage";
 import Modal from "@/components/modal/Modal";
 import Document00 from "@/components/pdfs/pdfCard00";
-import Document04 from "@/components/pdfs/pdfCard04";
+import { Document01 } from "@/components/pdfs/pdfCard01";
+import Document03 from "@/components/pdfs/pdfCard03";
+import Document02 from "@/components/pdfs/pdfCard02";
 
 function RequestInfo({ params }: { params: { loanId: string } }) {
   const { user } = useGlobalContext();
@@ -443,9 +445,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                         className={styles.iconDocument}
                       />
                     </div>
-                    <p className={styles.textHeader}>
-                      Autorizacion descuento nomina
-                    </p>
+                    <p className={styles.textHeader}>Autorizacion cobro</p>
                   </div>
 
                   <div className={styles.infoBox}>
@@ -472,12 +472,41 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                         className={styles.iconDocument}
                       />
                     </div>
-                    <p className={styles.textHeader}>Pagare</p>
+                    <p className={styles.textHeader}>
+                      Autorizacion descuento nomina
+                    </p>
                   </div>
 
                   <div className={styles.infoBox}>
                     <div className={styles.barBtns}>
                       <button onClick={() => handleAutoOpenModel(6)}>
+                        Ver
+                      </button>
+
+                      <button
+                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                      >
+                        Descargar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.cardFlyer}>
+                <div className={styles.headerCardFlyer}>
+                  <div className={styles.centerHeaderFlyer}>
+                    <div className={styles.boxDocument}>
+                      <HiOutlineDocumentChartBar
+                        className={styles.iconDocument}
+                      />
+                    </div>
+                    <p className={styles.textHeader}>Pagare</p>
+                  </div>
+
+                  <div className={styles.infoBox}>
+                    <div className={styles.barBtns}>
+                      <button onClick={() => handleAutoOpenModel(7)}>
                         Ver
                       </button>
 
@@ -517,16 +546,23 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
         )}
 
         {optionOpenDocs == 5 && (
-          <Document00
+          <Document01
             numberDocument={documentsInfo?.number as string}
-            entity={infoLoan?.entity as string}
-            numberBank={infoLoan?.bankNumberAccount as string}
-            signature={infoLoan?.signature}
+            name={`${userInfo?.names} ${userInfo?.firstLastName} ${userInfo?.secondLastName}`}
+            signature={infoLoan?.signature as string}
           />
         )}
 
         {optionOpenDocs == 6 && (
-          <Document04
+          <Document02
+            numberDocument={documentsInfo?.number as string}
+            name={`${userInfo?.names} ${userInfo?.firstLastName} ${userInfo?.secondLastName}`}
+            signature={infoLoan?.signature as string}
+          />
+        )}
+
+        {optionOpenDocs == 7 && (
+          <Document03
             name={`${userInfo?.names} ${userInfo?.firstLastName} ${userInfo?.secondLastName}`}
             numberDocument={documentsInfo?.number as string}
             signature={infoLoan?.signature}
