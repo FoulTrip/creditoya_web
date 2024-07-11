@@ -25,9 +25,14 @@ const Modal = ({ isOpen, onClose, children, link }: modalProps) => {
         {!link ? children : null}
 
         {link && (
-          <Document file={link} className={styles.pdfDocument}>
-            <Page width={600} />
-          </Document>
+          <iframe
+            src={link}
+            className={styles.pdfIframe}
+            width="100%"
+            height="900px"
+            style={{ border: 0 }}
+            title="PDF Document"
+          />
         )}
 
         <button className={styles.close_button} onClick={onClose}>

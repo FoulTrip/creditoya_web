@@ -5,6 +5,7 @@ import {
   ScalarDocument,
   ScalarEmployee,
   ScalarLoanApplication,
+  ScalarUser,
 } from "@/types/User";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -17,6 +18,9 @@ import Image from "next/image";
 import DateToPretty from "@/handlers/DateToPretty";
 import { stringToPriceCOP } from "@/handlers/StringToCop";
 import LoadingPage from "@/components/Loaders/LoadingPage";
+import Modal from "@/components/modal/Modal";
+import Document00 from "@/components/pdfs/pdfCard00";
+import Document04 from "@/components/pdfs/pdfCard04";
 
 function RequestInfo({ params }: { params: { loanId: string } }) {
   const { user } = useGlobalContext();
@@ -27,8 +31,25 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
   const [documentsInfo, setDocumentsInfo] = useState<ScalarDocument | null>(
     null
   );
+  const [userInfo, setUserInfo] = useState<ScalarUser | null>(null);
 
+  const [optionOpenDocs, setOptionOpenDocs] = useState<number | null>(null);
+  const [openModelDocs, setOpenModelDocs] = useState<boolean>(false);
+  const [linkSelect, setLinkSelect] = useState<string | null>(null);
+
+  const [openModelAutoDoc, setOpenModelAutoDoc] = useState<boolean>(false);
   const router = useRouter();
+
+  const handleOpenModel = (option: number, link: string) => {
+    setOptionOpenDocs(option);
+    setLinkSelect(link);
+    setOpenModelDocs(true);
+  };
+
+  const handleAutoOpenModel = (option: number) => {
+    setOptionOpenDocs(option);
+    setOpenModelAutoDoc(true);
+  };
 
   useEffect(() => {
     if (!user) {
@@ -38,6 +59,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
 
     const loanInfo = async () => {
       const loanId: string = params.loanId;
+
       const response = await axios
         .post(
           "/api/loan/id",
@@ -49,11 +71,8 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
         .catch((error) => console.log(error));
 
       if (response?.data.success) {
-        // console.log(response);
-
         const loan: ScalarLoanApplication = response.data.data;
         setInfoLoan(loan);
-        // console.log(loan);
 
         const responseDoc = await axios
           .post(
@@ -75,7 +94,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
         if (loan.employeeId !== "Standby") {
           const infoEmployee = await axios
             .post(
-              "/employee/id",
+              "/api/employee/id",
               {
                 employeeId: loan.employeeId,
               },
@@ -91,7 +110,21 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
           console.log(employee);
           setInfoEmployee(employee);
 
-          response.data.success === true && setInfoLoan(response.data.data);
+          if (response.data.success == true) {
+            setInfoLoan(response.data.data);
+
+            const responseClient = await axios.post(
+              "/api/user/id",
+              {
+                userId: infoLoan?.userId,
+              },
+              { headers: { Authorization: `Bearer ${user.token}` } }
+            );
+
+            if (responseClient.data.success) {
+              setUserInfo(responseClient.data.data);
+            }
+          }
         }
 
         setLoading(false);
@@ -120,7 +153,24 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
           </div>
         </div>
         <h1>Tu Prestamo</h1>
-        <p>Solicitud: {infoLoan?.id}</p>
+        <p>id: {infoLoan?.id}</p>
+
+        <h3 className={styles.banckTitle}>Cantidad requerida</h3>
+        <h1>{stringToPriceCOP(infoLoan?.cantity as string)}</h1>
+
+        {infoLoan?.status == "Rechazado" && (
+          <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
+            <h5>Razon del rechazo</h5>
+            <p>{infoLoan?.reasonReject}</p>
+          </div>
+        )}
+
+        {infoLoan?.reasonChangeCantity && (
+          <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
+            <h5>Razon del cambio de cantidad solicitada</h5>
+            <p>{infoLoan?.reasonChangeCantity}</p>
+          </div>
+        )}
 
         <h3 className={styles.banckTitle}>Informacion financiera</h3>
         <div className={styles.boxCards}>
@@ -140,49 +190,34 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
           </div>
         </div>
 
-        <div className={styles.barPrevInfo}>
-          <div className={styles.containerInfo}>
-            <h5 className={styles.headerTitle}>Estatus de solicitud</h5>
-            <h2>{infoLoan?.status}</h2>
+        <h3 className={styles.banckTitle}>Informacion Solicitud</h3>
+        <div className={styles.boxCards}>
+          <div className={styles.cardInfoBank}>
+            <h5>Estatus</h5>
+            <p>{infoLoan?.status}</p>
           </div>
 
-          <div className={styles.containerInfo}>
-            <h5 className={styles.headerTitle}>Fecha de solicitud</h5>
-            <h2>
-              {DateToPretty(infoLoan?.created_at.toString() as string, false)}
-            </h2>
+          <div className={styles.cardInfoBank}>
+            <h5>Fecha de solicitud</h5>
+            <p>{DateToPretty(String(infoLoan?.created_at), false)}</p>
           </div>
 
-          <div className={styles.containerInfo}>
-            <h5 className={styles.headerTitle}>Solicitud requerida</h5>
-            <h2>{stringToPriceCOP(infoLoan?.cantity as string)}</h2>
-          </div>
-
-          <div className={styles.containerInfo}>
-            <h5 className={styles.headerTitle}>Asesor Encargado</h5>
-            <div className={styles.boxTextEmployee}>
-              <div className={styles.centerTextEmployee}>
-                <div className={styles.boxAvatarEmployee}>
-                  <Avatar src={infoEmployee?.avatar} round={true} size={"30"} />
+          {infoLoan?.status !== "Pendiente" && (
+            <div className={styles.cardInfoBank}>
+              <h5>Asesor encargado</h5>
+              <div className={styles.boxEmployeeInfo}>
+                <div className={styles.centerEmpInfo}>
+                  <Avatar
+                    round={true}
+                    size="20"
+                    src={infoEmployee?.avatar as string}
+                    alt={"avatar"}
+                  />
                 </div>
-
-                <div className={styles.contactInfo}>
-                  <p className={styles.nameEmployee}>
-                    {infoEmployee == null
-                      ? "Sin Asesor"
-                      : `${infoEmployee.name} ${infoEmployee.lastNames}`}
-                  </p>
-                </div>
-
-                {infoEmployee && (
-                  <div className={styles.contactInfo}>
-                    <h5>Numero Celular</h5>
-                    <p>{infoEmployee?.phone}</p>
-                  </div>
-                )}
+                <p>{`${infoEmployee?.name} ${infoEmployee?.lastNames}`}</p>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className={styles.containerPayments}>
@@ -191,32 +226,35 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
               <h3>Carta Laboral</h3>
             </div>
             <div className={styles.boxLaborCard}>
-              <div className={styles.cardLabor}>
+              <div className={styles.cardFlyer}>
                 <div className={styles.headerCardFlyer}>
                   <div className={styles.centerHeaderFlyer}>
                     <div className={styles.boxDocument}>
                       <HiOutlineDocumentChartBar
-                        size={20}
                         className={styles.iconDocument}
                       />
                     </div>
-                    <h4 className={styles.textHeader}>Documento PDF</h4>
+                    <p className={styles.textHeader}>
+                      Carta laboral actualizada
+                    </p>
                   </div>
-                </div>
-                <div className={styles.infoBox}>
-                  <p>Carta Laboral</p>
-                  <div className={styles.barBtns}>
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Ver
-                    </button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Descargar
-                    </button>
+                  <div className={styles.infoBox}>
+                    <div className={styles.barBtns}>
+                      <button
+                        onClick={() =>
+                          handleOpenModel(0, infoLoan?.labor_card as string)
+                        }
+                      >
+                        Ver
+                      </button>
+
+                      <button
+                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                      >
+                        Descargar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -237,23 +275,27 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                         className={styles.iconDocument}
                       />
                     </div>
-                    <h4 className={styles.textHeader}>Documento PDF</h4>
+                    <h4 className={styles.textHeader}>
+                      Primer volante de pago
+                    </h4>
                   </div>
-                </div>
-                <div className={styles.infoBox}>
-                  <p>Primer Volante de pago</p>
-                  <div className={styles.barBtns}>
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Ver
-                    </button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Descargar
-                    </button>
+                  <div className={styles.infoBox}>
+                    <div className={styles.barBtns}>
+                      <button
+                        onClick={() =>
+                          handleOpenModel(1, infoLoan?.fisrt_flyer as string)
+                        }
+                      >
+                        Ver
+                      </button>
+
+                      <button
+                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                      >
+                        Descargar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -266,23 +308,25 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                         className={styles.iconDocument}
                       />
                     </div>
-                    <p className={styles.textHeader}>Documento PDF</p>
+                    <p className={styles.textHeader}>Segundo volante de pago</p>
                   </div>
-                </div>
-                <div className={styles.infoBox}>
-                  <p>Segundo Volante de pago</p>
-                  <div className={styles.barBtns}>
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Ver
-                    </button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Descargar
-                    </button>
+                  <div className={styles.infoBox}>
+                    <div className={styles.barBtns}>
+                      <button
+                        onClick={() =>
+                          handleOpenModel(1, infoLoan?.second_flyer as string)
+                        }
+                      >
+                        Ver
+                      </button>
+
+                      <button
+                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                      >
+                        Descargar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -295,24 +339,25 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                         className={styles.iconDocument}
                       />
                     </div>
-                    <p className={styles.textHeader}>Documento PDF</p>
+                    <p className={styles.textHeader}>Tercer volante de pago</p>
                   </div>
-                </div>
 
-                <div className={styles.infoBox}>
-                  <p>Tercer Volante de pago</p>
-                  <div className={styles.barBtns}>
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Ver
-                    </button>
+                  <div className={styles.infoBox}>
+                    <div className={styles.barBtns}>
+                      <button
+                        onClick={() =>
+                          handleOpenModel(1, infoLoan?.third_flyer as string)
+                        }
+                      >
+                        Ver
+                      </button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Descargar
-                    </button>
+                      <button
+                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                      >
+                        Descargar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -366,27 +411,26 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                   <div className={styles.centerHeaderFlyer}>
                     <div className={styles.boxDocument}>
                       <HiOutlineDocumentChartBar
-                        size={20}
                         className={styles.iconDocument}
                       />
                     </div>
-                    <h4 className={styles.textHeader}>Volante de Pago</h4>
+                    <p className={styles.textHeader}>
+                      Autorizacion centrales de riesgo
+                    </p>
                   </div>
-                </div>
-                <div className={styles.infoBox}>
-                  <p>Primer Volante de pago</p>
-                  <div className={styles.barBtns}>
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Ver
-                    </button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Descargar
-                    </button>
+                  <div className={styles.infoBox}>
+                    <div className={styles.barBtns}>
+                      <button onClick={() => handleAutoOpenModel(4)}>
+                        Ver
+                      </button>
+
+                      <button
+                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                      >
+                        Descargar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -399,23 +443,23 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                         className={styles.iconDocument}
                       />
                     </div>
-                    <p className={styles.textHeader}>Documento PDF</p>
+                    <p className={styles.textHeader}>
+                      Autorizacion descuento nomina
+                    </p>
                   </div>
-                </div>
-                <div className={styles.infoBox}>
-                  <p>Segundo Volante de pago</p>
-                  <div className={styles.barBtns}>
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Ver
-                    </button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Descargar
-                    </button>
+                  <div className={styles.infoBox}>
+                    <div className={styles.barBtns}>
+                      <button onClick={() => handleAutoOpenModel(5)}>
+                        Ver
+                      </button>
+
+                      <button
+                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                      >
+                        Descargar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -428,23 +472,21 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                         className={styles.iconDocument}
                       />
                     </div>
-                    <p className={styles.textHeader}>Documento PDF</p>
+                    <p className={styles.textHeader}>Pagare</p>
                   </div>
-                </div>
-                <div className={styles.infoBox}>
-                  <p>Tercer Volante de pago</p>
-                  <div className={styles.barBtns}>
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Ver
-                    </button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Descargar
-                    </button>
+                  <div className={styles.infoBox}>
+                    <div className={styles.barBtns}>
+                      <button onClick={() => handleAutoOpenModel(6)}>
+                        Ver
+                      </button>
+
+                      <button
+                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                      >
+                        Descargar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -452,6 +494,45 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
           </div>
         </div>
       </main>
+
+      <Modal
+        isOpen={openModelDocs}
+        link={linkSelect}
+        onClose={() => setOpenModelDocs(false)}
+      >
+        <p>Hola</p>
+      </Modal>
+
+      <Modal
+        isOpen={openModelAutoDoc}
+        onClose={() => setOpenModelAutoDoc(false)}
+      >
+        {optionOpenDocs == 4 && (
+          <Document00
+            numberDocument={documentsInfo?.number as string}
+            entity={infoLoan?.entity as string}
+            numberBank={infoLoan?.bankNumberAccount as string}
+            signature={infoLoan?.signature}
+          />
+        )}
+
+        {optionOpenDocs == 5 && (
+          <Document00
+            numberDocument={documentsInfo?.number as string}
+            entity={infoLoan?.entity as string}
+            numberBank={infoLoan?.bankNumberAccount as string}
+            signature={infoLoan?.signature}
+          />
+        )}
+
+        {optionOpenDocs == 6 && (
+          <Document04
+            name={`${userInfo?.names} ${userInfo?.firstLastName} ${userInfo?.secondLastName}`}
+            numberDocument={documentsInfo?.number as string}
+            signature={infoLoan?.signature}
+          />
+        )}
+      </Modal>
     </>
   );
 }
