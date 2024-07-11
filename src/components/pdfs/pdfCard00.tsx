@@ -25,7 +25,7 @@ function Document00({
     updatedJsonData.optionAccount.entityAccount = entity;
     updatedJsonData.optionAccount.numberAccount = numberBank;
     setJsonData(updatedJsonData);
-  }, []);
+  }, [entity, numberBank]);
 
   useEffect(() => {
     const doc = new jsPDF();
@@ -51,7 +51,7 @@ function Document00({
     doc.text(jsonData.secondTitle, 10, y, { maxWidth: 190 });
     y += 10;
 
-    doc.setFontSize(13)
+    doc.setFontSize(13);
 
     doc.text(
       "Cuenta Ahorros " +
@@ -65,7 +65,7 @@ function Document00({
     );
     y += -265;
 
-    doc.setFontSize(10)
+    doc.setFontSize(10);
 
     doc.addPage();
 
@@ -132,7 +132,7 @@ function Document00({
     const pdfBlob = doc.output("blob");
     const pdfUrl = URL.createObjectURL(pdfBlob);
     setPdfUrl(pdfUrl);
-  }, [jsonData]);
+  }, [jsonData, numberDocument, signature]);
   return (
     <>
       {pdfUrl && (

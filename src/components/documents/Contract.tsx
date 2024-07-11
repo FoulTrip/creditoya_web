@@ -165,7 +165,7 @@ function Contract({
     };
 
     getInfoUserDocs();
-  }, [userId, user && user.token]);
+  }, [userId, user, user?.token]);
 
   useEffect(() => {
     setLoading(true);
@@ -195,7 +195,7 @@ function Contract({
     };
 
     getInfoUser();
-  }, [userId, user && user.token]);
+  }, [userId, user, user?.token]);
 
   const handleDeleteDoc = async (type: string) => {
     const response = await axios.post(
@@ -335,7 +335,7 @@ function Contract({
 
       // console.log(response.data.success);
     }
-  }, []);
+  }, [user]);
 
   const onDrop4 = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -372,7 +372,7 @@ function Contract({
 
       // console.log(response.data.success);
     }
-  }, []);
+  }, [user]);
 
   const onDrop5 = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -409,7 +409,7 @@ function Contract({
 
       // console.log(response.data.success);
     }
-  }, []);
+  }, [user]);
 
   const onDrop6 = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -447,7 +447,7 @@ function Contract({
 
       // console.log(response.data.success);
     }
-  }, []);
+  }, [user]);
 
   const { getRootProps: getRootProps3, getInputProps: getInputProps3 } =
     useDropzone({ onDrop: onDrop3 });

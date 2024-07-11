@@ -57,7 +57,7 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
 
     getInfoDoc();
     getInfoUser();
-  }, [data]);
+  }, [data, user?.token]);
 
   // console.log(data);
 

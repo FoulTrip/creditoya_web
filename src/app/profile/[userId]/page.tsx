@@ -86,7 +86,7 @@ function Profile({ params }: { params: { userId: string } }) {
     if (user.id !== params.userId) {
       router.push("/");
     }
-  }, [user]);
+  }, [user, params.userId, router]);
 
   useEffect(() => {
     const getInfoUserDocs = async () => {
@@ -151,7 +151,7 @@ function Profile({ params }: { params: { userId: string } }) {
     };
 
     getInfoUser();
-  }, [params.userId, user?.token]);
+  }, [user, params.userId, user?.token]);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
 
@@ -206,7 +206,7 @@ function Profile({ params }: { params: { userId: string } }) {
         console.error("Error updating document front:", error);
       }
     },
-    [params.userId, user && user.token]
+    [params.userId, user?.token]
   );
 
   const handleSubmitImageBack = async ({ image }: { image: string }) => {
@@ -522,9 +522,8 @@ function Profile({ params }: { params: { userId: string } }) {
         setImagePreview2(response.data.data);
       }
     },
-    [user, handleSubmitImageBack]
+    [user]
   );
-
 
   const { getRootProps: getRootProps1, getInputProps: getInputProps1 } =
     useDropzone({ onDrop: onDrop1 });
