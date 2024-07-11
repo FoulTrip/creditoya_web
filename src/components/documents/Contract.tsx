@@ -61,10 +61,7 @@ function Contract({
   const handleOpenPreSend = () => {
     try {
       if (dataContract) {
-        if (
-          dataContract.bankCurrentAccount == false &&
-          dataContract.bankSavingAccount == false
-        )
+        if (dataContract.bankSavingAccount == false)
           throw new Error("Eligue tu tipo de cuenta");
         if (!dataContract.cantity)
           throw new Error("Ingresa la cantidad a solicitar");
