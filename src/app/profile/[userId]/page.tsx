@@ -549,9 +549,6 @@ function Profile({ params }: { params: { userId: string } }) {
           <div className={styles.boxImagePerfil}>
             <div className={styles.barPicturesAuth}>
               <div className={styles.boxInfoUserAvatar}>
-                <h2 className={styles.textWarnAvatar}>
-                  Cambia tu foto de perfil
-                </h2>
                 <div className={styles.centerInfoUserAvatar}>
                   <div className={styles.boxIconAvatar}>
                     {selectedImagePerfil == null && (
@@ -559,7 +556,7 @@ function Profile({ params }: { params: { userId: string } }) {
                         className={styles.avatarIcon}
                         src={user.avatar}
                         round={true}
-                        size={isTabletOrMobile ? "100px" : "200px"}
+                        size={isTabletOrMobile ? "170px" : "320px"}
                       />
                     )}
                     {selectedImagePerfil !== null && (
@@ -571,68 +568,65 @@ function Profile({ params }: { params: { userId: string } }) {
                       />
                     )}
                   </div>
-                  <div className={styles.boxChangeImage}>
-                    <div className={styles.centerBoxChangeImg}>
-                      <label
-                        htmlFor="file-upload"
-                        className={styles.customFileUpload}
-                      >
-                        <div className={styles.centerlabel}>
-                          <div className={styles.boxIconLabel}>
-                            <TbPhotoUp
-                              size={20}
-                              className={styles.iconUpdateAvatar}
-                            />
-                          </div>
-                          <p>Cambiar</p>
+                </div>
+                <div className={styles.boxChangeImage}>
+                  <div className={styles.textsChangeImage}>
+                    <h5>Foto de perfil</h5>
+                    <p>
+                      Por favor, sube una foto clara y bien iluminada de tu
+                      rostro para usar como avatar en tu cuenta, asegurando que
+                      sea única y fácilmente reconocible.
+                    </p>
+                  </div>
+                  <div className={styles.centerBoxChangeImg}>
+                    <label
+                      htmlFor="file-upload"
+                      className={styles.customFileUpload}
+                    >
+                      <div className={styles.centerlabel}>
+                        <div className={styles.boxIconLabel}>
+                          <TbPhotoUp
+                            size={20}
+                            className={styles.iconUpdateAvatar}
+                          />
                         </div>
-                      </label>
-                      <input
-                        id="file-upload"
-                        className={styles.btnChangeImage}
-                        type="file"
-                        onChange={handleImageChange}
-                        accept="image/*"
-                      />
-                      <div
-                        className={styles.btnDeleteAvatar}
-                        onClick={handleDeleteAvatar}
-                      >
-                        <div className={styles.centerBtnDeleteAvatar}>
-                          <div className={styles.boxIconLabel}>
-                            <TbPhotoCancel
-                              className={styles.iconCancelAvatar}
-                              size={20}
-                            />
-                          </div>
-                          <p>Eliminar</p>
-                        </div>
+                        <p>Cambiar</p>
                       </div>
-                      {selectedImagePerfil !== null && (
-                        <div
-                          onClick={handleUpdateAvatar}
-                          className={styles.btnUpdateFinal}
-                        >
-                          Actualizar
+                    </label>
+                    <input
+                      id="file-upload"
+                      className={styles.btnChangeImage}
+                      type="file"
+                      onChange={handleImageChange}
+                      accept="image/*"
+                    />
+                    <div
+                      className={styles.btnDeleteAvatar}
+                      onClick={handleDeleteAvatar}
+                    >
+                      <div className={styles.centerBtnDeleteAvatar}>
+                        <div className={styles.boxIconLabel}>
+                          <TbPhotoCancel
+                            className={styles.iconCancelAvatar}
+                            size={20}
+                          />
                         </div>
-                      )}
+                        <p>Eliminar</p>
+                      </div>
                     </div>
+                    {selectedImagePerfil !== null && (
+                      <div
+                        onClick={handleUpdateAvatar}
+                        className={styles.btnUpdateFinal}
+                      >
+                        Actualizar
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
 
               <div className={styles.boxInfoUserSelfie}>
-                <div className={styles.boxTitleSelfie}>
-                  <div className={styles.centerBoxTitleSelfie}>
-                    <div className={styles.boxIconAuthSelfie}>
-                      <TbLock className={styles.iconLock} />
-                    </div>
-                    <p>Autenticación con Selfie y Documento</p>
-                  </div>
-                  <div className={styles.BoxInfoSelfie}>
-                    <TbInfoCircle className={styles.iconInfoSelf} size={20} />
-                  </div>
-                </div>
                 <div className={styles.centerInfoUserSelfie}>
                   <div className={styles.boxIconAvatar}>
                     {selectedImageWithCC == null && (
@@ -659,12 +653,16 @@ function Profile({ params }: { params: { userId: string } }) {
                       />
                     )}
                   </div>
+
                   <div className={styles.boxChangeImage}>
-                    <h4>
-                      Sube una selfie donde aparezcas desde tu pecho hasta la
-                      cabeza y mostrando en alguna de las manos tu cedula por el
-                      lado frontal
-                    </h4>
+                    <div className={styles.textsChangeImage}>
+                      <h5>Verifica tu identidad</h5>
+                      <p>
+                        Sube una selfie donde aparezcas desde tu pecho hasta la
+                        cabeza y mostrando en alguna de las manos tu cedula por
+                        el lado frontal
+                      </p>
+                    </div>
                     <div className={styles.centerBoxChangeImg}>
                       <label
                         htmlFor="file-upload-pic"

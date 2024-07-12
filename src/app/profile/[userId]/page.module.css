@@ -16,7 +16,7 @@
 }
 
 .avatarIcon {
-  filter: drop-shadow(5px 5px 10px #818181);
+  filter: drop-shadow(5px 5px 10px var(--white-300));
   border-radius: 8px;
   width: 200px;
   height: auto;
@@ -29,6 +29,7 @@
 .barPicturesAuth {
   display: flex;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
 .BoxInfoSelfie {
@@ -43,13 +44,14 @@
 }
 
 .boxInfoUserAvatar {
-  display: grid;
-  place-content: center;
+  display: flex;
+  flex-direction: column;
   flex-basis: 400px;
   flex-grow: 1;
-  /* background: var(--white-100); */
+  background: var(--white-100);
+  border: 1px solid var(--white-200);
   padding: 20px;
-  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
 }
 
@@ -65,10 +67,28 @@
   border: 1px solid var(--white-200);
 }
 
+.textsChangeImage {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.textsChangeImage p {
+  text-align: start;
+  color: var(--white-600);
+  font-weight: 300;
+}
+
+.textsChangeImage h5 {
+  text-align: start;
+  margin-top: 10px;
+  font-weight: 600;
+  color: var(--white-600);
+}
+
 .centerInfoUserAvatar {
   display: flex;
-  flex-direction: row;
-  gap: 2em;
+  justify-content: flex-start;
 }
 
 .centerInfoUserSelfie {
@@ -78,18 +98,15 @@
 }
 
 .boxChangeImage {
-  display: grid;
-  place-content: center;
-}
-
-.boxChangeImage h4 {
-  margin-bottom: 1em;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .centerBoxChangeImg {
   display: flex;
   flex-direction: row;
+  gap: 10px;
 }
 
 .boxInputsInfo {
@@ -308,7 +325,7 @@
 .boxTitleSelfie {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
+  /* padding: 10px; */
   margin-bottom: 2em;
 }
 
@@ -384,12 +401,6 @@
 
 .customFileUpload:hover {
   background-color: var(--green-300); /* color de fondo al pasar el mouse */
-}
-
-.centerBoxChangeImg {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .btnDeleteAvatar {
