@@ -1,13 +1,24 @@
 .btnCopyText {
   display: flex;
   flex-direction: row;
+  gap: 5px;
 }
 
 .containerPerfil {
   margin-top: 7em;
 }
 
+.TextBtn {
+  font-size: 16px;
+  display: grid;
+  place-content: center;
+}
+
 .boxIconCopy {
   display: grid;
   place-content: center;
+}
+
+.iconCheck {
+  cursor: pointer;
 }

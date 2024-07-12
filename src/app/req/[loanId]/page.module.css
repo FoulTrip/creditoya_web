@@ -2,6 +2,8 @@
   margin-top: 7em;
   width: 90%;
   margin-left: 5%;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .DateContainer {
@@ -162,7 +164,7 @@
 
 .barCards {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
 }
 
@@ -183,11 +185,18 @@
   color: var(--white-500);
 }
 
+.metadataloan {
+  flex-basis: 400px;
+  flex-grow: 1;
+}
+
 .containerPayments {
   margin-top: 2em;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  flex-basis: 400px;
+  flex-grow: 1;
 }
 
 .containerPayments h3 {
@@ -202,17 +211,17 @@
 .barBtns {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 5px;
 }
 
 .barBtns button {
   background: var(--blue-50);
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
 }
 
 .barBtns button:hover {
-  background: var(--blue-100);
-  border: 1px solid var(--blue-600);
+  background: var(--white-50);
+  border: 1px solid var(--blue-200);
 }
 
 .barDocuments {
@@ -255,13 +264,15 @@
 }
 
 .cardFlyer {
-  flex-basis: 300px;
   flex-grow: 1;
-  /* background: var(--green-50); */
-  padding: 8px;
   border-radius: 16px;
-  border: 1px solid var(--white-200);
+  border: 1px solid var(--green-500);
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  background: var(--green-50);
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 20px 15px;
 }
 
 .cardFlyer:hover {
@@ -269,10 +280,8 @@
 }
 
 .headerCardFlyer {
-  background: var(--red-300);
-  padding: 20px 15px;
-  display: grid;
-  place-content: center;
+  background: var(--red-200);
+
   border-radius: 8px;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
@@ -289,23 +298,23 @@
 }
 
 .iconDocument {
-  color: var(--white-100);
+  color: var(--red-500);
 }
 
 .textHeader {
   font-weight: 400;
   display: grid;
   place-content: center;
-  color: var(--white-50);
-  filter: drop-shadow(0px 0px 10px var(--white-400));
+  color: var(--green-600);
+  /* filter: drop-shadow(0px 0px 10px var(--white-400)); */
 }
 
 .infoBox {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  place-content: center;
   gap: 10px;
   justify-content: space-between;
-  margin-top: 1em;
+  /* margin-top: 1em; */
 }
 
 .infoBox p {
@@ -316,12 +325,13 @@
 }
 
 .infoBox button {
-  padding: 5px 20px;
-  border: 1px solid var(--white-200);
+  padding: 5px 10px;
+  border: 1px solid transparent;
   border-radius: 8px;
   cursor: pointer;
   color: var(--white-500);
   font-weight: 500;
+  background: var(--white-50);
 }
 
 .infoBox button:hover {
@@ -360,12 +370,7 @@
 }
 
 .titleSection h3 {
-  padding: 10px 20px;
-  background: var(--green-50);
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  /* border-radius: 16px; */
-  border: 1px solid var(--white-100);
-  color: var(--green-500);
+  color: var(--white-600);
   font-weight: 500;
 }
 

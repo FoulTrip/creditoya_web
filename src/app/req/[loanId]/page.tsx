@@ -23,6 +23,7 @@ import Document00 from "@/components/pdfs/pdfCard00";
 import { Document01 } from "@/components/pdfs/pdfCard01";
 import Document03 from "@/components/pdfs/pdfCard03";
 import Document02 from "@/components/pdfs/pdfCard02";
+import CopyText from "@/components/accesories/CopyText";
 
 function RequestInfo({ params }: { params: { loanId: string } }) {
   const { user } = useGlobalContext();
@@ -143,83 +144,95 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
   return (
     <>
       <main className={styles.mainLoan}>
-        <div className={styles.barBack}>
-          <div
-            className={styles.centerBarBack}
-            onClick={() => router.push("/dashboard")}
-          >
-            <div className={styles.boxIcon}>
-              <TbArrowLeft size={20} className={styles.iconArrow} />
-            </div>
-            <p className={styles.labelBtn}>Volver</p>
-          </div>
-        </div>
-        <h1>Tu Prestamo</h1>
-        <p>id: {infoLoan?.id}</p>
-
-        <h3 className={styles.banckTitle}>Cantidad requerida</h3>
-        <h1>{stringToPriceCOP(infoLoan?.cantity as string)}</h1>
-
-        {infoLoan?.status == "Rechazado" && (
-          <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
-            <h5>Razon del rechazo</h5>
-            <p>{infoLoan?.reasonReject}</p>
-          </div>
-        )}
-
-        {infoLoan?.reasonChangeCantity && (
-          <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
-            <h5>Razon del cambio de cantidad solicitada</h5>
-            <p>{infoLoan?.reasonChangeCantity}</p>
-          </div>
-        )}
-
-        <h3 className={styles.banckTitle}>Informacion financiera</h3>
-        <div className={styles.boxCards}>
-          <div className={styles.cardInfoBank}>
-            <h5>Numero de cuenta</h5>
-            <p>{infoLoan?.bankNumberAccount}</p>
-          </div>
-
-          <div className={styles.cardInfoBank}>
-            <h5>Tipo de cuenta</h5>
-            <p>{infoLoan?.bankSavingAccount && "Cuenta Ahorros"}</p>
-          </div>
-
-          <div className={styles.cardInfoBank}>
-            <h5>Entidad bancaria</h5>
-            <p>{infoLoan?.entity}</p>
-          </div>
-        </div>
-
-        <h3 className={styles.banckTitle}>Informacion Solicitud</h3>
-        <div className={styles.boxCards}>
-          <div className={styles.cardInfoBank}>
-            <h5>Estatus</h5>
-            <p>{infoLoan?.status}</p>
-          </div>
-
-          <div className={styles.cardInfoBank}>
-            <h5>Fecha de solicitud</h5>
-            <p>{DateToPretty(String(infoLoan?.created_at), false)}</p>
-          </div>
-
-          {infoLoan?.status !== "Pendiente" && (
-            <div className={styles.cardInfoBank}>
-              <h5>Asesor encargado</h5>
-              <div className={styles.boxEmployeeInfo}>
-                <div className={styles.centerEmpInfo}>
-                  <Avatar
-                    round={true}
-                    size="20"
-                    src={infoEmployee?.avatar as string}
-                    alt={"avatar"}
-                  />
-                </div>
-                <p>{`${infoEmployee?.name} ${infoEmployee?.lastNames}`}</p>
+        <div className={styles.metadataloan}>
+          <div className={styles.barBack}>
+            <div
+              className={styles.centerBarBack}
+              onClick={() => router.push("/dashboard")}
+            >
+              <div className={styles.boxIcon}>
+                <TbArrowLeft size={20} className={styles.iconArrow} />
               </div>
+              <p className={styles.labelBtn}>Volver</p>
+            </div>
+          </div>
+          <h1>Solicitud de prestamo</h1>
+
+          <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
+            <h5>Solicitud Id</h5>
+            <CopyText text={infoLoan?.id as string} copy={true} />
+          </div>
+
+          <h3 className={styles.banckTitle}>Cantidad requerida</h3>
+          <h1>{stringToPriceCOP(infoLoan?.cantity as string)}</h1>
+
+          {infoLoan?.status == "Rechazado" && (
+            <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
+              <h5>Razon del rechazo</h5>
+              <p>{infoLoan?.reasonReject}</p>
             </div>
           )}
+
+          {infoLoan?.reasonChangeCantity && (
+            <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
+              <h5>Razon del cambio de cantidad solicitada</h5>
+              <CopyText
+                text={infoLoan?.reasonChangeCantity as string}
+                copy={true}
+              />
+            </div>
+          )}
+
+          <h3 className={styles.banckTitle}>Informacion financiera</h3>
+          <div className={styles.boxCards}>
+            <div className={styles.cardInfoBank}>
+              <h5>Numero de cuenta</h5>
+              <CopyText
+                text={infoLoan?.bankNumberAccount as string}
+                copy={true}
+              />
+            </div>
+
+            <div className={styles.cardInfoBank}>
+              <h5>Tipo de cuenta</h5>
+              <p>{infoLoan?.bankSavingAccount && "Cuenta Ahorros"}</p>
+            </div>
+
+            <div className={styles.cardInfoBank}>
+              <h5>Entidad bancaria</h5>
+              <p>{infoLoan?.entity}</p>
+            </div>
+          </div>
+
+          <h3 className={styles.banckTitle}>Informacion Solicitud</h3>
+          <div className={styles.boxCards}>
+            <div className={styles.cardInfoBank}>
+              <h5>Estatus</h5>
+              <p>{infoLoan?.status}</p>
+            </div>
+
+            <div className={styles.cardInfoBank}>
+              <h5>Fecha de solicitud</h5>
+              <p>{DateToPretty(String(infoLoan?.created_at), false)}</p>
+            </div>
+
+            {infoLoan?.status !== "Pendiente" && (
+              <div className={styles.cardInfoBank}>
+                <h5>Asesor encargado</h5>
+                <div className={styles.boxEmployeeInfo}>
+                  <div className={styles.centerEmpInfo}>
+                    <Avatar
+                      round={true}
+                      size="20"
+                      src={infoEmployee?.avatar as string}
+                      alt={"avatar"}
+                    />
+                  </div>
+                  <p>{`${infoEmployee?.name} ${infoEmployee?.lastNames}`}</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className={styles.containerPayments}>
@@ -229,34 +242,31 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
             </div>
             <div className={styles.boxLaborCard}>
               <div className={styles.cardFlyer}>
-                <div className={styles.headerCardFlyer}>
-                  <div className={styles.centerHeaderFlyer}>
-                    <div className={styles.boxDocument}>
-                      <HiOutlineDocumentChartBar
-                        className={styles.iconDocument}
-                      />
-                    </div>
-                    <p className={styles.textHeader}>
-                      Carta laboral actualizada
-                    </p>
+                <div className={styles.centerHeaderFlyer}>
+                  <div className={styles.boxDocument}>
+                    <HiOutlineDocumentChartBar
+                      size={20}
+                      className={styles.iconDocument}
+                    />
                   </div>
+                  <p className={styles.textHeader}>Carta laboral actualizada</p>
+                </div>
 
-                  <div className={styles.infoBox}>
-                    <div className={styles.barBtns}>
-                      <button
-                        onClick={() =>
-                          handleOpenModel(0, infoLoan?.labor_card as string)
-                        }
-                      >
-                        Ver
-                      </button>
+                <div className={styles.infoBox}>
+                  <div className={styles.barBtns}>
+                    <button
+                      onClick={() =>
+                        handleOpenModel(0, infoLoan?.labor_card as string)
+                      }
+                    >
+                      Ver
+                    </button>
 
-                      <button
-                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                      >
-                        Descargar
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
                   </div>
                 </div>
               </div>
@@ -269,97 +279,91 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
             </div>
             <div className={styles.barCards}>
               <div className={styles.cardFlyer}>
-                <div className={styles.headerCardFlyer}>
-                  <div className={styles.centerHeaderFlyer}>
-                    <div className={styles.boxDocument}>
-                      <HiOutlineDocumentChartBar
-                        size={20}
-                        className={styles.iconDocument}
-                      />
-                    </div>
-                    <h4 className={styles.textHeader}>
-                      Primer volante de pago
-                    </h4>
+                <div className={styles.centerHeaderFlyer}>
+                  <div className={styles.boxDocument}>
+                    <HiOutlineDocumentChartBar
+                      size={20}
+                      className={styles.iconDocument}
+                    />
                   </div>
+                  <h4 className={styles.textHeader}>Primer volante de pago</h4>
+                </div>
 
-                  <div className={styles.infoBox}>
-                    <div className={styles.barBtns}>
-                      <button
-                        onClick={() =>
-                          handleOpenModel(1, infoLoan?.fisrt_flyer as string)
-                        }
-                      >
-                        Ver
-                      </button>
+                <div className={styles.infoBox}>
+                  <div className={styles.barBtns}>
+                    <button
+                      onClick={() =>
+                        handleOpenModel(1, infoLoan?.fisrt_flyer as string)
+                      }
+                    >
+                      Ver
+                    </button>
 
-                      <button
-                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                      >
-                        Descargar
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
                   </div>
                 </div>
               </div>
 
               <div className={styles.cardFlyer}>
-                <div className={styles.headerCardFlyer}>
-                  <div className={styles.centerHeaderFlyer}>
-                    <div className={styles.boxDocument}>
-                      <HiOutlineDocumentChartBar
-                        className={styles.iconDocument}
-                      />
-                    </div>
-                    <p className={styles.textHeader}>Segundo volante de pago</p>
+                <div className={styles.centerHeaderFlyer}>
+                  <div className={styles.boxDocument}>
+                    <HiOutlineDocumentChartBar
+                      className={styles.iconDocument}
+                      size={20}
+                    />
                   </div>
+                  <p className={styles.textHeader}>Segundo volante de pago</p>
+                </div>
 
-                  <div className={styles.infoBox}>
-                    <div className={styles.barBtns}>
-                      <button
-                        onClick={() =>
-                          handleOpenModel(1, infoLoan?.second_flyer as string)
-                        }
-                      >
-                        Ver
-                      </button>
+                <div className={styles.infoBox}>
+                  <div className={styles.barBtns}>
+                    <button
+                      onClick={() =>
+                        handleOpenModel(1, infoLoan?.second_flyer as string)
+                      }
+                    >
+                      Ver
+                    </button>
 
-                      <button
-                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                      >
-                        Descargar
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
                   </div>
                 </div>
               </div>
 
               <div className={styles.cardFlyer}>
-                <div className={styles.headerCardFlyer}>
-                  <div className={styles.centerHeaderFlyer}>
-                    <div className={styles.boxDocument}>
-                      <HiOutlineDocumentChartBar
-                        className={styles.iconDocument}
-                      />
-                    </div>
-                    <p className={styles.textHeader}>Tercer volante de pago</p>
+                <div className={styles.centerHeaderFlyer}>
+                  <div className={styles.boxDocument}>
+                    <HiOutlineDocumentChartBar
+                      className={styles.iconDocument}
+                      size={20}
+                    />
                   </div>
+                  <p className={styles.textHeader}>Tercer volante de pago</p>
+                </div>
 
-                  <div className={styles.infoBox}>
-                    <div className={styles.barBtns}>
-                      <button
-                        onClick={() =>
-                          handleOpenModel(1, infoLoan?.third_flyer as string)
-                        }
-                      >
-                        Ver
-                      </button>
+                <div className={styles.infoBox}>
+                  <div className={styles.barBtns}>
+                    <button
+                      onClick={() =>
+                        handleOpenModel(1, infoLoan?.third_flyer as string)
+                      }
+                    >
+                      Ver
+                    </button>
 
-                      <button
-                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                      >
-                        Descargar
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
                   </div>
                 </div>
               </div>
@@ -409,113 +413,101 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
             </div>
             <div className={styles.barCards}>
               <div className={styles.cardFlyer}>
-                <div className={styles.headerCardFlyer}>
-                  <div className={styles.centerHeaderFlyer}>
-                    <div className={styles.boxDocument}>
-                      <HiOutlineDocumentChartBar
-                        className={styles.iconDocument}
-                      />
-                    </div>
-                    <p className={styles.textHeader}>
-                      Autorizacion centrales de riesgo
-                    </p>
+                <div className={styles.centerHeaderFlyer}>
+                  <div className={styles.boxDocument}>
+                    <HiOutlineDocumentChartBar
+                      className={styles.iconDocument}
+                      size={20}
+                    />
                   </div>
+                  <p className={styles.textHeader}>
+                    Autorizacion centrales de riesgo
+                  </p>
+                </div>
 
-                  <div className={styles.infoBox}>
-                    <div className={styles.barBtns}>
-                      <button onClick={() => handleAutoOpenModel(4)}>
-                        Ver
-                      </button>
+                <div className={styles.infoBox}>
+                  <div className={styles.barBtns}>
+                    <button onClick={() => handleAutoOpenModel(4)}>Ver</button>
 
-                      <button
-                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                      >
-                        Descargar
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
                   </div>
                 </div>
               </div>
 
               <div className={styles.cardFlyer}>
-                <div className={styles.headerCardFlyer}>
-                  <div className={styles.centerHeaderFlyer}>
-                    <div className={styles.boxDocument}>
-                      <HiOutlineDocumentChartBar
-                        className={styles.iconDocument}
-                      />
-                    </div>
-                    <p className={styles.textHeader}>Autorizacion cobro</p>
+                <div className={styles.centerHeaderFlyer}>
+                  <div className={styles.boxDocument}>
+                    <HiOutlineDocumentChartBar
+                      className={styles.iconDocument}
+                      size={20}
+                    />
                   </div>
+                  <p className={styles.textHeader}>Autorizacion cobro</p>
+                </div>
 
-                  <div className={styles.infoBox}>
-                    <div className={styles.barBtns}>
-                      <button onClick={() => handleAutoOpenModel(5)}>
-                        Ver
-                      </button>
+                <div className={styles.infoBox}>
+                  <div className={styles.barBtns}>
+                    <button onClick={() => handleAutoOpenModel(5)}>Ver</button>
 
-                      <button
-                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                      >
-                        Descargar
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
                   </div>
                 </div>
               </div>
 
               <div className={styles.cardFlyer}>
-                <div className={styles.headerCardFlyer}>
-                  <div className={styles.centerHeaderFlyer}>
-                    <div className={styles.boxDocument}>
-                      <HiOutlineDocumentChartBar
-                        className={styles.iconDocument}
-                      />
-                    </div>
-                    <p className={styles.textHeader}>
-                      Autorizacion descuento nomina
-                    </p>
+                <div className={styles.centerHeaderFlyer}>
+                  <div className={styles.boxDocument}>
+                    <HiOutlineDocumentChartBar
+                      className={styles.iconDocument}
+                      size={20}
+                    />
                   </div>
+                  <p className={styles.textHeader}>
+                    Autorizacion descuento nomina
+                  </p>
+                </div>
 
-                  <div className={styles.infoBox}>
-                    <div className={styles.barBtns}>
-                      <button onClick={() => handleAutoOpenModel(6)}>
-                        Ver
-                      </button>
+                <div className={styles.infoBox}>
+                  <div className={styles.barBtns}>
+                    <button onClick={() => handleAutoOpenModel(6)}>Ver</button>
 
-                      <button
-                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                      >
-                        Descargar
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
                   </div>
                 </div>
               </div>
 
               <div className={styles.cardFlyer}>
-                <div className={styles.headerCardFlyer}>
-                  <div className={styles.centerHeaderFlyer}>
-                    <div className={styles.boxDocument}>
-                      <HiOutlineDocumentChartBar
-                        className={styles.iconDocument}
-                      />
-                    </div>
-                    <p className={styles.textHeader}>Pagare</p>
+                <div className={styles.centerHeaderFlyer}>
+                  <div className={styles.boxDocument}>
+                    <HiOutlineDocumentChartBar
+                      className={styles.iconDocument}
+                      size={20}
+                    />
                   </div>
+                  <p className={styles.textHeader}>Pagare</p>
+                </div>
 
-                  <div className={styles.infoBox}>
-                    <div className={styles.barBtns}>
-                      <button onClick={() => handleAutoOpenModel(7)}>
-                        Ver
-                      </button>
+                <div className={styles.infoBox}>
+                  <div className={styles.barBtns}>
+                    <button onClick={() => handleAutoOpenModel(7)}>Ver</button>
 
-                      <button
-                        onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                      >
-                        Descargar
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                    >
+                      Descargar
+                    </button>
                   </div>
                 </div>
               </div>

@@ -123,6 +123,7 @@ function Dashboard() {
           <>
             <div className={styles.btnNew}>
               <h5 onClick={handleOpenContract}>Solicitar Prestamo</h5>
+              <button className={styles.inputSearch}>Instrucciones</button>
             </div>
             <div className={styles.listLoans}>
               {Loans?.filter((loan) => loan.userId === user?.id).map((loan) => (

@@ -5,6 +5,7 @@ import { TbChecklist, TbMailFilled, TbPhoneFilled } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
+import CopyText from "./CopyText";
 import Avatar from "react-avatar";
 
 function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
@@ -48,8 +49,19 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
       <div className={styles.cardLoan}>
         <h1 className={styles.titleCardLoan}>
           <div className={styles.prevInfo}>
-            <h5 className={styles.titleId}>Solicitud</h5>
-            <h5 className={styles.textId}>{loan.id}</h5>
+            <h3>Solicitud de prestamo</h3>
+
+            <div>
+              <h5 className={styles.titleId}>Solicitud Id</h5>
+              <CopyText text={loan?.id as string} copy={true} h5={true} />
+            </div>
+
+            <div
+              className={styles.goAll}
+              onClick={() => router.push(`/req/${loan.id}`)}
+            >
+              <h5>Ver datos completos</h5>
+            </div>
             {/* <h4>Prestamo</h4> */}
           </div>
         </h1>
@@ -77,16 +89,31 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
           </div>
         </div>
 
-        <div
-          className={styles.widgetsViews}
-          onClick={() => router.push(`/req/${loan.id}`)}
-        >
+        <div className={styles.widgetsViews}>
           <div className={styles.subTextBarView}>
             <div className={styles.centerList}>
               <div className={styles.iconCheckList}>
-                <TbChecklist className={styles.iconListCheck} size={30} />
+                {loan.status == "Pendiente" ? (
+                  <Avatar
+                    className={styles.iconListCheck}
+                    size={"30"}
+                    round={true}
+                  />
+                ) : (
+                  <Avatar
+                    src={infoEmployee?.avatar}
+                    className={styles.iconListCheck}
+                    size={"30"}
+                    round={true}
+                  />
+                )}
               </div>
-              <p>Datos completos</p>
+              <p>
+                {loan.status == "Pendiente"
+                  ? "Esperando Asesor..."
+                  : `${infoEmployee?.name} ${infoEmployee?.lastNames}`}
+              </p>
+              <h5>Asesor Encargado</h5>
             </div>
           </div>
         </div>

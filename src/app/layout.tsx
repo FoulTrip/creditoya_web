@@ -1,16 +1,19 @@
-"use client";
-
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { GlobalProvider } from "@/context/Auth";
 import NavBar from "@/components/NavrBar/NavBarComponent";
 import { Toaster } from "sonner";
-import { WebSocketProvider } from "next-ws/client";
 
 // stats vercel
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
-import { metadata } from "./metadata";
+import { WsProvider } from "./WsProvider";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Credito Ya",
+  description: "Developed by TripCode",
+};
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <WebSocketProvider url={`${process.env.NEXT_PUBLIC_ENDPOINT_WS}`}>
+        <WsProvider>
           <GlobalProvider>
             <Toaster richColors position="top-center" />
             <NavBar />
@@ -30,7 +33,7 @@ export default function RootLayout({
             <SpeedInsights />
             <Analytics />
           </GlobalProvider>
-        </WebSocketProvider>
+        </WsProvider>
       </body>
     </html>
   );

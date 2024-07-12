@@ -2,11 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  /* background: var(--white-100); */
-  padding: 20px;
-  /* border-radius: 16px; */
-  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
-  /* border: 1px solid var(--white-100); */
+  padding: 10px;
   border-bottom: 1px solid var(--white-300);
   padding-bottom: 3em;
 }
@@ -23,8 +19,8 @@
   background: var(--white-100);
   padding: 20px;
   border-radius: 8px;
-  border: 1px solid var(--white-200);
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--white-200); 
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
   display: grid;
   place-content: center;
 }
@@ -43,12 +39,40 @@
   justify-content: flex-start;
 }
 
-.prevInfo h4 {
+.prevInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.goAll {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.goAll h5 {
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--green-300);
+  padding: 10px 20px;
+  background: var(--green-50);
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.goAll h5:hover {
+  background: var(--green-50);
+  color: var(--green-400);
+  border: 1px solid var(--green-200);
+}
+
+.prevInfo h3 {
   display: flex;
   justify-content: flex-start;
   text-align: start;
   font-weight: 500;
-  color: var(--green-800);
+  color: var(--green-900);
 }
 
 .requirements:hover {
@@ -63,13 +87,12 @@
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  cursor: pointer;
-  border: 1px solid var(--white-200);
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--white-100);
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
 }
 
 .widgetsViews:hover {
-  border: 1px solid var(--white-300);
+  border: 1px solid var(--white-200);
 }
 
 .subTextBarView {
@@ -100,12 +123,12 @@
   border-radius: 8px;
   display: grid;
   place-content: center;
-  border: 1px solid var(--white-200);
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid transparent;
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
 }
 
 .boxBtnsDesicion:hover {
-  border: 1px solid var(--white-300);
+  border: 1px solid var(--white-200);
 }
 
 .boxStatusLoan h5 {
