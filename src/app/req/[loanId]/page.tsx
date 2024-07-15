@@ -110,7 +110,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
 
           const employee: ScalarEmployee =
             infoEmployee && infoEmployee.data.data;
-          console.log(employee);
+          // console.log(employee);
           setInfoEmployee(employee);
 
           if (response.data.success == true) {

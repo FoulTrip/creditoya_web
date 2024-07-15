@@ -32,19 +32,20 @@ function Signin() {
 
     try {
       const response = await axios.post("/api/user/signin", formData);
+      console.log(response)
       const data: AuthUser = response.data.data;
 
-      if (data.token) {
+      if (response.data.success) {
         setUserData(data);
         toast.success(`Bienvenido de nuevo ${data.names}`);
         setTimeout(() => {
-          route.push("/dashboard");
+          route.push("/");
         }, 3000);
-      } else {
-        toast.error("Credenciales invalidas");
       }
     } catch (error) {
-      toast.error("Failed signin");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
   };
 

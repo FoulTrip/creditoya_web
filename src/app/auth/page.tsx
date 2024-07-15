@@ -15,7 +15,12 @@ function OneContent() {
       <main className={styles.main}>
         <div className={styles.centerDiv}>
           <div className={styles.boxImageLogo}>
-            <Image className={styles.logoIcon} src={logoTripCode} alt="logo" />
+            <Image
+              className={styles.logoIcon}
+              src={logoTripCode}
+              alt="logo"
+              priority={true}
+            />
           </div>
           {/* <p>Accede a nuestros servicios</p> */}
           {selectLogin == "signin" ? <Signin /> : null}

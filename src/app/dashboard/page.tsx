@@ -18,6 +18,7 @@ function Dashboard() {
   const router = useRouter();
   const { user } = useGlobalContext();
   const [loading, setLoading] = useState(true);
+  const [checkingUser, setCheckingUser] = useState(true);
   const [completeDocs, setCompleteDocs] = useState<boolean | null>(null);
   const [openContract, setOpenContract] = useState<boolean>(false);
   const [Loans, setLoans] = useState<ScalarLoanApplication[] | null>(null);
@@ -30,9 +31,15 @@ function Dashboard() {
 
   useEffect(() => {
     if (user == null) {
-      router.push("/auth");
+      if (!checkingUser) {
+        router.push("/auth");
+      }
+    } else {
+      setCheckingUser(false);
     }
+  });
 
+  useEffect(() => {
     if (user !== null) {
       const documentsVerify = async () => {
         try {

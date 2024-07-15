@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from "react";
 import styles from "./Sidebar.module.css";
 import {
@@ -13,15 +15,10 @@ import Avatar from "react-avatar";
 import { Sidebar } from "primereact/sidebar";
 
 function SideBar() {
-  const [open, setOpen] = useState<boolean>(false);
   const { user, handleLogout } = useGlobalContext();
   const router = useRouter();
 
   const [visibleRight, setVisibleRight] = useState<boolean>(false);
-
-  const handleOpenSide = () => {
-    setOpen(!open);
-  };
 
   return (
     <>

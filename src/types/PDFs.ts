@@ -43,6 +43,17 @@ export type Document01Type = {
   fourParagraph: string;
 };
 
+/** Types of Document02 */
+export type Document02Type = {
+  title: string;
+  firstParagraph: string;
+  subFirstParagraph: string;
+  TwoSubFirstParagraph: string;
+  ThreeSubFirstParagraph: string;
+  FourSubFirstParagraph: string;
+  FiveSubFirstParagraph: string;
+};
+
 /** Types of Document04 */
 
 interface NumeroPagare {
