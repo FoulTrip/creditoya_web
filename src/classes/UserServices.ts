@@ -104,8 +104,18 @@ class UserService {
   static async updateDocument(
     userId: string,
     documentFront: string,
-    documentBack: string
+    documentBack: string,
+    number: string
   ): Promise<ScalarDocument[]> {
+    if (number && documentBack == undefined && documentFront == undefined) {
+      await prisma.document.updateMany({
+        where: { userId },
+        data: {
+          number: { set: number },
+        },
+      });
+    }
+
     if (documentBack) {
       await prisma.document.updateMany({
         where: { userId },
