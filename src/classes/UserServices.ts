@@ -94,10 +94,9 @@ class UserService {
     return user.Document.some(
       (document) =>
         document.documentFront !== "No definido" &&
-        document.documentBack !== "No definido"
-      // document.number !== "No definido" &&
-      // document.imageWithCC !== "No definido"
-      // document.laborCardId != "No definido"
+        document.documentBack !== "No definido" &&
+        document.number !== "No definido" &&
+        document.imageWithCC !== "No definido"
     );
   }
 

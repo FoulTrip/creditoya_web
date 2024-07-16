@@ -55,11 +55,6 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
   };
 
   useEffect(() => {
-    if (!user) {
-      router.push("/auth");
-      return;
-    }
-
     const loanInfo = async () => {
       const loanId: string = params.loanId;
 
@@ -121,7 +116,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
               {
                 userId: infoLoan?.userId,
               },
-              { headers: { Authorization: `Bearer ${user.token}` } }
+              { headers: { Authorization: `Bearer ${user?.token}` } }
             );
 
             if (responseClient.data.success) {
@@ -134,7 +129,11 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
       }
     };
 
-    loanInfo();
+    if (user) {
+      loanInfo();
+    } else {
+      router.push("/auth");
+    }
   }, [params.loanId, user, user?.token, infoLoan?.userId, router]);
 
   if (loading) {

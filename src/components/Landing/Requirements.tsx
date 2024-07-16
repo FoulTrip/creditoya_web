@@ -168,6 +168,7 @@ function RequirementsComponents() {
                 type="range"
                 min={0}
                 max={3000000}
+                step={100000}
                 value={value as number}
                 onChange={(e) => setValue(Number(e.target.value))}
                 className={styles.valueLoan}
@@ -187,42 +188,6 @@ function RequirementsComponents() {
             </div>
           </div>
         </div>
-
-        {/* <div className={styles.contactInfo}>
-          <h1 className={styles.titleContact}>Contacta con nosotros</h1>
-          <div className={styles.centerBtns}>
-            <div className={styles.listActions}>
-              <div className={styles.btnAction}>
-                <div className={styles.centerBtnAction}>
-                  <div className={styles.boxIconAction}>
-                    <TbBrandWhatsapp className={styles.iconWs} size={20} />
-                  </div>
-                  <p className={styles.labelActWs}>Whatsapp</p>
-                </div>
-              </div>
-
-              <div className={styles.btnAction}>
-                <div className={styles.centerBtnAction}>
-                  <div className={styles.boxIconAction}>
-                    <TbMail className={styles.iconMail} size={20} />
-                  </div>
-                  <p className={styles.labelActMail}>E-mail</p>
-                </div>
-              </div>
-
-              <div className={styles.btnAction}>
-                <div className={styles.centerBtnAction}>
-                  <div className={styles.boxIconAction}>
-                    <TbPhone className={styles.iconPhone} size={20} />
-                  </div>
-                  <p className={styles.labelActPhone}>
-                    3138994982 - 3106454591 - 3105183400
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
     </>
   );

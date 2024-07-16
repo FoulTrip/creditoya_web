@@ -25,6 +25,7 @@ function NavBar() {
             className={styles.logoNav}
             src={logoNav}
             alt="logoNav"
+            priority={true}
             onClick={() => router.push("/")}
           />
         </div>
@@ -65,10 +66,7 @@ function NavBar() {
                   {user ? <p>{user.names.split(" ")[0]}</p> : <p>Cuenta</p>}
                 </div>
                 {user && (
-                  <div
-                    className={styles.boxLogout}
-                    onClick={handleLogout}
-                  >
+                  <div className={styles.boxLogout} onClick={handleLogout}>
                     <div className={styles.boxIconLogout}>
                       <TbLogout size={20} />
                     </div>

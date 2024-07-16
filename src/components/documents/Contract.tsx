@@ -11,7 +11,7 @@ import {
 } from "react-icons/tb";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import {
   ScalarDocument,
   ScalarLoanApplication,
@@ -298,156 +298,198 @@ function Contract({
     }));
   };
 
-  const onDrop3 = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      setLoadingProccessImg03(true);
-      const file = acceptedFiles[0];
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("name", "labor_card");
-      if (user) formData.append("userid", user.id);
+  const onDrop3 = useCallback(
+    async (acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 0) {
+        setLoadingProccessImg03(true);
+        const file = acceptedFiles[0];
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("name", "labor_card");
+        if (user) formData.append("userid", user.id);
 
-      // const success = await UploadFile(formData);
+        // const success = await UploadFile(formData);
 
-      const response = await axios.post("/api/upload/google/create", formData, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+        const response = await axios.post(
+          "/api/upload/google/create",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
-      if (response.data.success == false) {
-        setLoadingProccessImg03(false);
-        toast.error("Error al subir archivo, intente mas tarde");
-        console.log(response.data.error);
+        if (response.data.success == false) {
+          setLoadingProccessImg03(false);
+          toast.error("Error al subir archivo, intente mas tarde");
+          console.log(response.data.error);
+        }
+
+        if ((response.data.success = true)) {
+          setLoadingProccessImg03(false);
+          const uri = response.data.data as string;
+          setImagePreview3(uri);
+          setDataContract((prevDataContract) => ({
+            ...(prevDataContract as ScalarLoanApplication),
+            labor_card: uri,
+          }));
+          toast.success("Archivo cargado exitosamente");
+        }
+
+        // console.log(response.data.success);
       }
+    },
+    [user]
+  );
 
-      if ((response.data.success = true)) {
-        setLoadingProccessImg03(false);
-        const uri = response.data.data as string;
-        setImagePreview3(uri);
-        setDataContract((prevDataContract) => ({
-          ...(prevDataContract as ScalarLoanApplication),
-          labor_card: uri,
-        }));
-        toast.success("Archivo cargado exitosamente");
+  const onDrop4 = useCallback(
+    async (acceptedFiles: File[]) => {
+      try {
+        if (acceptedFiles.length > 0) {
+          setLoadingProccessImg04(true);
+          const file = acceptedFiles[0];
+          const minSize = 100 * 1024; // 100KB en bytes
+          const maxSize = 1 * 1024 * 1024; // 1MB en bytes
+
+          if (file.size < minSize)
+            throw new Error("El archivo debe pesar más de 100KB");
+          if (file.size > maxSize)
+            throw new Error("El archivo debe pesar menos de 1MB");
+
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("name", "paid_flyer_01");
+          if (user) formData.append("userid", user.id);
+
+          const response = await axios.post(
+            "/api/upload/google/create",
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${user?.token}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          if (response.data.success == false) {
+            setLoadingProccessImg04(false);
+            toast.error("Error al subir archivo, intente mas tarde");
+            console.log(response.data.error);
+          }
+
+          if ((response.data.success = true)) {
+            setLoadingProccessImg04(false);
+            const uri = response.data.data as string;
+            setImagePreview4(uri);
+            setDataContract((prevDataContract) => ({
+              ...(prevDataContract as ScalarLoanApplication),
+              fisrt_flyer: uri,
+            }));
+            toast.success("Archivo cargado exitosamente");
+          }
+
+          // console.log(response.data.success);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        }
       }
+    },
+    [user]
+  );
 
-      // console.log(response.data.success);
-    }
-  }, [user]);
+  const onDrop5 = useCallback(
+    async (acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 0) {
+        setLoadingProccessImg05(true);
+        const file = acceptedFiles[0];
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("name", "paid_flyer_02");
+        if (user) formData.append("userid", user.id);
 
-  const onDrop4 = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      setLoadingProccessImg04(true);
-      const file = acceptedFiles[0];
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("name", "paid_flyer_01");
-      if (user) formData.append("userid", user.id);
+        const response = await axios.post(
+          "/api/upload/google/create",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
-      const response = await axios.post("/api/upload/google/create", formData, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+        if (response.data.success == false) {
+          setLoadingProccessImg05(false);
+          toast.error("Error al subir archivo, intente mas tarde");
+          console.log(response.data.error);
+        }
 
-      if (response.data.success == false) {
-        setLoadingProccessImg04(false);
-        toast.error("Error al subir archivo, intente mas tarde");
-        console.log(response.data.error);
+        if ((response.data.success = true)) {
+          setLoadingProccessImg05(false);
+          const uri = response.data.data as string;
+          setImagePreview5(uri);
+          setDataContract((prevDataContract) => ({
+            ...(prevDataContract as ScalarLoanApplication),
+            second_flyer: uri,
+          }));
+          toast.success("Archivo cargado exitosamente");
+        }
+
+        // console.log(response.data.success);
       }
+    },
+    [user]
+  );
 
-      if ((response.data.success = true)) {
-        setLoadingProccessImg04(false);
-        const uri = response.data.data as string;
-        setImagePreview4(uri);
-        setDataContract((prevDataContract) => ({
-          ...(prevDataContract as ScalarLoanApplication),
-          fisrt_flyer: uri,
-        }));
-        toast.success("Archivo cargado exitosamente");
+  const onDrop6 = useCallback(
+    async (acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 0) {
+        setLoadingProccessImg06(true);
+        const file = acceptedFiles[0];
+        const formData = new FormData();
+        formData.append("file", file);
+
+        formData.append("name", "paid_flyer_03");
+        if (user) formData.append("userid", user.id);
+
+        const response = await axios.post(
+          "/api/upload/google/create",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.data.success == false) {
+          setLoadingProccessImg06(false);
+          toast.error("Error al subir archivo, intente mas tarde");
+          console.log(response.data.error);
+        }
+
+        if ((response.data.success = true)) {
+          setLoadingProccessImg06(false);
+          const uri = response.data.data as string;
+          setImagePreview6(uri);
+          setDataContract((prevDataContract) => ({
+            ...(prevDataContract as ScalarLoanApplication),
+            third_flyer: uri,
+          }));
+          toast.success("Archivo cargado exitosamente");
+        }
+
+        // console.log(response.data.success);
       }
-
-      // console.log(response.data.success);
-    }
-  }, [user]);
-
-  const onDrop5 = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      setLoadingProccessImg05(true);
-      const file = acceptedFiles[0];
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("name", "paid_flyer_02");
-      if (user) formData.append("userid", user.id);
-
-      const response = await axios.post("/api/upload/google/create", formData, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      if (response.data.success == false) {
-        setLoadingProccessImg05(false);
-        toast.error("Error al subir archivo, intente mas tarde");
-        console.log(response.data.error);
-      }
-
-      if ((response.data.success = true)) {
-        setLoadingProccessImg05(false);
-        const uri = response.data.data as string;
-        setImagePreview5(uri);
-        setDataContract((prevDataContract) => ({
-          ...(prevDataContract as ScalarLoanApplication),
-          second_flyer: uri,
-        }));
-        toast.success("Archivo cargado exitosamente");
-      }
-
-      // console.log(response.data.success);
-    }
-  }, [user]);
-
-  const onDrop6 = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      setLoadingProccessImg06(true);
-      const file = acceptedFiles[0];
-      const formData = new FormData();
-      formData.append("file", file);
-
-      formData.append("name", "paid_flyer_03");
-      if (user) formData.append("userid", user.id);
-
-      const response = await axios.post("/api/upload/google/create", formData, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      if (response.data.success == false) {
-        setLoadingProccessImg06(false);
-        toast.error("Error al subir archivo, intente mas tarde");
-        console.log(response.data.error);
-      }
-
-      if ((response.data.success = true)) {
-        setLoadingProccessImg06(false);
-        const uri = response.data.data as string;
-        setImagePreview6(uri);
-        setDataContract((prevDataContract) => ({
-          ...(prevDataContract as ScalarLoanApplication),
-          third_flyer: uri,
-        }));
-        toast.success("Archivo cargado exitosamente");
-      }
-
-      // console.log(response.data.success);
-    }
-  }, [user]);
+    },
+    [user]
+  );
 
   const { getRootProps: getRootProps3, getInputProps: getInputProps3 } =
     useDropzone({ onDrop: onDrop3 });
