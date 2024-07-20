@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     if (!password) throw new Error("Ingresa tu contraseña");
 
     const user = await UserService.signin(email, password);
-    console.log(user);
+    // console.log(user);
     if (user == null) throw new Error("usuario no registrado");
 
     const payload = { userId: user.id, userEmail: user.email };

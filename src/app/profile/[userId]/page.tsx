@@ -35,35 +35,31 @@ function Profile({ params }: { params: { userId: string } }) {
   const [imagePreview2, setImagePreview2] = useState("");
   const [infoUser, setInfoUser] = useState<ScalarDocument>();
   const [loading, setLoading] = useState(true);
-  const [completeInfoUser, setCompleteInfoUser] = useState<ScalarUser | null>(
-    null
-  );
+
+  const [dataProfile, setDataProfile] = useState<ScalarUser | null>(null);
+
+  const handleChangeProfile = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    key: keyof ScalarUser
+  ) => {
+    const { value } = e.target;
+
+    setDataProfile((prevData) => ({
+      ...(prevData as ScalarUser),
+      [key]: value,
+    }));
+  };
 
   const [numberCc, setNumberCc] = useState<string | null>(null);
-  const [name, setName] = useState<string | null>(null);
-  const [detailEmail, setDetailEmail] = useState<string | null>(null);
-  const [celPhone, setCelPhone] = useState<string | null>(null);
-  const [firstLastName, setFirstLastName] = useState<string | null>(null);
-  const [secondLastName, setSecondLastName] = useState<string | null>(null);
-  const [residenceNumber, setResidenceNumber] = useState<string | null>(null);
-  const [genre, setGenre] = useState<string | null>(null);
-  const [celPhoneWs, setCelPhoneWs] = useState<string | null>(null);
-  const [birthday, setBirthday] = useState<Date | null>(null);
-  const [placeBirthday, setPlaceBirthday] = useState<string | null>(null);
-  const [addressResidence, setAddressResidence] = useState<string | null>(null);
-  const [cityResidence, setCityResidence] = useState<string | null>(null);
 
   const [selectedImagePerfil, setSelectedImagePerfil] = useState<string | null>(
     null
   );
-
   const [selectedImageWithCC, setSelectedImageWithCC] = useState<string | null>(
     null
   );
-
   const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
   const [loadingProccessImg02, setLoadingProccessImg02] = useState(false);
-
   const [openDocs, setOpenDocs] = useState<boolean>(false);
   const [contentOpenDoc, setContentOpenDoc] = useState<
     string | undefined | null
@@ -72,7 +68,7 @@ function Profile({ params }: { params: { userId: string } }) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!user) {
+    if (user === null) {
       router.push("/auth");
     } else if (user.id !== params.userId) {
       router.push("/");
@@ -82,71 +78,91 @@ function Profile({ params }: { params: { userId: string } }) {
   }, [user, params.userId, router]);
 
   useEffect(() => {
-    if (user && user.token) {
-      const getInfoUserDocs = async () => {
-        try {
-          if (user && user.token) {
-            const response = await axios.post(
-              "/api/user/list_docs",
-              {
-                userId: params.userId,
-              },
-              { headers: { Authorization: `Bearer ${user.token}` } }
-            );
-            // console.log(response.data);
-            setInfoUser(response.data.data[0]);
-            if (response.data && response.data.data && response.data.data[0]) {
-              const data: ScalarDocument = response.data.data[0];
-              setNumberCc(data.number as string);
-              setImagePreview1(data.documentFront as string);
-              setImagePreview2(data.documentBack as string);
-            }
-            setLoading(false);
-          }
-        } catch (error) {
-          console.log(error);
+    const getInfoUserDocs = async () => {
+      try {
+        if (user && user.token) {
+          const response = await axios.post(
+            "/api/user/list_docs",
+            {
+              userId: params.userId,
+            },
+            { headers: { Authorization: `Bearer ${user.token}` } }
+          );
+          // console.log(response.data);
+          setInfoUser(response.data.data[0]);
+          if (response.data && response.data.data && response.data.data[0]) {
+            const data: ScalarDocument = response.data.data[0];
 
-          if (error instanceof Error) {
-            console.log(error.cause);
+            setNumberCc(data.number as string);
+            setImagePreview1(data.documentFront as string);
+            setImagePreview2(data.documentBack as string);
           }
+          setLoading(false);
         }
-      };
+      } catch (error) {
+        console.log(error);
 
-      const getInfoUser = async () => {
-        try {
-          if (user && user.token) {
-            const response = await axios.post(
-              "/api/user/id",
-              {
-                userId: user && user.id,
-              },
-              { headers: { Authorization: `Bearer ${user.token}` } }
-            );
-            // console.log(response);
-            const data: ScalarUser = response.data.data;
-            // console.log(data);
-            setName(data.names);
-            setFirstLastName(data.firstLastName);
-            setSecondLastName(data.secondLastName);
-            setCelPhone(data.phone as string);
-            setResidenceNumber(data.residence_phone_number as string);
-            setGenre(data.genre as string);
-            setCelPhoneWs(data.phone_whatsapp as string);
-            setBirthday(new Date(data.birth_day as Date));
-            setCityResidence(data.city as string);
-            setCompleteInfoUser(data);
-          }
-        } catch (error) {
-          console.log(error);
+        if (error instanceof Error) {
+          console.log(error.cause);
         }
-      };
+      }
+    };
 
-      getInfoUserDocs();
-      getInfoUser();
-    }
+    const getInfoUser = async () => {
+      try {
+        if (user && user.token) {
+          const response = await axios.post(
+            "/api/user/id",
+            {
+              userId: user && user.id,
+            },
+            { headers: { Authorization: `Bearer ${user.token}` } }
+          );
+          const data: ScalarUser = response.data.data;
+          console.log(data);
+          setDataProfile(data);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getInfoUserDocs();
+    getInfoUser();
   }, [params.userId, user]);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
+
+  // console.log(dataProfile);
+
+  const handleUpdatePreviewLoads = async () => {
+    try {
+      const { id, password, createdAt, updatedAt, ...dataToUpdate } =
+        dataProfile as ScalarUser;
+      // Enviar solo las propiedades definidas en updateData
+      const response = await axios.put(
+        "/api/loan/update",
+        {
+          userId: user?.id as string,
+          data: dataToUpdate,
+        },
+        {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        }
+      );
+
+      if (response.data.success === true) {
+        toast.success("Dato actualizado");
+      } else if (response.data.success === false) {
+        throw new Error("Error al actualizar dato");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
@@ -309,7 +325,7 @@ function Profile({ params }: { params: { userId: string } }) {
           );
           toast.success("Imagen con cedula cargada");
           setInfoUser(response.data.data);
-          setSelectedImageWithCC(null);
+          setSelectedImageWithCC(secure_url);
         }
       }
     }
@@ -327,50 +343,6 @@ function Profile({ params }: { params: { userId: string } }) {
     if (response.data.success) {
       console.log(response);
       toast.success("Imagen con cedula eliminada");
-    }
-  };
-
-  const handleUpdatePreviewLoads = async (
-    updateData: Partial<Omit<ScalarUser, "password">>
-  ): Promise<void> => {
-    try {
-      // console.log(updateData);
-
-      // Filtrar las propiedades de updateData que no sean "password" y sean de tipo string
-      const filteredUpdateData: Partial<Omit<ScalarUser, "password">> =
-        Object.fromEntries(
-          Object.entries(updateData).filter(
-            ([key, value]) =>
-              key !== "password" &&
-              (typeof value === "string" || value instanceof Date)
-          )
-        );
-
-      // console.log(filteredUpdateData);
-
-      // Enviar solo las propiedades definidas en updateData
-      const response = await axios.put(
-        "/api/loan/update",
-        {
-          userId: user?.id as string,
-          data: filteredUpdateData,
-        },
-        {
-          headers: { Authorization: `Bearer ${user?.token}` },
-        }
-      );
-
-      console.log(response.data.error);
-
-      if (response.data.success === true) {
-        toast.success("Dato actualizado");
-      } else if (response.data.success === false) {
-        throw new Error("Error al actualizar dato");
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
     }
   };
 
@@ -505,8 +477,6 @@ function Profile({ params }: { params: { userId: string } }) {
   ) : (
     <>
       <main className={styles.containerPerfil}>
-        {/* <CopyText text={params.userId} copy={true} /> */}
-
         <div className={styles.boxImagePerfil}>
           <div className={styles.barPicturesAuth}>
             <div className={styles.boxInfoUserAvatar}>
@@ -685,19 +655,10 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={
-                          genre !== null ? genre : completeInfoUser?.genre || ""
-                        }
-                        onChange={(e) => setGenre(e.target.value)}
+                        value={dataProfile?.genre}
+                        onChange={(e) => handleChangeProfile(e, "genre")}
+                        name="genre"
                       />
-                      <button
-                        onClick={() =>
-                          handleUpdatePreviewLoads({ genre: genre as string })
-                        }
-                        className={styles.btnSaveInfo}
-                      >
-                        Guardar
-                      </button>
                     </div>
                   </div>
 
@@ -707,17 +668,10 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={name !== null ? name : user?.names || ""}
-                        onChange={(e) => setName(e.target.value)}
+                        value={dataProfile?.names}
+                        onChange={(e) => handleChangeProfile(e, "names")}
+                        name="names"
                       />
-                      <button
-                        className={styles.btnSaveInfo}
-                        onClick={() =>
-                          handleUpdatePreviewLoads({ names: name as string })
-                        }
-                      >
-                        Guardar
-                      </button>
                     </div>
                   </div>
 
@@ -727,23 +681,12 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={
-                          firstLastName !== null
-                            ? firstLastName
-                            : completeInfoUser?.firstLastName || ""
+                        value={dataProfile?.firstLastName}
+                        onChange={(e) =>
+                          handleChangeProfile(e, "firstLastName")
                         }
-                        onChange={(e) => setFirstLastName(e.target.value)}
+                        name="firstLastName"
                       />
-                      <button
-                        className={styles.btnSaveInfo}
-                        onClick={() =>
-                          handleUpdatePreviewLoads({
-                            firstLastName: firstLastName as string,
-                          })
-                        }
-                      >
-                        Guardar
-                      </button>
                     </div>
                   </div>
 
@@ -753,23 +696,12 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={
-                          secondLastName !== null
-                            ? secondLastName
-                            : completeInfoUser?.secondLastName || ""
+                        value={dataProfile?.secondLastName}
+                        onChange={(e) =>
+                          handleChangeProfile(e, "secondLastName")
                         }
-                        onChange={(e) => setSecondLastName(e.target.value)}
+                        name="secondLastName"
                       />
-                      <button
-                        className={styles.btnSaveInfo}
-                        onClick={() =>
-                          handleUpdatePreviewLoads({
-                            secondLastName: secondLastName as string,
-                          })
-                        }
-                      >
-                        Guardar
-                      </button>
                     </div>
                   </div>
 
@@ -780,20 +712,15 @@ function Profile({ params }: { params: { userId: string } }) {
                         className={styles.inputCC}
                         type="date"
                         value={
-                          birthday ? birthday.toISOString().split("T")[0] : ""
+                          dataProfile?.birth_day
+                            ? new Date(dataProfile?.birth_day)
+                                .toISOString()
+                                .split("T")[0]
+                            : ""
                         }
-                        onChange={(e) => setBirthday(new Date(e.target.value))}
+                        onChange={(e) => handleChangeProfile(e, "birth_day")}
+                        name="birth_day"
                       />
-                      <button
-                        className={styles.btnSaveInfo}
-                        onClick={() =>
-                          handleUpdatePreviewLoads({
-                            birth_day: birthday as Date,
-                          })
-                        }
-                      >
-                        Guardar
-                      </button>
                     </div>
                   </div>
 
@@ -803,23 +730,12 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={
-                          placeBirthday !== null
-                            ? placeBirthday
-                            : completeInfoUser?.place_of_birth || ""
+                        value={dataProfile?.place_of_birth}
+                        onChange={(e) =>
+                          handleChangeProfile(e, "place_of_birth")
                         }
-                        onChange={(e) => setPlaceBirthday(e.target.value)}
+                        name="place_of_birth"
                       />
-                      <button
-                        className={styles.btnSaveInfo}
-                        onClick={() =>
-                          handleUpdatePreviewLoads({
-                            place_of_birth: placeBirthday as string,
-                          }).then(() => console.log(placeBirthday))
-                        }
-                      >
-                        Guardar
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -831,21 +747,10 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={
-                          detailEmail !== null ? detailEmail : user?.email || ""
-                        }
-                        onChange={(e) => setDetailEmail(e.target.value)}
+                        value={dataProfile?.email || ""}
+                        onChange={(e) => handleChangeProfile(e, "email")}
+                        name="email"
                       />
-                      <button
-                        className={styles.btnSaveInfo}
-                        onClick={() =>
-                          handleUpdatePreviewLoads({
-                            email: detailEmail as string,
-                          })
-                        }
-                      >
-                        Guardar
-                      </button>
                     </div>
                   </div>
 
@@ -855,23 +760,10 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={
-                          celPhone !== null
-                            ? celPhone
-                            : completeInfoUser?.phone || ""
-                        }
-                        onChange={(e) => setCelPhone(e.target.value)}
+                        value={dataProfile?.phone}
+                        onChange={(e) => handleChangeProfile(e, "phone")}
+                        name="phone"
                       />
-                      <button
-                        onClick={() =>
-                          handleUpdatePreviewLoads({
-                            phone: celPhone as string,
-                          })
-                        }
-                        className={styles.btnSaveInfo}
-                      >
-                        Guardar
-                      </button>
                     </div>
                   </div>
 
@@ -881,23 +773,12 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={
-                          residenceNumber !== null
-                            ? residenceNumber
-                            : completeInfoUser?.residence_phone_number || ""
+                        value={dataProfile?.residence_phone_number}
+                        onChange={(e) =>
+                          handleChangeProfile(e, "residence_phone_number")
                         }
-                        onChange={(e) => setResidenceNumber(e.target.value)}
+                        name="residence_phone_number"
                       />
-                      <button
-                        className={styles.btnSaveInfo}
-                        onClick={() =>
-                          handleUpdatePreviewLoads({
-                            residence_phone_number: residenceNumber as string,
-                          })
-                        }
-                      >
-                        Guardar
-                      </button>
                     </div>
                   </div>
 
@@ -907,24 +788,12 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={
-                          celPhoneWs !== null
-                            ? celPhoneWs
-                            : completeInfoUser?.phone_whatsapp || ""
+                        value={dataProfile?.phone_whatsapp}
+                        onChange={(e) =>
+                          handleChangeProfile(e, "phone_whatsapp")
                         }
-                        onChange={(e) => setCelPhoneWs(e.target.value)}
+                        name="phone_whatsapp"
                       />
-                      <button
-                        className={styles.btnSaveInfo}
-                        onClick={() =>
-                          handleUpdatePreviewLoads({
-                            phone_is_wp: true,
-                            phone_whatsapp: celPhoneWs as string,
-                          })
-                        }
-                      >
-                        Guardar
-                      </button>
                     </div>
                   </div>
 
@@ -934,23 +803,12 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={
-                          addressResidence !== null
-                            ? addressResidence
-                            : completeInfoUser?.residence_address || ""
+                        value={dataProfile?.residence_address}
+                        onChange={(e) =>
+                          handleChangeProfile(e, "residence_address")
                         }
-                        onChange={(e) => setAddressResidence(e.target.value)}
+                        name="residence_address"
                       />
-                      <button
-                        className={styles.btnSaveInfo}
-                        onClick={() =>
-                          handleUpdatePreviewLoads({
-                            residence_address: addressResidence as string,
-                          })
-                        }
-                      >
-                        Guardar
-                      </button>
                     </div>
                   </div>
 
@@ -960,26 +818,17 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={
-                          cityResidence !== null
-                            ? cityResidence
-                            : completeInfoUser?.city || ""
-                        }
-                        onChange={(e) => setCityResidence(e.target.value)}
+                        value={dataProfile?.city}
+                        onChange={(e) => handleChangeProfile(e, "city")}
+                        name="city"
                       />
-                      <button
-                        className={styles.btnSaveInfo}
-                        onClick={() =>
-                          handleUpdatePreviewLoads({
-                            city: cityResidence as string,
-                          })
-                        }
-                      >
-                        Guardar
-                      </button>
                     </div>
                   </div>
                 </div>
+              </div>
+
+              <div className={styles.boxCenterUpdate}>
+                <button onClick={handleUpdatePreviewLoads}>Actualizar</button>
               </div>
             </div>
           </div>
@@ -1055,7 +904,7 @@ function Profile({ params }: { params: { userId: string } }) {
                     <TbFaceId className={styles.iconPreview} size={60} />
                   </div>
                   <p className={styles.textPreview}>
-                    {loadingProccessImg01 && "Processando tu documento..."}
+                    {loadingProccessImg01 && "Procesando imagen (Este proceso puede tardar unos minutos, tenga paciencia)..."}
                     {!loadingProccessImg01 &&
                       "Toma una foto clara de la parte frontal de tu cedula"}
                   </p>
@@ -1115,7 +964,7 @@ function Profile({ params }: { params: { userId: string } }) {
                     <TbTextScan2 className={styles.iconPreview} size={60} />
                   </div>
                   <p className={styles.textPreview}>
-                    {loadingProccessImg02 && "Processando tu documento..."}
+                    {loadingProccessImg02 && "Procesando imagen (Este proceso puede tardar unos minutos, tenga paciencia)"}
                     {!loadingProccessImg02 &&
                       "Toma una foto clara de la parte trasera de tu cedula"}
                   </p>

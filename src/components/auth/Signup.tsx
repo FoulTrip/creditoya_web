@@ -43,28 +43,10 @@ function Signup() {
     }));
   };
 
-  // Función para manejar la selección de la imagen
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    setImageFile(file || null);
-  };
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      // // Sube la imagen a /api/avatar y obtén el URL resultante
-      // let avatarUrl = "";
-      // if (imageFile) {
-      //   const imageFormData = new FormData();
-      //   imageFormData.append("file", imageFile);
-
-      //   const imageResponse = await axios.post("/api/avatar", imageFormData);
-      //   avatarUrl = imageResponse.data;
-      //   console.log(imageResponse);
-      // }
-
-      console.log(data);
 
       // Incluye el avatarUrl en el cuerpo de la solicitud para crear el usuario
       const response = await axios.post("/api/user/create", data);

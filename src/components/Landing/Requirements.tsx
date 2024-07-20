@@ -178,7 +178,7 @@ function RequirementsComponents() {
             <div className={styles.textPrice}>
               <h2>Valor del prestamo</h2>
               <h3>
-                $ {value?.toLocaleString("en-US", { minimumFractionDigits: 2 })}{" "}
+                $ {value?.toLocaleString("en-US", { minimumFractionDigits: 0 })}{" "}
                 COP
               </h3>
             </div>

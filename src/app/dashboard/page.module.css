@@ -72,14 +72,14 @@
   font-size: 18px;
   color: var(--green-600);
   border: 1px solid transparent;
-  box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .btnNew h5:hover {
   border: 1px solid var(--white-200);
 }
 
-.inputSearch {  
+.inputSearch {
   border-radius: 8px;
   outline: none;
   padding: 10px;
@@ -138,6 +138,36 @@
   grid-template-columns: repeat(1, 1fr);
   gap: 10px;
   margin-top: 3em;
+}
+
+.diccMissings {
+  display: grid;
+  place-content: center;
+  gap: 10px;
+}
+
+.boxCenter {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  /* background: var(--blue-50); */
+  border-radius: 8px;
+  /* box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1); */
+}
+
+.boxIconCircle {
+  display: grid;
+  place-content: center;
+}
+
+.boxCenter p {
+  font-weight: 500;
+  color: var(--white-950);
+}
+
+.iconWarnCircle {
+  color: var(--red-600);
+  filter: drop-shadow(0px 0px 10px #000000);
 }
 
 @media screen and (max-width: 700px) {

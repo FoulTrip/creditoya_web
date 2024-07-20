@@ -7,12 +7,13 @@ import styles from "./page.module.css";
 
 import { useRouter } from "next/navigation";
 import Contract from "@/components/documents/Contract";
-import { ScalarLoanApplication } from "@/types/User";
+import { ScalarLoanApplication, ScalarUser } from "@/types/User";
 
 import CardLoan from "@/components/accesories/CardLoan";
 import LoadingPage from "@/components/Loaders/LoadingPage";
 import { useWebSocket } from "next-ws/client";
-import { TbFingerprint } from "react-icons/tb";
+import { TbExclamationCircle, TbFingerprint } from "react-icons/tb";
+import { handleKeyToString } from "@/handlers/typeToString";
 
 function Dashboard() {
   const router = useRouter();
@@ -23,6 +24,8 @@ function Dashboard() {
   const [openContract, setOpenContract] = useState<boolean>(false);
   const [Loans, setLoans] = useState<ScalarLoanApplication[] | null>(null);
 
+  const [datesMissing, setDatesMissing] = useState<string[] | null>(null);
+
   const ws = useWebSocket();
 
   const updateLoans = (data: ScalarLoanApplication[]) => {
@@ -30,17 +33,14 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    if (user == null) {
-      if (!checkingUser) {
-        router.push("/auth");
-      }
-    } else {
-      setCheckingUser(false);
+    if (user == null && !checkingUser) {
+      router.push("/auth");
     }
-  });
+  }, [user, checkingUser, router]);
 
   useEffect(() => {
     if (user !== null) {
+      setCheckingUser(false);
       const documentsVerify = async () => {
         try {
           const response = await axios.post(
@@ -49,8 +49,13 @@ function Dashboard() {
             { headers: { Authorization: `Bearer ${user.token}` } }
           );
 
+          // console.log(response);
+
           if (response.data.success) {
-            setCompleteDocs(response.data.data);
+            const docsMissingsBool = response.data.data.complete;
+            const nameMissings = response.data.data.missing;
+            setDatesMissing(nameMissings);
+            setCompleteDocs(docsMissingsBool);
           } else {
             setCompleteDocs(false);
           }
@@ -63,8 +68,11 @@ function Dashboard() {
       };
 
       documentsVerify();
+    } else {
+      setLoading(false);
+      setCheckingUser(false);
     }
-  }, [user, router]);
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -119,7 +127,7 @@ function Dashboard() {
     setOpenContract(!openContract);
   };
 
-  if (loading) {
+  if (loading || checkingUser) {
     return <LoadingPage />;
   }
 
@@ -159,6 +167,19 @@ function Dashboard() {
             <TbFingerprint className={styles.fingerIcon} size={300} />
           </div>
           <p>Completa tus datos antes de requerir un prestamo</p>
+          <div className={styles.diccMissings}>
+            {datesMissing?.map((missing) => (
+              <div className={styles.boxCenter} key={missing}>
+                <div className={styles.boxIconCircle}>
+                  <TbExclamationCircle
+                    className={styles.iconWarnCircle}
+                    size={20}
+                  />
+                </div>
+                <p>{handleKeyToString(missing)}</p>
+              </div>
+            ))}
+          </div>
           <div className={styles.boxBtnComplete}>
             <button onClick={() => router.push(`/profile/${user?.id}`)}>
               Completar

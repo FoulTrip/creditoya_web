@@ -35,15 +35,25 @@ class UserService {
   }
 
   // Update user method
-  static async update({
-    id,
-    data,
-  }: {
-    id: string;
-    data: Omit<ScalarUser, "password">;
-  }) {
-    const { id: userId, ...userData } = data;
-    return await prisma.user.update({ where: { id }, data: userData });
+  static async update({ id, data }: { id: string; data: Partial<User> }) {
+    const {
+      id: userId,
+      password,
+      createdAt,
+      updatedAt,
+      ...updatableData
+    } = data;
+    try {
+      const updatedUser = await prisma.user.update({
+        where: { id },
+        data: updatableData,
+      });
+      return updatedUser;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
   }
 
   // Update Avatar
@@ -80,7 +90,9 @@ class UserService {
   }
 
   // Check if user has document data method
-  static async hasDocumentData(userId: string): Promise<boolean> {
+  static async hasDocumentData(
+    userId: string
+  ): Promise<{ complete: boolean; missing: string[] }> {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: { Document: true },
@@ -90,14 +102,37 @@ class UserService {
       throw new Error("Usuario no encontrado");
     }
 
-    // Comprueba si el usuario tiene documentos y si los campos son diferentes de "void"
-    return user.Document.some(
-      (document) =>
-        document.documentFront !== "No definido" &&
-        document.documentBack !== "No definido" &&
-        document.number !== "No definido" &&
-        document.imageWithCC !== "No definido"
-    );
+    const missingFields: string[] = [];
+
+    // Verificar si hay documentos
+    if (!user.Document.length) {
+      missingFields.push(
+        "documentFront",
+        "documentBack",
+        "number",
+        "imageWithCC"
+      );
+    } else {
+      user.Document.forEach((document) => {
+        if (document.documentFront === "No definido") {
+          missingFields.push("documentFront");
+        }
+        if (document.documentBack === "No definido") {
+          missingFields.push("documentBack");
+        }
+        if (document.number === "No definido") {
+          missingFields.push("number");
+        }
+        if (document.imageWithCC === "No definido") {
+          missingFields.push("imageWithCC");
+        }
+      });
+    }
+
+    return {
+      complete: missingFields.length === 0,
+      missing: missingFields,
+    };
   }
 
   // Update user document method
@@ -208,6 +243,68 @@ class UserService {
     return prisma.document.findMany({
       where: { userId },
     });
+  }
+
+  // Method to check for missing fields in User and Document models
+  static async checkMissingFields(
+    userId: string
+  ): Promise<{ complete: boolean; missing: string[] }> {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { Document: true },
+    });
+
+    if (!user) {
+      throw new Error("Usuario no encontrado");
+    }
+
+    const missingFields: string[] = [];
+
+    // Check user fields
+    if (!user.avatar || user.avatar === "No definido")
+      missingFields.push("avatar");
+    if (!user.phone || user.phone === "No definido")
+      missingFields.push("phone");
+    if (
+      !user.residence_phone_number ||
+      user.residence_phone_number === "No definido"
+    )
+      missingFields.push("residence_phone_number");
+    if (!user.phone_whatsapp || user.phone_whatsapp === "No definido")
+      missingFields.push("phone_whatsapp");
+    if (!user.birth_day) missingFields.push("birth_day");
+    if (!user.genre || user.genre === "No definido")
+      missingFields.push("genre");
+    if (!user.residence_address || user.residence_address === "No definido")
+      missingFields.push("residence_address");
+    if (!user.city || user.city === "No definido") missingFields.push("city");
+    if (!user.place_of_birth || user.place_of_birth === "No definido")
+      missingFields.push("place_of_birth");
+
+    // Check document fields
+    if (!user.Document.length) {
+      missingFields.push(
+        "documentFront",
+        "documentBack",
+        "number",
+        "imageWithCC"
+      );
+    } else {
+      user.Document.forEach((document) => {
+        if (document.documentFront === "No definido")
+          missingFields.push("documentFront");
+        if (document.documentBack === "No definido")
+          missingFields.push("documentBack");
+        if (document.number === "No definido") missingFields.push("number");
+        if (document.imageWithCC === "No definido")
+          missingFields.push("imageWithCC");
+      });
+    }
+
+    return {
+      complete: missingFields.length === 0,
+      missing: missingFields,
+    };
   }
 }
 

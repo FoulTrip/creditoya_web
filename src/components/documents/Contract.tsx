@@ -855,7 +855,7 @@ function Contract({
         <div className={styles.centerBoxTerms}>
           <input type="checkbox" onChange={handleAcceptTerms} />
           <h5>
-            Acepto <Link href={""}>Terminos y Condiciones</Link>
+            Acepto <Link href={"/docs/terms_and_conditions"}>Terminos y Condiciones</Link>
           </h5>
         </div>
       </div>
