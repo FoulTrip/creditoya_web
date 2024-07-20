@@ -6,7 +6,7 @@ import styles from "./page.module.css";
 import Avatar from "react-avatar";
 import Image from "next/image";
 import axios from "axios";
-import { AuthUser, ScalarDocument, ScalarUser } from "@/types/User";
+import { AuthUser, GenreUser, ScalarDocument, ScalarUser } from "@/types/User";
 import { toast } from "sonner";
 import { useGlobalContext } from "@/context/Auth";
 import { useRouter } from "next/navigation";
@@ -26,6 +26,7 @@ import {
 import LoadingPage from "@/components/Loaders/LoadingPage";
 import Modal from "@/components/modal/Modal";
 import { pdfjs } from "react-pdf";
+import SelectGenre from "@/components/accesories/selectGenre";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -50,6 +51,13 @@ function Profile({ params }: { params: { userId: string } }) {
     }));
   };
 
+  const handleChangeGenre = (option: string) => {
+    setDataProfile((prevData) => ({
+      ...(prevData as ScalarUser),
+      genre: option as GenreUser,
+    }));
+  };
+
   const [numberCc, setNumberCc] = useState<string | null>(null);
 
   const [selectedImagePerfil, setSelectedImagePerfil] = useState<string | null>(
@@ -68,14 +76,20 @@ function Profile({ params }: { params: { userId: string } }) {
   const router = useRouter();
 
   useEffect(() => {
-    if (user === null) {
+    if (loading) return;
+    // setTimeout(() => 2000);
+    if (!user) {
       router.push("/auth");
     } else if (user.id !== params.userId) {
       router.push("/");
-    } else {
-      setLoading(false);
     }
   }, [user, params.userId, router]);
+
+  useEffect(() => {
+    if (user !== undefined) {
+      setLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     const getInfoUserDocs = async () => {
@@ -108,18 +122,23 @@ function Profile({ params }: { params: { userId: string } }) {
       }
     };
 
+    getInfoUserDocs();
+  }, [params.userId, user?.id, user?.token]);
+
+  useEffect(() => {
     const getInfoUser = async () => {
       try {
-        if (user && user.token) {
+        if (user) {
           const response = await axios.post(
             "/api/user/id",
             {
-              userId: user && user.id,
+              userId: user.id,
             },
             { headers: { Authorization: `Bearer ${user.token}` } }
           );
+          // console.log(response)
           const data: ScalarUser = response.data.data;
-          console.log(data);
+          // console.log(data);
           setDataProfile(data);
           setLoading(false);
         }
@@ -128,9 +147,8 @@ function Profile({ params }: { params: { userId: string } }) {
       }
     };
 
-    getInfoUserDocs();
     getInfoUser();
-  }, [params.userId, user]);
+  }, [params.userId, user?.id, user?.token]);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
 
@@ -652,13 +670,7 @@ function Profile({ params }: { params: { userId: string } }) {
                   <div className={styles.boxPartInfo}>
                     <p>Genero</p>
                     <div className={styles.partChange}>
-                      <input
-                        className={styles.inputCC}
-                        type="text"
-                        value={dataProfile?.genre}
-                        onChange={(e) => handleChangeProfile(e, "genre")}
-                        name="genre"
-                      />
+                      <SelectGenre select={handleChangeGenre} />
                     </div>
                   </div>
 
@@ -904,7 +916,8 @@ function Profile({ params }: { params: { userId: string } }) {
                     <TbFaceId className={styles.iconPreview} size={60} />
                   </div>
                   <p className={styles.textPreview}>
-                    {loadingProccessImg01 && "Procesando imagen (Este proceso puede tardar unos minutos, tenga paciencia)..."}
+                    {loadingProccessImg01 &&
+                      "Procesando imagen (Este proceso puede tardar unos minutos, tenga paciencia)..."}
                     {!loadingProccessImg01 &&
                       "Toma una foto clara de la parte frontal de tu cedula"}
                   </p>
@@ -964,7 +977,8 @@ function Profile({ params }: { params: { userId: string } }) {
                     <TbTextScan2 className={styles.iconPreview} size={60} />
                   </div>
                   <p className={styles.textPreview}>
-                    {loadingProccessImg02 && "Procesando imagen (Este proceso puede tardar unos minutos, tenga paciencia)"}
+                    {loadingProccessImg02 &&
+                      "Procesando imagen (Este proceso puede tardar unos minutos, tenga paciencia)"}
                     {!loadingProccessImg02 &&
                       "Toma una foto clara de la parte trasera de tu cedula"}
                   </p>

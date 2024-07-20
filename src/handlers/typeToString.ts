@@ -13,7 +13,8 @@ const keyToStringMap: { [key in keyof ScalarUser | string]: string } = {
   password: "Contraseña",
   residence_address: "Direccion de residencia",
   residence_phone_number: "Numero de residencia",
-  place_of_birth: "Lugar de nacimiento"
+  place_of_birth: "Lugar de nacimiento",
+  phone_whatsapp: "Numero de WhatsApp"
 };
 
 export const handleKeyToString = (

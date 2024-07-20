@@ -207,12 +207,22 @@
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
+.SelectGenre {
+  font-size: 16px;
+  width: 100%;
+}
+
 .boxPartInfo {
-  margin-top: 1em;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 5px;
   margin-bottom: 1em;
+}
+
+.boxPartInfo p {
+  font-weight: 400;
+  color: var(--green-950);
 }
 
 .btnSaveInfo {
@@ -235,7 +245,7 @@
 
 .datesBox {
   margin-top: 1em;
-  margin-bottom: 1em;
+  /* margin-bottom: 1em; */
 }
 
 .containerDocumentsImgs {

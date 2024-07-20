@@ -261,8 +261,8 @@ class UserService {
     const missingFields: string[] = [];
 
     // Check user fields
-    if (!user.avatar || user.avatar === "No definido")
-      missingFields.push("avatar");
+    // if (!user.avatar || user.avatar === "No definido")
+    //   missingFields.push("avatar");
     if (!user.phone || user.phone === "No definido")
       missingFields.push("phone");
     if (
@@ -273,8 +273,7 @@ class UserService {
     if (!user.phone_whatsapp || user.phone_whatsapp === "No definido")
       missingFields.push("phone_whatsapp");
     if (!user.birth_day) missingFields.push("birth_day");
-    if (!user.genre || user.genre === "No definido")
-      missingFields.push("genre");
+    if (!user.genre || user.genre === "No") missingFields.push("genre");
     if (!user.residence_address || user.residence_address === "No definido")
       missingFields.push("residence_address");
     if (!user.city || user.city === "No definido") missingFields.push("city");

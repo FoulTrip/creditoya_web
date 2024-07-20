@@ -19,7 +19,7 @@ model User {
     residence_phone_number String            @default("No definido")
     phone_whatsapp         String            @default("No definido")
     birth_day              DateTime?
-    genre                  String            @default("No definido")
+    genre                  GenreUser         @default(No)
     residence_address      String            @default("No definido")
     place_of_birth         String            @default("No definido")
     city                   String            @default("No definido")
@@ -102,4 +102,10 @@ enum StatusLoan {
     Rechazado
     Borrador
     Archivado
+}
+
+enum GenreUser {
+    Femenino
+    Masculino
+    No
 }

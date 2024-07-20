@@ -12,7 +12,7 @@ export type ScalarUser = {
   phone_whatsapp?: string;
   birth_day?: Date;
   place_of_birth?: string;
-  genre?: string;
+  genre?: GenreUser;
   residence_address?: string;
   city?: string;
   createdAt?: Date;
@@ -83,3 +83,5 @@ export type Status =
   | "Archivado";
 
 export type TypesDocument = "CC" | "CE" | "PASAPORTE";
+
+export type GenreUser = "Femenino" | "Masculino" | "No";
