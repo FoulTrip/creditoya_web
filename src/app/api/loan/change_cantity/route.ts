@@ -1,6 +1,5 @@
+import LoanApplicationService from "@/classes/LoanApplicationServices";
 import TokenService from "@/classes/TokenServices";
-import UserService from "@/classes/UserServices";
-import { ScalarDocument } from "@/types/User";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -23,23 +22,22 @@ export async function POST(req: Request) {
       throw new Error("Token no válido");
     }
 
-    const { userId, number, documentFront, documentBack }: ScalarDocument =
-      await req.json();
+    const { loanId, newCantityOpt } = await req.json();
 
-    const response: ScalarDocument[] = await UserService.updateDocument(
-      userId,
-      documentFront as string,
-      documentBack as string,
-      number as string
+    if (!loanId) throw new Error("loanId is required!");
+    if (!newCantityOpt) throw new Error("newCantityOpt is required!");
+
+    const response = await LoanApplicationService.ChangeCantity(
+      loanId,
+      newCantityOpt
     );
 
-    return NextResponse.json({ success: true, data: response });
+    if (response) {
+      return NextResponse.json({ success: true, data: response });
+    }
   } catch (error) {
     if (error instanceof Error) {
-      return NextResponse.json({
-        success: false,
-        error: error.message,
-      });
+      return NextResponse.json({ success: false, error: error.message });
     }
   }
 }

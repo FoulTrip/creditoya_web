@@ -72,6 +72,19 @@ class LoanApplicationService {
       data: { employeeId },
     });
   }
+
+  // Metodo para cambiar cantidad y adjuntar razon del cambio
+  static async ChangeCantity(
+    loanId: string,
+    newCantityOpt: boolean
+  ): Promise<LoanApplication> {
+    return prisma.loanApplication.update({
+      where: { id: loanId },
+      data: {
+        newCantityOpt,
+      },
+    });
+  }
 }
 
 // Exportar la clase LoanApplicationService

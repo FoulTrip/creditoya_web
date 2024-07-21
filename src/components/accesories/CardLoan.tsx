@@ -1,7 +1,12 @@
 import { ScalarEmployee, ScalarLoanApplication } from "@/types/User";
 import React, { useEffect, useState } from "react";
 import styles from "./styles/cardLoan.module.css";
-import { TbChecklist, TbMailFilled, TbPhoneFilled } from "react-icons/tb";
+import {
+  TbBell,
+  TbChecklist,
+  TbMailFilled,
+  TbPhoneFilled,
+} from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
@@ -51,18 +56,37 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
           <div className={styles.prevInfo}>
             <h3>Solicitud de prestamo</h3>
 
-            <div>
+            {/* <div>
               <h5 className={styles.titleId}>Solicitud Id</h5>
               <CopyText text={loan?.id as string} copy={true} h5={true} />
-            </div>
+            </div> */}
 
-            <div
-              className={styles.goAll}
-              onClick={() => router.push(`/req/${loan.id}`)}
-            >
-              <h5>Ver datos completos</h5>
+            <div className={styles.btnsContainer}>
+              <div
+                className={styles.goAll}
+                onClick={() => router.push(`/req/${loan.id}`)}
+              >
+                <h5>Detalles completos</h5>
+              </div>
+
+              <div className={styles.notificationsBox}>
+                <div className={styles.headerNotBtn}>
+                  <div className={styles.boxIconNot}>
+                    <TbBell className={styles.iconBell} size={15} />
+                  </div>
+                  <h5>Notificaciones</h5>
+                </div>
+                {!loan.newCantityOpt && loan.newCantity && (
+                  <p className={styles.messageWarn}>La cantidad aprobada ha cambiado</p>
+                )}
+                {!loan.newCantityOpt && !loan.newCantity && (
+                  <p className={styles.messageNot}>Sin acciones pendientes</p>
+                )}
+                {loan.newCantityOpt && loan.newCantity && (
+                  <p className={styles.messageNot}>Sin acciones pendientes</p>
+                )}
+              </div>
             </div>
-            {/* <h4>Prestamo</h4> */}
           </div>
         </h1>
         <div className={styles.requirements}>

@@ -4,8 +4,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { userId } = await req.json();
-
     const authToken = req.headers.get("authorization");
     const token = authToken?.split(" ")[1];
 
@@ -21,6 +19,8 @@ export async function POST(req: Request) {
     if (!payload) {
       throw new Error("Token inválido");
     }
+
+    const { userId } = await req.json();
 
     const response = await UserService.getDocumentByUserId(userId);
 

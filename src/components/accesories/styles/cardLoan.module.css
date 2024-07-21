@@ -16,11 +16,11 @@
 .requirements {
   flex-basis: 200px;
   flex-grow: 1;
-  background: var(--white-100);
+  /* background: var(--white-100); */
   padding: 20px;
   border-radius: 8px;
-  border: 1px solid var(--white-200); 
-  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+  border: 1px solid var(--white-200);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   display: grid;
   place-content: center;
 }
@@ -45,25 +45,71 @@
   gap: 10px;
 }
 
-.goAll {
+.btnsContainer {
   display: flex;
-  justify-content: flex-start;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.headerNotBtn {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.headerNotBtn h5 {
+  font-size: 15px;
+  color: var(--green-950);
+  display: grid;
+  place-content: center;
+}
+
+.boxIconNot {
+  display: grid;
+  place-content: center;
+}
+
+.iconBell {
+  color: #a68b02;
+  filter: drop-shadow(0px 0px 10px #000000);
+}
+
+.messageNot {
+  font-size: 20px;
+  text-align: start;
+  color: var(--blue-600);
+}
+
+.messageWarn {
+  color: var(--red-400);
+  font-size: 20px;
+  text-align: start;
+}
+
+.notificationsBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.goAll {
+  display: grid;
+  place-content: center;
 }
 
 .goAll h5 {
   font-size: 17px;
   font-weight: 600;
   cursor: pointer;
-  color: var(--green-300);
+  color: var(--green-500);
   padding: 10px 20px;
   background: var(--green-50);
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 1px solid var(--green-100);
 }
 
 .goAll h5:hover {
   background: var(--green-50);
-  color: var(--green-400);
+  /* color: var(--green-400); */
   border: 1px solid var(--green-200);
 }
 
@@ -82,17 +128,17 @@
 .widgetsViews {
   flex-basis: 200px;
   flex-grow: 1;
-  background: var(--white-100);
+  /* background: var(--white-100); */
   padding: 5px;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--white-100);
-  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+  border: 1px solid var(--white-200);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .widgetsViews:hover {
-  border: 1px solid var(--white-200);
+  border: 1px solid var(--white-300);
 }
 
 .subTextBarView {
@@ -118,17 +164,17 @@
 .boxBtnsDesicion {
   flex-basis: 200px;
   flex-grow: 1;
-  background: var(--white-100);
+  /* background: var(--blue-100); */
   padding: 20px;
   border-radius: 8px;
   display: grid;
   place-content: center;
-  border: 1px solid transparent;
-  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+  border: 1px solid var(--white-200);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .boxBtnsDesicion:hover {
-  border: 1px solid var(--white-200);
+  border: 1px solid var(--white-300);
 }
 
 .boxStatusLoan h5 {
@@ -167,4 +213,17 @@
   .subTextBarView {
     padding: 30px 5px;
   }
+
+  .messageNot, .messageWarn {
+    font-size: 20px;
+  }
+
+  .notificationsBox {
+    justify-content: space-between;
+  }
+
+  .prevInfo h3 {
+    font-size: 30px;
+  }
+
 }

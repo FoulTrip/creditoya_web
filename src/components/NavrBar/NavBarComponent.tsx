@@ -63,7 +63,7 @@ function NavBar() {
                       <TbUserCircle className={styles.iconBtn} size={25} />
                     )}
                   </div>
-                  {user ? <p>{user.names.split(" ")[0]}</p> : <p>Cuenta</p>}
+                  {user ? <p>{user.names?.split(" ")[0]}</p> : <p>Cuenta</p>}
                 </div>
                 {user && (
                   <div className={styles.boxLogout} onClick={handleLogout}>
