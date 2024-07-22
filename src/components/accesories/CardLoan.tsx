@@ -72,9 +72,9 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
               <div className={styles.notificationsBox}>
                 <div className={styles.headerNotBtn}>
                   <div className={styles.boxIconNot}>
-                    <TbBell className={styles.iconBell} size={15} />
+                    <TbBell className={styles.iconBell} size={20} />
                   </div>
-                  <h5>Notificaciones</h5>
+                  <h4>Notificaciones</h4>
                 </div>
                 {!loan.newCantityOpt && loan.newCantity && (
                   <p className={styles.messageWarn}>La cantidad aprobada ha cambiado</p>

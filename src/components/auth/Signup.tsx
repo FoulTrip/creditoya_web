@@ -22,6 +22,7 @@ interface UserTypes {
 
 function Signup() {
   const { user, setUserData } = useGlobalContext();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const route = useRouter();
 
   const [data, setData] = useState<UserTypes>({
@@ -31,9 +32,6 @@ function Signup() {
     password: "",
     email: "",
   });
-
-  // State para manejar el archivo de imagen
-  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -45,10 +43,9 @@ function Signup() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
-
-      // Incluye el avatarUrl en el cuerpo de la solicitud para crear el usuario
       const response = await axios.post("/api/user/create", data);
 
       console.log(response);
@@ -86,8 +83,9 @@ function Signup() {
             }, 2000);
           }
         }
-      } else {
-        toast.error(response.data.error);
+      } else if (response.data.success == false) {
+        setIsLoading(false);
+        throw new Error(response.data.error);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -169,18 +167,8 @@ function Signup() {
           />
         </div>
 
-        {/* <input
-          className={styles.inputImg}
-          type="file"
-          accept="image/*"
-          name="avatar"
-          onChange={handleImageChange}
-        /> */}
-
-        {/* <AvatarUpload /> */}
-
         <div className={styles.btnSubmit}>
-          <button type="submit">Registrarse</button>
+          <button type="submit">{!isLoading ? "Registrarse" : "Creando..."}</button>
         </div>
       </form>
     </>

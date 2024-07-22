@@ -3,7 +3,8 @@ import styles from "./styles/Service.module.css";
 import Image from "next/image";
 
 import iconSchoolLoan from "@/assets/LearningIcon.svg";
-import iconRevenue from "@/assets/Revenue-bro.svg";
+import iconDeath from "@/assets/iconFamilyDeath.svg";
+import iconRevenue from "@/assets/Revenue-bro.svg"
 import iconBuild from "@/assets/Bricklayer-bro.svg";
 import iconSoldier from "@/assets/Manage money-bro.svg";
 import iconSeller from "@/assets/Shops re-opening soon-bro.svg";
@@ -74,7 +75,9 @@ function ServiceSection() {
                   alt={"schoolLoan"}
                 />
               </div>
-              <h3 className={styles.subTitleService}>Libre inversion</h3>
+              <h3 className={styles.subTitleService}>
+                Libre Inversión y/o Consumo.
+              </h3>
             </div>
           </div>
 
@@ -126,7 +129,7 @@ function ServiceSection() {
               <div className={styles.boxIconService}>
                 <Image
                   className={styles.iconService}
-                  src={iconRevenue}
+                  src={iconDeath}
                   alt={"schoolLoan"}
                 />
               </div>

@@ -14,6 +14,7 @@ import LoadingPage from "@/components/Loaders/LoadingPage";
 import { useWebSocket } from "next-ws/client";
 import { TbExclamationCircle, TbFingerprint } from "react-icons/tb";
 import { handleKeyToString } from "@/handlers/typeToString";
+import ChangeDatesPerfil from "@/components/banner/ChangeDatesPerfil";
 
 function Dashboard() {
   const router = useRouter();
@@ -25,6 +26,8 @@ function Dashboard() {
   const [Loans, setLoans] = useState<ScalarLoanApplication[] | null>(null);
 
   const [datesMissing, setDatesMissing] = useState<string[] | null>(null);
+
+  const [openBanner, setOpenBanner] = useState<boolean>(true);
 
   const ws = useWebSocket();
 
@@ -127,6 +130,10 @@ function Dashboard() {
     setOpenContract(!openContract);
   };
 
+  const handleCloseBanner = () => {
+    setOpenBanner(false);
+  };
+
   if (loading || checkingUser) {
     return <LoadingPage />;
   }
@@ -136,6 +143,13 @@ function Dashboard() {
       <main className={styles.containerDashboard}>
         {!openContract && (
           <>
+            {openBanner ? (
+              <ChangeDatesPerfil
+                userId={user?.id as string}
+                onClose={handleCloseBanner}
+              />
+            ) : null}
+
             <div className={styles.btnNew}>
               <h5 onClick={handleOpenContract}>Solicitar Prestamo</h5>
               <button className={styles.inputSearch}>Instrucciones</button>

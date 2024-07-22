@@ -122,27 +122,6 @@ function RequirementsComponents() {
               </div>
             </div>
 
-            {/* <div className={styles.infoBox}>
-              <p>
-                Cuenta con atención personalizada permanente a través de un
-                asesor comercial de mantenimiento asignado a su empresa
-              </p>
-              <div className={styles.boxCheckIcon}>
-                <TbDiscountCheckFilled size={20} className={styles.iconCheck} />
-              </div>
-            </div> */}
-
-            <div className={styles.infoBox}>
-              <p>
-                Asignación de un mensajero capacitado para atender sus
-                requerimientos y la recepción de documentos y solicitudes de
-                crédito
-              </p>
-              <div className={styles.boxCheckIcon}>
-                <TbDiscountCheckFilled size={20} className={styles.iconCheck} />
-              </div>
-            </div>
-
             <div className={styles.infoBox}>
               <p>Cobertura nacional</p>
               <div className={styles.boxCheckIcon}>
