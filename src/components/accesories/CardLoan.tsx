@@ -56,11 +56,6 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
           <div className={styles.prevInfo}>
             <h3>Solicitud de prestamo</h3>
 
-            {/* <div>
-              <h5 className={styles.titleId}>Solicitud Id</h5>
-              <CopyText text={loan?.id as string} copy={true} h5={true} />
-            </div> */}
-
             <div className={styles.btnsContainer}>
               <div
                 className={styles.goAll}
@@ -76,13 +71,15 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
                   </div>
                   <h4>Notificaciones</h4>
                 </div>
-                {!loan.newCantityOpt && loan.newCantity && (
-                  <p className={styles.messageWarn}>La cantidad aprobada ha cambiado</p>
+                {loan.newCantityOpt == null && loan.newCantity && (
+                  <p className={styles.messageWarn}>
+                    La cantidad aprobada ha cambiado
+                  </p>
                 )}
-                {!loan.newCantityOpt && !loan.newCantity && (
+                {!loan.newCantityOpt !== null && !loan.newCantity && (
                   <p className={styles.messageNot}>Sin acciones pendientes</p>
                 )}
-                {loan.newCantityOpt && loan.newCantity && (
+                {loan.newCantityOpt !== null && loan.newCantity && (
                   <p className={styles.messageNot}>Sin acciones pendientes</p>
                 )}
               </div>

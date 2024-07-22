@@ -90,8 +90,8 @@
 
 .messageWarn {
   color: var(--red-400);
-  font-size: 20px;
-  text-align: start;
+  font-size: 15px;
+  text-align: end;
 }
 
 .notificationsBox {

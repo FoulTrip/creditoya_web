@@ -141,19 +141,20 @@ function Dashboard() {
   if (completeDocs === true) {
     return (
       <main className={styles.containerDashboard}>
-        {!openContract && (
+        {!openContract && Loans && (
           <>
-            {openBanner ? (
+            {openBanner && Loans.length > 0 && (
               <ChangeDatesPerfil
                 userId={user?.id as string}
                 onClose={handleCloseBanner}
               />
-            ) : null}
+            )}
 
             <div className={styles.btnNew}>
               <h5 onClick={handleOpenContract}>Solicitar Prestamo</h5>
               <button className={styles.inputSearch}>Instrucciones</button>
             </div>
+
             <div className={styles.listLoans}>
               {Loans?.filter((loan) => loan.userId === user?.id).map((loan) => (
                 <CardLoan key={loan.id} loan={loan} />

@@ -18,7 +18,7 @@ function ChangeDatesPerfil({ userId, onClose }: ChangeDates) {
             <TbInfoCircle size={20} className={styles.iconInfo} />
           </div>
           <p className={styles.message}>
-            Revisa y valida tu información antes de continuar.
+            Revisa y valida tu información antes de solicitar otro prestamo.
           </p>
         </div>
       </div>

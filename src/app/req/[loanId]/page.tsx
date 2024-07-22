@@ -57,7 +57,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
   };
 
   const handleAceptChangeCantity = async (option: boolean) => {
-    if (!option) throw new Error("Option is required!");
+    if (option == null) throw new Error("Option is required!");
 
     const desicion = await axios.post(
       "/api/loan/change_cantity",
@@ -232,7 +232,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                 </>
               )}
 
-              {infoLoan.status == "Pendiente" && !infoLoan.newCantityOpt && (
+              {infoLoan.status == "Pendiente" && infoLoan.newCantityOpt == null && (
                 <div
                   className={styles.cardInfoBank}
                   style={{ marginTop: "1em" }}

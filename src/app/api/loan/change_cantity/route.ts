@@ -24,8 +24,10 @@ export async function POST(req: Request) {
 
     const { loanId, newCantityOpt } = await req.json();
 
+    console.log(loanId, newCantityOpt)
+
     if (!loanId) throw new Error("loanId is required!");
-    if (!newCantityOpt) throw new Error("newCantityOpt is required!");
+    if (newCantityOpt == null) throw new Error("newCantityOpt is required!");
 
     const response = await LoanApplicationService.ChangeCantity(
       loanId,
