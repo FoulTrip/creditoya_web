@@ -15,6 +15,7 @@ import { useWebSocket } from "next-ws/client";
 import { TbExclamationCircle, TbFingerprint } from "react-icons/tb";
 import { handleKeyToString } from "@/handlers/typeToString";
 import ChangeDatesPerfil from "@/components/banner/ChangeDatesPerfil";
+import Instructions from "@/components/accesories/Instructions";
 
 function Dashboard() {
   const router = useRouter();
@@ -24,6 +25,7 @@ function Dashboard() {
   const [completeDocs, setCompleteDocs] = useState<boolean | null>(null);
   const [openContract, setOpenContract] = useState<boolean>(false);
   const [Loans, setLoans] = useState<ScalarLoanApplication[] | null>(null);
+  const [openInstructions, setOpenInstructions] = useState<boolean>(false);
 
   const [datesMissing, setDatesMissing] = useState<string[] | null>(null);
 
@@ -150,16 +152,31 @@ function Dashboard() {
               />
             )}
 
-            <div className={styles.btnNew}>
-              <h5 onClick={handleOpenContract}>Solicitar Prestamo</h5>
-              <button className={styles.inputSearch}>Instrucciones</button>
-            </div>
+            {!openInstructions && (
+              <>
+                <div className={styles.btnNew}>
+                  <h5 onClick={handleOpenContract}>Solicitar Prestamo</h5>
+                  <h5
+                    className={styles.inputSearch}
+                    onClick={() => setOpenInstructions(true)}
+                  >
+                    Instrucciones
+                  </h5>
+                </div>
 
-            <div className={styles.listLoans}>
-              {Loans?.filter((loan) => loan.userId === user?.id).map((loan) => (
-                <CardLoan key={loan.id} loan={loan} />
-              ))}
-            </div>
+                <div className={styles.listLoans}>
+                  {Loans?.filter((loan) => loan.userId === user?.id).map(
+                    (loan) => (
+                      <CardLoan key={loan.id} loan={loan} />
+                    )
+                  )}
+                </div>
+              </>
+            )}
+
+            {openInstructions && (
+              <Instructions onClose={() => setOpenInstructions(false)} />
+            )}
           </>
         )}
 

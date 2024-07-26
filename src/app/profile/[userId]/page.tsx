@@ -670,7 +670,10 @@ function Profile({ params }: { params: { userId: string } }) {
                   <div className={styles.boxPartInfo}>
                     <p>Genero</p>
                     <div className={styles.partChange}>
-                      <SelectGenre select={handleChangeGenre} />
+                      <SelectGenre
+                        select={handleChangeGenre}
+                        valueDefault={dataProfile?.genre || ""}
+                      />
                     </div>
                   </div>
 

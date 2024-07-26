@@ -7,7 +7,15 @@ const bankOptions = [
   { value: "Masculino", label: "Masculino" },
 ];
 
-function SelectGenre({ select }: { select: (option: string) => void }) {
+function SelectGenre({
+  select,
+  valueDefault,
+}: {
+  select: (option: string) => void;
+  valueDefault: string;
+}) {
+  const defaultOption =
+    bankOptions.find((option) => option.value === valueDefault) || null;
   const handleChange = (selectedOption: any) => {
     select(selectedOption ? selectedOption.value : "");
   };
@@ -16,9 +24,9 @@ function SelectGenre({ select }: { select: (option: string) => void }) {
     <>
       <Select
         className={styles.inputGenre}
-        placeholder={"Selecciona tu Genero"}
         options={bankOptions}
         onChange={handleChange}
+        value={defaultOption}
       />
     </>
   );

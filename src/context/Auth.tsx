@@ -31,7 +31,7 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
 
   const setUserData = (userData: AuthUser) => {
     setUser(userData);
-    Cookies.set("userData", JSON.stringify(userData), { expires: 2 });
+    Cookies.set("userData", JSON.stringify(userData), { expires: 1 });
   };
 
   const handleLogout = () => {
