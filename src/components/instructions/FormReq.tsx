@@ -30,6 +30,7 @@ function FormRequest() {
             sea claramente especificado.
           </p>
 
+          <h4 className={styles.titleDetails}>Algunos detalles del proceso</h4>
           <div className={styles.listSupDocs}>
             <div
               onClick={() => setOpenFiles01(!openFiles01)}

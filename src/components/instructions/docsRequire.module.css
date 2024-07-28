@@ -124,6 +124,15 @@
 .videoInst {
   width: 100%;
   height: auto;
+  border: none;
+  background: transparent;
+}
+
+.titleDetails {
+  text-align: start;
+  margin-top: 1em;
+  font-weight: 500;
+  color: var(--white-600);
 }
 
 @media screen and (max-width: 900px) {

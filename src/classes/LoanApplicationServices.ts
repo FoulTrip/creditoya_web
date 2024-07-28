@@ -78,10 +78,21 @@ class LoanApplicationService {
     loanId: string,
     newCantityOpt: boolean
   ): Promise<LoanApplication> {
+    if (newCantityOpt == false) {
+      return prisma.loanApplication.update({
+        where: { id: loanId },
+        data: {
+          newCantityOpt,
+          status: "Rechazado",
+        },
+      });
+    }
+
     return prisma.loanApplication.update({
       where: { id: loanId },
       data: {
         newCantityOpt,
+        status: "Aprobado",
       },
     });
   }

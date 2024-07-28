@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./styles/instructions.module.css";
 import DocsRequires from "../instructions/DocsRequires";
 import FormRequest from "../instructions/FormReq";
+import AnswerRequest from "../instructions/answerRequest";
 
 function Instructions({ onClose }: { onClose: () => void }) {
   return (
@@ -15,6 +16,7 @@ function Instructions({ onClose }: { onClose: () => void }) {
 
       <DocsRequires />
       <FormRequest />
+      <AnswerRequest />
     </>
   );
 }

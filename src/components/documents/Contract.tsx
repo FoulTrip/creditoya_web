@@ -11,7 +11,7 @@ import {
 } from "react-icons/tb";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import {
   ScalarDocument,
   ScalarLoanApplication,
@@ -95,10 +95,6 @@ function Contract({
   const [imagePreview6, setImagePreview6] = useState("No definido");
 
   const [successSignature, setSuccessSignature] = useState<boolean>(false);
-
-  const [contentOpenDoc, setContentOpenDoc] = useState<
-    string | undefined | null
-  >(user?.avatar);
 
   const [link, setLink] = useState<string>();
 
@@ -216,10 +212,6 @@ function Contract({
     } else if (response.data.success == false) {
       toast.error("Imposible eliminar documento");
     }
-  };
-
-  const handleSetViewDocImg = ({ image }: { image: string }) => {
-    setContentOpenDoc(image);
   };
 
   const handleAuthLoan = async () => {
@@ -589,7 +581,6 @@ function Contract({
                           className={styles.boxIcon}
                           onClick={() => {
                             handleOpenViewDocImg();
-                            handleSetViewDocImg({ image: imagePreview4 });
                           }}
                         >
                           <TbPhotoSearch
@@ -658,7 +649,6 @@ function Contract({
                           className={styles.boxIcon}
                           onClick={() => {
                             handleOpenViewDocImg();
-                            handleSetViewDocImg({ image: imagePreview5 });
                           }}
                         >
                           <TbPhotoSearch
@@ -727,7 +717,6 @@ function Contract({
                           className={styles.boxIcon}
                           onClick={() => {
                             handleOpenViewDocImg();
-                            handleSetViewDocImg({ image: imagePreview6 });
                           }}
                         >
                           <TbPhotoSearch
@@ -800,7 +789,6 @@ function Contract({
                           className={styles.boxIcon}
                           onClick={() => {
                             handleOpenViewDocImg();
-                            handleSetViewDocImg({ image: imagePreview3 });
                           }}
                         >
                           <TbPhotoSearch
@@ -854,8 +842,8 @@ function Contract({
       <div className={styles.boxTerms}>
         <div className={styles.centerBoxTerms}>
           <input type="checkbox" onChange={handleAcceptTerms} />
-          <h5>
-            Acepto <Link href={"/docs/terms_and_conditions"}>Terminos y Condiciones</Link>
+          <h5>Aceptar {" "}
+            <span>terminos y condiciones</span>
           </h5>
         </div>
       </div>
