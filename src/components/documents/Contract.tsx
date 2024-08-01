@@ -298,7 +298,7 @@ function Contract({
         const formData = new FormData();
         formData.append("file", file);
         formData.append("name", "labor_card");
-        if (user) formData.append("userid", user.id);
+        if (user) formData.append("userid", user.id as string);
 
         // const success = await UploadFile(formData);
 
@@ -353,7 +353,7 @@ function Contract({
           const formData = new FormData();
           formData.append("file", file);
           formData.append("name", "paid_flyer_01");
-          if (user) formData.append("userid", user.id);
+          if (user) formData.append("userid", user.id as string);
 
           const response = await axios.post(
             "/api/upload/google/create",
@@ -402,7 +402,7 @@ function Contract({
         const formData = new FormData();
         formData.append("file", file);
         formData.append("name", "paid_flyer_02");
-        if (user) formData.append("userid", user.id);
+        if (user) formData.append("userid", user.id as string);
 
         const response = await axios.post(
           "/api/upload/google/create",
@@ -447,7 +447,7 @@ function Contract({
         formData.append("file", file);
 
         formData.append("name", "paid_flyer_03");
-        if (user) formData.append("userid", user.id);
+        if (user) formData.append("userid", user.id as string);
 
         const response = await axios.post(
           "/api/upload/google/create",
@@ -842,8 +842,8 @@ function Contract({
       <div className={styles.boxTerms}>
         <div className={styles.centerBoxTerms}>
           <input type="checkbox" onChange={handleAcceptTerms} />
-          <h5>Aceptar {" "}
-            <span>terminos y condiciones</span>
+          <h5>
+            Aceptar <span>terminos y condiciones</span>
           </h5>
         </div>
       </div>
