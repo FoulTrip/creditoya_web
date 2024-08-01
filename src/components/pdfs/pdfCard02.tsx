@@ -167,7 +167,7 @@ function Document02({ name, numberDocument, signature }: PdfViewProps) {
     const pdfBlob = doc.output("blob");
     const pdfUrl = URL.createObjectURL(pdfBlob);
     setPdfUrl(pdfUrl);
-  }, [skeletonPdf, sub_skeletonPdf]);
+  }, [skeletonPdf, sub_skeletonPdf, numberDocument, signature]);
 
   return (
     <>

@@ -17,14 +17,14 @@ function PlanesSection({ params }: { params: { plan: string } }) {
       (plan: DocsPlanType) => plan.id === params.plan
     );
     setSelectTopic(filterPlan);
-  }, [params.plan]);
+  }, [params.plan, plans]);
 
   return (
     <>
       <main className={styles.mainComponent}>
         <div>
           {selectTopic?.map((topic) => (
-            <div className={styles.preCenter}>
+            <div className={styles.preCenter} key={topic.id}>
               <div>
                 <Image
                   width={300}

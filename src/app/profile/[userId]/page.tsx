@@ -111,7 +111,7 @@ function Profile({ params }: { params: { userId: string } }) {
     } else if (user.id !== params.userId) {
       router.push("/");
     }
-  }, [user, params.userId, router]);
+  }, [user, params.userId, router, loading]);
 
   useEffect(() => {
     if (user !== undefined) {
@@ -151,7 +151,7 @@ function Profile({ params }: { params: { userId: string } }) {
     };
 
     getInfoUserDocs();
-  }, [params.userId, user?.id, user?.token]);
+  }, [params.userId, user?.id, user?.token, user]);
 
   useEffect(() => {
     const getInfoUser = async () => {
