@@ -52,8 +52,8 @@ function PlanesSection({ params }: { params: { plan: string } }) {
                   <p className={styles.textDescription}>{topic.descripcion}</p>
                   <h3 className={styles.titleTips}>Beneficios</h3>
                   <div className={styles.PreBoxTips}>
-                    {topic.beneficios.map((tip) => (
-                      <div className={styles.boxTips}>
+                    {topic.beneficios.map((tip, index) => (
+                      <div className={styles.boxTips} key={index}>
                         <div className={styles.boxIconTips}>
                           <TbDiscountCheckFilled className={styles.iconTip} />
                         </div>

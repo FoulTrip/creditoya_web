@@ -176,7 +176,7 @@ function Profile({ params }: { params: { userId: string } }) {
     };
 
     getInfoUser();
-  }, [params.userId, user?.id, user?.token]);
+  }, [params.userId, user?.id, user?.token, user]);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
 
