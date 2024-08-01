@@ -124,12 +124,13 @@ function AnswerRequest() {
             {openFiles03 && (
               <>
                 <div className={styles.boxExplainFile01}>
-                  <h5>Estado de la Solicitud</h5>
+                  <h5>Notificaciones</h5>
                   <p>
-                    Desde el panel, podrá ver el estado actual de su solicitud.
-                    El sistema actualizará automáticamente el estado a medida
-                    que se procesen las solicitudes, permitiéndole seguir en
-                    tiempo real si su préstamo ha sido aprobado o rechazado.
+                    Además del estado visible en el panel, también recibirá
+                    notificaciones si hay actualizaciones importantes sobre su
+                    solicitud. Asegúrese de revisar tanto el panel como su
+                    correo electrónico para estar al tanto de cualquier
+                    comunicación.
                   </p>
                 </div>
               </>

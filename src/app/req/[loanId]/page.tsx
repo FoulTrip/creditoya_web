@@ -194,7 +194,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
 
           {infoLoan?.newCantity && (
             <>
-              <h3 className={styles.banckTitle}>Cantidad Aceptada</h3>
+              <h3 className={styles.banckTitle}>Cantidad aprobada</h3>
               <h1>{stringToPriceCOP(infoLoan?.newCantity as string)}</h1>
             </>
           )}

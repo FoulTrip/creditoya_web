@@ -45,11 +45,39 @@ function Profile({ params }: { params: { userId: string } }) {
   ) => {
     const { value } = e.target;
 
+    // Función para convertir la fecha en formato ISO
+    const formatDate = (date: Date | string): string | undefined => {
+      if (typeof date === "string") {
+        // Si ya es una cadena, devolverla tal cual
+        return date.trim();
+      }
+      if (date instanceof Date && !isNaN(date.getTime())) {
+        // Convertir la fecha en formato ISO si es una fecha válida
+        return date.toISOString();
+      }
+      return undefined;
+    };
+
+    // Convertir el valor según el tipo de clave
+    let newValue: string | Date | undefined;
+
+    if (key === "birth_day") {
+      const dateValue = new Date(value);
+      newValue = formatDate(dateValue)
+        ? new Date(formatDate(dateValue)!)
+        : undefined;
+    } else {
+      newValue = value.trim(); // Limpiar espacios en blanco
+    }
+
+    // Actualizar el estado solo una vez
     setDataProfile((prevData) => ({
       ...(prevData as ScalarUser),
-      [key]: value,
+      [key]: newValue,
     }));
   };
+
+  // console.log(dataProfile)
 
   const handleChangeGenre = (option: string) => {
     setDataProfile((prevData) => ({

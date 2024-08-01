@@ -1,18 +1,12 @@
-import React, { useState } from "react";
+"use client";
+
+import React from "react";
 import styles from "./styles/HeroinSection.module.css";
 import Image from "next/image";
 import ImageGif from "@/assets/Farmer-bro.svg";
 import logoApp from "@/assets/creditoya_logo.png";
 
-import { useMediaQuery } from "react-responsive";
-
-import {
-  TbArrowNarrowRight,
-  TbCircleCheckFilled,
-  TbClockBolt,
-  TbCreditCardRefund,
-  TbShieldCheck,
-} from "react-icons/tb";
+import { TbArrowNarrowRight } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 
 function HeroinSection() {

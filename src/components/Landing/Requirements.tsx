@@ -1,6 +1,7 @@
+"use client";
+
 import React, { useState } from "react";
 import styles from "./styles/Requrements.module.css";
-import { Slider, SliderChangeEvent } from "primereact/slider";
 
 import { TbDiscountCheckFilled } from "react-icons/tb";
 import { useRouter } from "next/navigation";
@@ -8,6 +9,7 @@ import { useRouter } from "next/navigation";
 function RequirementsComponents() {
   const [value, setValue] = useState<number | null>(0);
   const router = useRouter();
+
   return (
     <>
       <div className={styles.supraMain}>
@@ -30,7 +32,7 @@ function RequirementsComponents() {
             </div>
 
             <div className={styles.infoBox}>
-              <p>sin moverse del sitio de trabajo</p>
+              <p>Sin moverse del sitio de trabajo</p>
               <div className={styles.boxCheckIcon}>
                 <TbDiscountCheckFilled size={20} className={styles.iconCheck} />
               </div>
@@ -84,6 +86,20 @@ function RequirementsComponents() {
 
           <div className={styles.boxRequire}>
             <h3 className={styles.titleRequire}>Ventajas para su empresa</h3>
+
+            <div className={styles.infoBox}>
+              <p>100% digital facil y rapido</p>
+              <div className={styles.boxCheckIcon}>
+                <TbDiscountCheckFilled size={20} className={styles.iconCheck} />
+              </div>
+            </div>
+
+            <div className={styles.infoBox}>
+              <p>No interviene en su desempeño laboral</p>
+              <div className={styles.boxCheckIcon}>
+                <TbDiscountCheckFilled size={20} className={styles.iconCheck} />
+              </div>
+            </div>
 
             <div className={styles.infoBox}>
               <p>
