@@ -1,7 +1,7 @@
 "use client";
 
 import React, { FormEvent, useState } from "react";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import styles from "./auth.module.css";
 import axios from "axios";
@@ -42,8 +42,8 @@ function Signin() {
         toast.success(`Bienvenido de nuevo ${data.names}`);
         setTimeout(() => {
           setIsLoading(false);
-          route.push("/");
-        }, 3000);
+          route.push("/dashboard");
+        }, 2000);
       }
 
       if (response.data.success == false) {

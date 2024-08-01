@@ -79,14 +79,19 @@ class UserService {
   }
 
   // Sign in user method
-  static async signin(email: string, password: string): Promise<User> {
+  static async signin(
+    email: string,
+    password: string
+  ): Promise<Omit<User, "password">> {
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new Error("Credenciales inválidas");
     }
 
-    return user;
+    const { password: _, ...userWithPass } = user;
+
+    return userWithPass;
   }
 
   // Check if user has document data method

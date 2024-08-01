@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React from "react";
 import styles from "./styles/Service.module.css";
@@ -6,13 +6,17 @@ import Image from "next/image";
 
 import iconSchoolLoan from "@/assets/LearningIcon.svg";
 import iconDeath from "@/assets/iconFamilyDeath.svg";
-import iconRevenue from "@/assets/Revenue-bro.svg"
+import iconRevenue from "@/assets/Revenue-bro.svg";
 import iconBuild from "@/assets/Bricklayer-bro.svg";
 import iconSoldier from "@/assets/Manage money-bro.svg";
 import iconSeller from "@/assets/Shops re-opening soon-bro.svg";
 import iconvehicle from "@/assets/Motocross-bro.svg";
+import iconMedical from "@/assets/Medical research-bro.svg";
+import { useRouter } from "next/navigation";
 
 function ServiceSection() {
+  const router = useRouter();
+
   return (
     <>
       <div className={styles.mainService}>
@@ -25,7 +29,10 @@ function ServiceSection() {
           </p>
         </div>
         <div className={styles.listServices}>
-          <div className={styles.cardService}>
+          <div
+            className={styles.cardService}
+            onClick={() => router.push("/docs/planes/creditos_educativos")}
+          >
             <div className={styles.centerCardService}>
               <div className={styles.boxIconService}>
                 <Image
@@ -38,7 +45,12 @@ function ServiceSection() {
             </div>
           </div>
 
-          <div className={styles.cardService}>
+          <div
+            className={styles.cardService}
+            onClick={() =>
+              router.push("/docs/planes/credito_vivienda_ahorro_programado")
+            }
+          >
             <div className={styles.centerCardService}>
               <div className={styles.boxIconService}>
                 <Image
@@ -53,7 +65,14 @@ function ServiceSection() {
             </div>
           </div>
 
-          <div className={styles.cardService}>
+          <div
+            className={styles.cardService}
+            onClick={() =>
+              router.push(
+                "/docs/planes/credito_vivienda_adquisicion_o_reparaciones_locativas"
+              )
+            }
+          >
             <div className={styles.centerCardService}>
               <div className={styles.boxIconService}>
                 <Image
@@ -68,7 +87,12 @@ function ServiceSection() {
             </div>
           </div>
 
-          <div className={styles.cardService}>
+          <div
+            className={styles.cardService}
+            onClick={() =>
+              router.push("/docs/planes/libre_inversion_y_consumo")
+            }
+          >
             <div className={styles.centerCardService}>
               <div className={styles.boxIconService}>
                 <Image
@@ -83,7 +107,12 @@ function ServiceSection() {
             </div>
           </div>
 
-          <div className={styles.cardService}>
+          <div
+            className={styles.cardService}
+            onClick={() =>
+              router.push("/docs/planes/credito_apoyo_actividades_lucrativas")
+            }
+          >
             <div className={styles.centerCardService}>
               <div className={styles.boxIconService}>
                 <Image
@@ -98,7 +127,10 @@ function ServiceSection() {
             </div>
           </div>
 
-          <div className={styles.cardService}>
+          <div
+            className={styles.cardService}
+            onClick={() => router.push("/docs/planes/credito_transporte")}
+          >
             <div className={styles.centerCardService}>
               <div className={styles.boxIconService}>
                 <Image
@@ -111,12 +143,17 @@ function ServiceSection() {
             </div>
           </div>
 
-          <div className={styles.cardService}>
+          <div
+            className={styles.cardService}
+            onClick={() =>
+              router.push("/docs/planes/credito_para_complemento_en_salud")
+            }
+          >
             <div className={styles.centerCardService}>
               <div className={styles.boxIconService}>
                 <Image
                   className={styles.iconService}
-                  src={iconSchoolLoan}
+                  src={iconMedical}
                   alt={"schoolLoan"}
                 />
               </div>
@@ -126,7 +163,14 @@ function ServiceSection() {
             </div>
           </div>
 
-          <div className={styles.cardService}>
+          <div
+            className={styles.cardService}
+            onClick={() =>
+              router.push(
+                "/docs/planes/credito_para_complemento_familiar_o_financiera"
+              )
+            }
+          >
             <div className={styles.centerCardService}>
               <div className={styles.boxIconService}>
                 <Image

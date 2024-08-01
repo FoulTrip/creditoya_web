@@ -1,0 +1,98 @@
+[
+    {
+        "id": "creditos_educativos",
+        "nombre": "Créditos Educativos",
+        "imagen": "http://res.cloudinary.com/dvquomppa/image/upload/v1722524515/credito_ya/sqyadczoxhbjogfl2gzn.svg",
+        "descripcion": "Préstamos diseñados para financiar estudios académicos, incluyendo matrícula, libros y otros gastos relacionados.",
+        "beneficios": [
+            "Tasas de interés competitivas",
+            "Plazos flexibles",
+            "Desembolso rápido"
+        ],
+        "tasa_de_interes": "5.5%"
+    },
+    {
+        "id": "credito_vivienda_ahorro_programado",
+        "nombre": "Crédito Vivienda Ahorro Programado",
+        "imagen": "http://res.cloudinary.com/dvquomppa/image/upload/v1722524471/credito_ya/dl40gwl3qgbwrgz0gctd.svg",
+        "descripcion": "Préstamos para la adquisición de vivienda con un plan de ahorro programado.",
+        "beneficios": [
+            "Facilidad de ahorro",
+            "Tasas preferenciales",
+            "Asesoría personalizada"
+        ],
+        "tasa_de_interes": "4.8%"
+    },
+    {
+        "id": "credito_vivienda_adquisicion_o_reparaciones_locativas",
+        "nombre": "Crédito Vivienda Adquisición o Reparaciones Locativas",
+        "imagen": "http://res.cloudinary.com/dvquomppa/image/upload/v1722524455/credito_ya/ufiznplt9jabwuoc9tki.svg",
+        "descripcion": "Préstamos para la compra de vivienda o reparaciones locativas.",
+        "beneficios": [
+            "Financiamiento completo",
+            "Tasas competitivas",
+            "Plazos flexibles"
+        ],
+        "tasa_de_interes": "5.0%"
+    },
+    {
+        "id": "libre_inversion_y_consumo",
+        "nombre": "Libre inversión y consumo",
+        "imagen": "http://res.cloudinary.com/dvquomppa/image/upload/v1722528898/credito_ya/bpshz14srk8gzm4y5vtz.svg",
+        "descripcion": "Préstamos para cualquier tipo de inversión o consumo personal.",
+        "beneficios": [
+            "Uso flexible",
+            "Desembolso rápido",
+            "Tasas accesibles"
+        ],
+        "tasa_de_interes": "6.0%"
+    },
+    {
+        "id": "credito_apoyo_actividades_lucrativas",
+        "nombre": "Crédito Apoyo Actividades Lucrativas",
+        "imagen": "http://res.cloudinary.com/dvquomppa/image/upload/v1722524586/credito_ya/k8hkwikqqcrrfm2mssnl.svg",
+        "descripcion": "Préstamos para financiar actividades recreativas y de ocio.",
+        "beneficios": [
+            "Tasas preferenciales",
+            "Plazos flexibles",
+            "Desembolso rápido"
+        ],
+        "tasa_de_interes": "5.5%"
+    },
+    {
+        "id": "credito_transporte",
+        "nombre": "Crédito Transporte",
+        "imagen": "http://res.cloudinary.com/dvquomppa/image/upload/v1722524579/credito_ya/dvrf8tpbuajx6gdxylqa.svg",
+        "descripcion": "Préstamos para la compra de vehículos de transporte personal o comercial.",
+        "beneficios": [
+            "Financiamiento completo",
+            "Tasas competitivas",
+            "Plazos flexibles"
+        ],
+        "tasa_de_interes": "4.5%"
+    },
+    {
+        "id": "credito_para_complemento_en_salud",
+        "nombre": "Crédito para complemento en Salud",
+        "imagen": "http://res.cloudinary.com/dvquomppa/image/upload/v1722529054/credito_ya/s3gyl6sxaokh49i4tpyj.svg",
+        "descripcion": "Préstamos para cubrir gastos médicos y de salud.",
+        "beneficios": [
+            "Desembolso rápido",
+            "Tasas accesibles",
+            "Plazos flexibles"
+        ],
+        "tasa_de_interes": "5.0%"
+    },
+    {
+        "id": "credito_para_complemento_familiar_o_financiera",
+        "nombre": "Crédito para complemento familiar o financiera",
+        "imagen": "http://res.cloudinary.com/dvquomppa/image/upload/v1722524463/credito_ya/cm0t2w68vfotnbafodbb.svg",
+        "descripcion": "Préstamos para cubrir necesidades financieras familiares o personales.",
+        "beneficios": [
+            "Uso flexible",
+            "Tasas accesibles",
+            "Plazos flexibles"
+        ],
+        "tasa_de_interes": "5.5%"
+    }
+]
