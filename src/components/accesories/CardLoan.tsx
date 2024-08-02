@@ -12,25 +12,26 @@ import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
 import CopyText from "./CopyText";
 import Avatar from "react-avatar";
+import { stringToPriceCOP } from "@/handlers/StringToCop";
 
 function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
   const router = useRouter();
   const { user } = useGlobalContext();
   const [infoEmployee, setInfoEmployee] = useState<ScalarEmployee | null>(null);
 
-  const formattedPrice = (price: string) => {
-    const number = parseFloat(price);
+  // const formattedPrice = (price: string) => {
+  //   const number = parseFloat(price);
 
-    const formatter = new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+  //   const formatter = new Intl.NumberFormat("es-CO", {
+  //     style: "currency",
+  //     currency: "COP",
+  //     minimumFractionDigits: 2,
+  //     maximumFractionDigits: 2,
+  //   });
 
-    const formattedNumber = formatter.format(number);
-    return formattedNumber;
-  };
+  //   const formattedNumber = formatter.format(number);
+  //   return formattedNumber;
+  // };
 
   useEffect(() => {
     const getEmployee = async () => {
@@ -89,7 +90,7 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
         <div className={styles.requirements}>
           <div className={styles.boxAmount}>
             <p>Cantidad Solicitada</p>
-            <h1>{formattedPrice(loan.cantity)}</h1>
+            <h1>{stringToPriceCOP(loan.cantity)}</h1>
           </div>
         </div>
 

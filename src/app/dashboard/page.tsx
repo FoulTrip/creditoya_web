@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 
 import { useGlobalContext } from "@/context/Auth";
 import axios from "axios";

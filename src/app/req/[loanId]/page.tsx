@@ -182,7 +182,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
             </div>
           </div>
 
-          <h1>Solicitud de prestamo</h1>
+          <h1 className={styles.titleReq}>Solicitud de prestamo</h1>
 
           <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
             <h5>Solicitud Id</h5>
@@ -232,28 +232,29 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                 </>
               )}
 
-              {infoLoan.status == "Pendiente" && infoLoan.newCantityOpt == null && (
-                <div
-                  className={styles.cardInfoBank}
-                  style={{ marginTop: "1em" }}
-                >
-                  <h5>Acepta el cambio de cantidad solicitada?</h5>
-                  <div className={styles.boxAceptCantity}>
-                    <p
-                      className={styles.btnAcceptCantity}
-                      onClick={() => handleAceptChangeCantity(true)}
-                    >
-                      Aceptar
-                    </p>
-                    <p
-                      className={styles.btnRejectCantity}
-                      onClick={() => handleAceptChangeCantity(false)}
-                    >
-                      Rechazar
-                    </p>
+              {infoLoan.status == "Pendiente" &&
+                infoLoan.newCantityOpt == null && (
+                  <div
+                    className={styles.cardInfoBank}
+                    style={{ marginTop: "1em" }}
+                  >
+                    <h5>Acepta el cambio de cantidad solicitada?</h5>
+                    <div className={styles.boxAceptCantity}>
+                      <p
+                        className={styles.btnAcceptCantity}
+                        onClick={() => handleAceptChangeCantity(true)}
+                      >
+                        Aceptar
+                      </p>
+                      <p
+                        className={styles.btnRejectCantity}
+                        onClick={() => handleAceptChangeCantity(false)}
+                      >
+                        Rechazar
+                      </p>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </>
           )}
 

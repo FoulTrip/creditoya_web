@@ -6,6 +6,11 @@
   flex-wrap: wrap;
 }
 
+.titleReq {
+  font-weight: 500;
+  color: var(--green-900);
+}
+
 .DateContainer {
   margin-top: 10px;
   margin-bottom: 10px;

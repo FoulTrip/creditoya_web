@@ -25,10 +25,11 @@ function PlanesSection({ params }: { params: { plan: string } }) {
         <div>
           {selectTopic?.map((topic) => (
             <div className={styles.preCenter} key={topic.id}>
-              <div>
+              <div className={styles.boxImgTopic}>
                 <Image
-                  width={300}
+                  width={"300"}
                   height={400}
+                  className={styles.imgTopic}
                   src={topic.imagen}
                   alt="image"
                 />

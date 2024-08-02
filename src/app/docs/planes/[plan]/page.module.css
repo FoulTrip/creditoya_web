@@ -98,3 +98,13 @@
   font-weight: 400;
   color: var(--green-900);
 }
+
+.boxImgTopic {
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+
+.imgTopic {
+  width: 100%;
+  height: auto;
+}

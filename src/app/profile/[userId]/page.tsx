@@ -35,7 +35,9 @@ function Profile({ params }: { params: { userId: string } }) {
   const [imagePreview1, setImagePreview1] = useState("");
   const [imagePreview2, setImagePreview2] = useState("");
   const [infoUser, setInfoUser] = useState<ScalarDocument>();
+
   const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
 
   const [dataProfile, setDataProfile] = useState<ScalarUser | null>(null);
 
@@ -77,8 +79,6 @@ function Profile({ params }: { params: { userId: string } }) {
     }));
   };
 
-  // console.log(dataProfile)
-
   const handleChangeGenre = (option: string) => {
     setDataProfile((prevData) => ({
       ...(prevData as ScalarUser),
@@ -104,14 +104,12 @@ function Profile({ params }: { params: { userId: string } }) {
   const router = useRouter();
 
   useEffect(() => {
-    if (loading) return;
-    // setTimeout(() => 2000);
     if (!user) {
       router.push("/auth");
     } else if (user.id !== params.userId) {
       router.push("/");
     }
-  }, [user, params.userId, router, loading]);
+  }, [user, params.userId, router]);
 
   useEffect(() => {
     if (user !== undefined) {
@@ -133,11 +131,17 @@ function Profile({ params }: { params: { userId: string } }) {
           // console.log(response.data);
           setInfoUser(response.data.data[0]);
           if (response.data && response.data.data && response.data.data[0]) {
-            const data: ScalarDocument = response.data.data[0];
+            try {
+              const data: ScalarDocument = response.data.data[0];
 
-            setNumberCc(data.number as string);
-            setImagePreview1(data.documentFront as string);
-            setImagePreview2(data.documentBack as string);
+              setNumberCc(data.number as string);
+              setImagePreview1(data.documentFront as string);
+              setImagePreview2(data.documentBack as string);
+            } catch (error) {
+              console.log(error);
+            } finally {
+              setLoadingData(false);
+            }
           }
           setLoading(false);
         }
@@ -157,18 +161,22 @@ function Profile({ params }: { params: { userId: string } }) {
     const getInfoUser = async () => {
       try {
         if (user) {
-          const response = await axios.post(
-            "/api/user/id",
-            {
-              userId: user.id,
-            },
-            { headers: { Authorization: `Bearer ${user.token}` } }
-          );
-          // console.log(response)
-          const data: ScalarUser = response.data.data;
-          // console.log(data);
-          setDataProfile(data);
-          setLoading(false);
+          try {
+            const response = await axios.post(
+              "/api/user/id",
+              {
+                userId: user.id,
+              },
+              { headers: { Authorization: `Bearer ${user.token}` } }
+            );
+            const data: ScalarUser = response.data.data;
+            setDataProfile(data);
+            setLoading(false);
+          } catch (error) {
+            console.log(error);
+          } finally {
+            setLoadingData(false);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -518,7 +526,7 @@ function Profile({ params }: { params: { userId: string } }) {
   const { getRootProps: getRootProps2, getInputProps: getInputProps2 } =
     useDropzone({ onDrop: onDrop2 });
 
-  return loading ? (
+  return loading || loadingData ? (
     <LoadingPage />
   ) : (
     <>
