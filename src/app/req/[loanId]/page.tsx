@@ -56,6 +56,21 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
     setOpenModelAutoDoc(true);
   };
 
+  const handleOtherDocsDownloadFile = (option: number) => {
+    console.log(option);
+
+    if (option == 0) {
+      "use server"
+      Document00({
+        numberDocument: documentsInfo?.number as string,
+        entity: infoLoan?.entity as string,
+        numberBank: infoLoan?.bankNumberAccount as string,
+        signature: infoLoan?.signature,
+        autoDownload: true,
+      });
+    }
+  };
+
   const handleAceptChangeCantity = async (option: boolean) => {
     if (option == null) throw new Error("Option is required!");
 
@@ -528,9 +543,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                   <div className={styles.barBtns}>
                     <button onClick={() => handleAutoOpenModel(5)}>Ver</button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
+                    <button onClick={() => handleOtherDocsDownloadFile(0)}>
                       Descargar
                     </button>
                   </div>
