@@ -60,7 +60,6 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
     console.log(option);
 
     if (option == 0) {
-      "use server"
       Document00({
         numberDocument: documentsInfo?.number as string,
         entity: infoLoan?.entity as string,
