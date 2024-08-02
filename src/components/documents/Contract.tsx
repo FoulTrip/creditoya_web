@@ -24,7 +24,6 @@ import { CiMoneyCheck1 } from "react-icons/ci";
 import Modal from "../modal/Modal";
 import PreEnvio from "./PreEnvio";
 import { useWebSocket } from "next-ws/client";
-import Link from "next/link";
 import LoadingPage from "../Loaders/LoadingPage";
 import Signature from "./signature";
 import ListPdfsAutogenerate from "./ListPdfsAutogenerate";
@@ -108,7 +107,7 @@ function Contract({
     useState<boolean>(false);
 
   const [openViewPdf, setOpenViewPdf] = useState<boolean>(false);
-
+  const [openTerms, setOpenTerms] = useState<boolean>(false);
   const [openPreSend, setOpenPreSend] = useState<boolean>(false);
 
   const handlerOpenModel = ({ link }: { link: string }) => {
@@ -843,7 +842,13 @@ function Contract({
         <div className={styles.centerBoxTerms}>
           <input type="checkbox" onChange={handleAcceptTerms} />
           <h5>
-            Aceptar <span>terminos y condiciones</span>
+            Aceptar{" "}
+            <span
+              className={styles.linkTerms}
+              onClick={() => setOpenTerms(true)}
+            >
+              terminos y condiciones
+            </span>
           </h5>
         </div>
       </div>
@@ -868,6 +873,43 @@ function Contract({
           completeName={`${userInfo?.names} ${userInfo?.firstLastName} ${userInfo?.secondLastName}`}
           mail={userInfo?.email as string}
         />
+      </Modal>
+
+      <Modal isOpen={openTerms} onClose={() => setOpenTerms(false)} link={null}>
+        <div className={styles.componentTerms}>
+          <h3>Terminos y condiciones</h3>
+          <div className={styles.centerCoponentsTerms}>
+            <div className={styles.boxCharc}>
+              <div className={styles.boxIconChecking}>
+                <TbCircleCheckFilled
+                  size={20}
+                  className={styles.iconChecking}
+                />
+              </div>
+              <h5>Firma digital de los Documentos pagare</h5>
+            </div>
+
+            <div className={styles.boxCharc}>
+              <div className={styles.boxIconChecking}>
+                <TbCircleCheckFilled
+                  size={20}
+                  className={styles.iconChecking}
+                />
+              </div>
+              <h5>Descuento por nomina</h5>
+            </div>
+
+            <div className={styles.boxCharc}>
+              <div className={styles.boxIconChecking}>
+                <TbCircleCheckFilled
+                  size={20}
+                  className={styles.iconChecking}
+                />
+              </div>
+              <h5>Reporte a las centrales de riesgo</h5>
+            </div>
+          </div>
+        </div>
       </Modal>
     </>
   );

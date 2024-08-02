@@ -372,6 +372,52 @@
   padding: 10px;
 }
 
+.linkTerms {
+  color: var(--blue-600);
+  cursor: pointer;
+}
+
+.linkTerms:hover {
+  text-decoration: underline;
+}
+
+.componentTerms {
+  margin-top: 2em;
+  margin-bottom: 1em;
+  display: grid;
+  place-content: center;
+}
+
+.centerCoponentsTerms {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.componentTerms h3 {
+  margin-bottom: 1em;
+  color: var(--green-900);
+}
+
+.boxCharc {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.boxCharc p {
+  text-align: start;
+}
+
+.boxIconChecking {
+  display: grid;
+  place-content: center;
+}
+
+.iconChecking {
+  color: var(--green-300);
+}
+
 @media screen and (max-width: 900px) {
   .prevDoc {
     width: 250px;
