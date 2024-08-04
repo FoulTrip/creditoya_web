@@ -112,12 +112,6 @@ function Profile({ params }: { params: { userId: string } }) {
   }, [user, params.userId, router]);
 
   useEffect(() => {
-    if (user !== undefined) {
-      setLoading(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
     const getInfoUserDocs = async () => {
       try {
         if (user && user.token) {
@@ -221,14 +215,50 @@ function Profile({ params }: { params: { userId: string } }) {
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
 
-    // console.log(file)
+    // console.log(file);
 
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         const base64String = reader.result as string;
-        // console.log(base64String);
         setSelectedImagePerfil(base64String);
+
+        if (base64String) {
+          const response = await axios.post(
+            "/api/upload/avatar",
+            {
+              img: base64String,
+              userId: user?.id,
+            },
+            { headers: { Authorization: `Bearer ${user?.token}` } }
+          );
+
+          console.log(response);
+
+          if (response.data.success) {
+            const secure_url = response.data.data;
+
+            const resAddAvatar = await axios.post(
+              "/api/user/update_avatar",
+              {
+                userId: user?.id,
+                img: secure_url,
+              },
+              { headers: { Authorization: `Bearer ${user?.token}` } }
+            );
+
+            const { id, names, email, avatar } = resAddAvatar.data.data;
+            const updateSessionData = {
+              id,
+              names,
+              email,
+              avatar,
+              token: user?.token,
+            } as AuthUser;
+            setUserData(updateSessionData);
+            setSelectedImagePerfil(null);
+          }
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -237,14 +267,45 @@ function Profile({ params }: { params: { userId: string } }) {
   const handleImageWithCC = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
 
-    // console.log(file)
-
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         const base64String = reader.result as string;
-        // console.log(base64String);
-        setSelectedImageWithCC(base64String);
+
+        const response = await axios.post(
+          "/api/upload/pic_with_cc",
+          {
+            docId: infoUser && infoUser.id,
+            img: base64String,
+          },
+          { headers: { Authorization: `Bearer ${user?.token}` } }
+        );
+
+        if (response.data.success) {
+          const secure_url = response.data.data;
+
+          const resAddPic = await axios.post(
+            "/api/user/img_with_cc",
+            {
+              docId: infoUser && infoUser.id,
+              image: secure_url,
+            },
+            { headers: { Authorization: `Bearer ${user?.token}` } }
+          );
+
+          if (resAddPic.data.success) {
+            const response = await axios.post(
+              "/api/user/list_docs",
+              {
+                userId: params.userId,
+              },
+              { headers: { Authorization: `Bearer ${user?.token}` } }
+            );
+            toast.success("Imagen con cedula cargada");
+            setInfoUser(response.data.data);
+            setSelectedImageWithCC(secure_url);
+          }
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -280,43 +341,6 @@ function Profile({ params }: { params: { userId: string } }) {
     setOpenDocs(!openDocs);
   };
 
-  const handleUpdateAvatar = async () => {
-    if (selectedImagePerfil !== null) {
-      const response = await axios.post(
-        "/api/upload/avatar",
-        {
-          img: selectedImagePerfil,
-          userId: user?.id,
-        },
-        { headers: { Authorization: `Bearer ${user?.token}` } }
-      );
-
-      if (response.data.success) {
-        const secure_url = response.data.data;
-
-        const resAddAvatar = await axios.post(
-          "/api/user/update_avatar",
-          {
-            userId: user?.id,
-            img: secure_url,
-          },
-          { headers: { Authorization: `Bearer ${user?.token}` } }
-        );
-
-        const { id, names, email, avatar } = resAddAvatar.data.data;
-        const updateSessionData = {
-          id,
-          names,
-          email,
-          avatar,
-          token: user?.token,
-        } as AuthUser;
-        setUserData(updateSessionData);
-        setSelectedImagePerfil(null);
-      }
-    }
-  };
-
   const handleDeleteAvatar = async () => {
     const response = await axios.post(
       "/api/upload/delete_avatar",
@@ -344,47 +368,6 @@ function Profile({ params }: { params: { userId: string } }) {
     }
   };
 
-  const handleUpdateImgWithCC = async () => {
-    if (selectedImageWithCC !== null) {
-      const response = await axios.post(
-        "/api/upload/pic_with_cc",
-        {
-          docId: infoUser && infoUser.id,
-          img: selectedImageWithCC,
-        },
-        { headers: { Authorization: `Bearer ${user?.token}` } }
-      );
-
-      // console.log(response);
-
-      if (response.data.success) {
-        const secure_url = response.data.data;
-
-        const resAddPic = await axios.post(
-          "/api/user/img_with_cc",
-          {
-            docId: infoUser && infoUser.id,
-            image: secure_url,
-          },
-          { headers: { Authorization: `Bearer ${user?.token}` } }
-        );
-
-        if (resAddPic.data.success) {
-          const response = await axios.post(
-            "/api/user/list_docs",
-            {
-              userId: params.userId,
-            },
-            { headers: { Authorization: `Bearer ${user?.token}` } }
-          );
-          toast.success("Imagen con cedula cargada");
-          setInfoUser(response.data.data);
-          setSelectedImageWithCC(secure_url);
-        }
-      }
-    }
-  };
-
   const handleDeleteImgWithCC = async () => {
     const response = await axios.post(
       "/api/upload/delete_pic_with_cc",
@@ -395,7 +378,7 @@ function Profile({ params }: { params: { userId: string } }) {
     );
 
     if (response.data.success) {
-      console.log(response);
+      setSelectedImageWithCC(null);
       toast.success("Imagen con cedula eliminada");
     }
   };
@@ -599,14 +582,6 @@ function Profile({ params }: { params: { userId: string } }) {
                       <p>Eliminar</p>
                     </div>
                   </div>
-                  {selectedImagePerfil !== null && (
-                    <div
-                      onClick={handleUpdateAvatar}
-                      className={styles.btnUpdateFinal}
-                    >
-                      Actualizar
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -617,20 +592,20 @@ function Profile({ params }: { params: { userId: string } }) {
                   {selectedImageWithCC == null && (
                     <Image
                       priority={true}
-                      className={styles.avatarIcon}
+                      className={styles.avatarIconCC}
                       src={
                         infoUser && infoUser.imageWithCC !== "No definido"
                           ? (infoUser.imageWithCC as string)
                           : ImageDefault
                       }
-                      width={300}
-                      height={300}
+                      width={"200"}
+                      height={"300"}
                       alt="logo"
                     />
                   )}
                   {selectedImageWithCC !== null && (
                     <Image
-                      className={styles.avatarIcon}
+                      className={styles.avatarIconCC}
                       src={selectedImageWithCC}
                       alt="withcc"
                       width={600}
@@ -684,14 +659,6 @@ function Profile({ params }: { params: { userId: string } }) {
                         <p>Eliminar</p>
                       </div>
                     </div>
-                    {selectedImageWithCC !== null && (
-                      <div
-                        onClick={handleUpdateImgWithCC}
-                        className={styles.btnUpdateFinal}
-                      >
-                        Actualizar
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>

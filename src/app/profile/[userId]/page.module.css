@@ -26,6 +26,17 @@
   object-fit: cover;
 }
 
+.avatarIconCC {
+  filter: drop-shadow(5px 5px 10px var(--white-300));
+  border-radius: 8px;
+  /* width: 100px;
+  height: auto; */
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
 .barPicturesAuth {
   display: flex;
   flex-wrap: wrap;
