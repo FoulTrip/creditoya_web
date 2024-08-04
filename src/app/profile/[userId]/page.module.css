@@ -29,8 +29,8 @@
 .avatarIconCC {
   filter: drop-shadow(5px 5px 10px var(--white-300));
   border-radius: 8px;
-  /* width: 100px;
-  height: auto; */
+  /* width: 200px;
+  height: 300px; */
   z-index: 1;
   width: 100%;
   height: auto;

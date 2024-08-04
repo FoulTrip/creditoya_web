@@ -271,6 +271,7 @@ function Profile({ params }: { params: { userId: string } }) {
       const reader = new FileReader();
       reader.onloadend = async () => {
         const base64String = reader.result as string;
+        setSelectedImageWithCC(base64String);
 
         const response = await axios.post(
           "/api/upload/pic_with_cc",
@@ -303,7 +304,7 @@ function Profile({ params }: { params: { userId: string } }) {
             );
             toast.success("Imagen con cedula cargada");
             setInfoUser(response.data.data);
-            setSelectedImageWithCC(secure_url);
+            // setSelectedImageWithCC(secure_url);
           }
         }
       };
@@ -594,8 +595,8 @@ function Profile({ params }: { params: { userId: string } }) {
                       priority={true}
                       className={styles.avatarIconCC}
                       src={
-                        infoUser && infoUser.imageWithCC !== "No definido"
-                          ? (infoUser.imageWithCC as string)
+                        selectedImageWithCC !== null
+                          ? selectedImageWithCC
                           : ImageDefault
                       }
                       width={"200"}
@@ -605,11 +606,12 @@ function Profile({ params }: { params: { userId: string } }) {
                   )}
                   {selectedImageWithCC !== null && (
                     <Image
+                      priority={true}
                       className={styles.avatarIconCC}
                       src={selectedImageWithCC}
                       alt="withcc"
-                      width={600}
-                      height={600}
+                      width={"200"}
+                      height={"300"}
                     />
                   )}
                 </div>

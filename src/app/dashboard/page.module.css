@@ -13,11 +13,12 @@
 .boxIconVoid {
   display: grid;
   place-content: center;
+  margin-top: 3em;
 }
 
 .fingerIcon {
   color: var(--white-300);
-  filter: drop-shadow(5px 5px 10px #9b9b9b);
+  filter: drop-shadow(0px 0px 10px #9b9b9b);
 }
 
 .centerMainVoid p {

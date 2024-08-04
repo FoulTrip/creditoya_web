@@ -196,9 +196,9 @@ function Dashboard() {
       <div className={styles.mainVoidDocuments}>
         <div className={styles.centerMainVoid}>
           <div className={styles.boxIconVoid}>
-            <TbFingerprint className={styles.fingerIcon} size={300} />
+            <TbFingerprint className={styles.fingerIcon} size={100} />
           </div>
-          <p>Completa tus datos antes de requerir un prestamo</p>
+          <p>Completa tus datos antes de solicitar un prestamo</p>
           <div className={styles.diccMissings}>
             {datesMissing?.map((missing) => (
               <div className={styles.boxCenter} key={missing}>
