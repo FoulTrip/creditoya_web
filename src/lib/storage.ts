@@ -1,6 +1,7 @@
 import { Storage } from "@google-cloud/storage";
 import crediental from "@/components/Jsons/cloud.json";
 import DecryptJson from "@/handlers/decryptJson";
+import { uploadRandomKey } from "@/handlers/randomUploadKey";
 
 export interface PropsUpload {
   file: File;
@@ -24,9 +25,11 @@ export const UploadToGcs = async ({ file, userId, name }: PropsUpload) => {
       projectId: process.env.PROJECT_ID_GOOGLE,
       credentials: EnCrypt,
     });
-    console.log(Buffer.from(buffer));
+    // console.log(Buffer.from(buffer));
 
-    const fileName = `${name}-${userId}.pdf`;
+    const randomKey = uploadRandomKey();
+
+    const fileName = `${name}-${userId}-${randomKey}.pdf`;
 
     await storage
       .bucket(process.env.NAME_BUCKET_GOOGLE_STORAGE as string)
