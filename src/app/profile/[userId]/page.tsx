@@ -131,6 +131,7 @@ function Profile({ params }: { params: { userId: string } }) {
               setNumberCc(data.number as string);
               setImagePreview1(data.documentFront as string);
               setImagePreview2(data.documentBack as string);
+              setSelectedImageWithCC(data.imageWithCC as string);
             } catch (error) {
               console.log(error);
             } finally {

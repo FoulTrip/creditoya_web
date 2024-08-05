@@ -1,4 +1,4 @@
-  "use client";
+"use client";
 
 import { useGlobalContext } from "@/context/Auth";
 import axios from "axios";
@@ -16,6 +16,8 @@ import { TbExclamationCircle, TbFingerprint } from "react-icons/tb";
 import { handleKeyToString } from "@/handlers/typeToString";
 import ChangeDatesPerfil from "@/components/banner/ChangeDatesPerfil";
 import Instructions from "@/components/accesories/Instructions";
+import Image from "next/image";
+import seacrhIlus from "@/assets/Search-bro.svg";
 
 function Dashboard() {
   const router = useRouter();
@@ -169,6 +171,18 @@ function Dashboard() {
                     (loan) => (
                       <CardLoan key={loan.id} loan={loan} />
                     )
+                  )}
+                  {Loans.length === 0 && (
+                    <div className={styles.containerWait}>
+                      <div className={styles.boxWaiting}>
+                        <Image
+                          src={seacrhIlus}
+                          className={styles.iconWait}
+                          alt="waiting"
+                        />
+                      </div>
+                      <h1>Sin Solicitudes activas</h1>
+                    </div>
                   )}
                 </div>
               </>

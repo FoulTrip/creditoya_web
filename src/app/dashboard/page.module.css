@@ -171,6 +171,31 @@
   filter: drop-shadow(0px 0px 10px #000000);
 }
 
+.containerWait {
+  min-height: 50dvh;
+  display: grid;
+  place-content: center;
+  flex: 1;
+}
+
+.containerWait h1 {
+  font-weight: 800;
+  color: var(--green-800);
+  text-align: center;
+  opacity: 0.4;
+}
+
+.boxWaiting {
+  display: grid;
+  place-content: center;
+}
+
+.iconWait {
+  width: 100%;
+  height: auto;
+  opacity: 0.4;
+}
+
 @media screen and (max-width: 700px) {
   .listLoans {
     display: flex;
