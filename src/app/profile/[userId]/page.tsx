@@ -69,7 +69,7 @@ function Profile({ params }: { params: { userId: string } }) {
         ? new Date(formatDate(dateValue)!)
         : undefined;
     } else {
-      newValue = value.trim(); // Limpiar espacios en blanco
+      newValue = value;
     }
 
     // Actualizar el estado solo una vez
@@ -92,7 +92,7 @@ function Profile({ params }: { params: { userId: string } }) {
     null
   );
   const [selectedImageWithCC, setSelectedImageWithCC] = useState<string | null>(
-    null
+    "No definido"
   );
   const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
   const [loadingProccessImg02, setLoadingProccessImg02] = useState(false);
@@ -127,7 +127,7 @@ function Profile({ params }: { params: { userId: string } }) {
           if (response.data && response.data.data && response.data.data[0]) {
             try {
               const data: ScalarDocument = response.data.data[0];
-
+              // console.log(data)
               setNumberCc(data.number as string);
               setImagePreview1(data.documentFront as string);
               setImagePreview2(data.documentBack as string);
@@ -303,7 +303,7 @@ function Profile({ params }: { params: { userId: string } }) {
               },
               { headers: { Authorization: `Bearer ${user?.token}` } }
             );
-            toast.success("Imagen con cedula cargada");
+            toast.success("Verificacion creada");
             setInfoUser(response.data.data);
             // setSelectedImageWithCC(secure_url);
           }
@@ -380,7 +380,7 @@ function Profile({ params }: { params: { userId: string } }) {
     );
 
     if (response.data.success) {
-      setSelectedImageWithCC(null);
+      setSelectedImageWithCC("No definido");
       toast.success("Imagen con cedula eliminada");
     }
   };
@@ -591,13 +591,13 @@ function Profile({ params }: { params: { userId: string } }) {
             <div className={styles.boxInfoUserSelfie}>
               <div className={styles.centerInfoUserSelfie}>
                 <div className={styles.boxIconAvatar}>
-                  {selectedImageWithCC == null && (
+                  {selectedImageWithCC == "No definido" && (
                     <Image
                       priority={true}
                       className={styles.avatarIconCC}
                       src={
-                        selectedImageWithCC !== null
-                          ? selectedImageWithCC
+                        selectedImageWithCC !== "No definido"
+                          ? selectedImageWithCC!
                           : ImageDefault
                       }
                       width={"200"}
@@ -605,11 +605,11 @@ function Profile({ params }: { params: { userId: string } }) {
                       alt="logo"
                     />
                   )}
-                  {selectedImageWithCC !== null && (
+                  {selectedImageWithCC !== "No definido" && (
                     <Image
                       priority={true}
                       className={styles.avatarIconCC}
-                      src={selectedImageWithCC}
+                      src={selectedImageWithCC as string}
                       alt="withcc"
                       width={"200"}
                       height={"300"}
@@ -751,7 +751,11 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={dataProfile?.place_of_birth}
+                        value={
+                          dataProfile?.place_of_birth == "No definido"
+                            ? ""
+                            : dataProfile?.place_of_birth
+                        }
                         onChange={(e) =>
                           handleChangeProfile(e, "place_of_birth")
                         }
@@ -781,7 +785,11 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={dataProfile?.phone}
+                        value={
+                          dataProfile?.phone == "No definido"
+                            ? ""
+                            : dataProfile?.phone
+                        }
                         onChange={(e) => handleChangeProfile(e, "phone")}
                         name="phone"
                       />
@@ -794,7 +802,11 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={dataProfile?.residence_phone_number}
+                        value={
+                          dataProfile?.residence_phone_number == "No definido"
+                            ? ""
+                            : dataProfile?.residence_address
+                        }
                         onChange={(e) =>
                           handleChangeProfile(e, "residence_phone_number")
                         }
@@ -809,7 +821,11 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={dataProfile?.phone_whatsapp}
+                        value={
+                          dataProfile?.phone_whatsapp == "No definido"
+                            ? ""
+                            : dataProfile?.phone_whatsapp
+                        }
                         onChange={(e) =>
                           handleChangeProfile(e, "phone_whatsapp")
                         }
@@ -824,7 +840,11 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={dataProfile?.residence_address}
+                        value={
+                          dataProfile?.residence_address == "No definido"
+                            ? ""
+                            : dataProfile?.residence_address
+                        }
                         onChange={(e) =>
                           handleChangeProfile(e, "residence_address")
                         }
@@ -839,7 +859,11 @@ function Profile({ params }: { params: { userId: string } }) {
                       <input
                         className={styles.inputCC}
                         type="text"
-                        value={dataProfile?.city}
+                        value={
+                          dataProfile?.city == "No definido"
+                            ? ""
+                            : dataProfile?.city
+                        }
                         onChange={(e) => handleChangeProfile(e, "city")}
                         name="city"
                       />
@@ -864,7 +888,7 @@ function Profile({ params }: { params: { userId: string } }) {
               <input
                 className={styles.inputCC}
                 type="text"
-                value={numberCc !== null ? numberCc : ""}
+                value={numberCc == "No definido" ? "" : (numberCc as string)}
                 onChange={(e) => setNumberCc(e.target.value)}
               />
               <button

@@ -26,6 +26,7 @@ function SelectGenre({
         className={styles.inputGenre}
         options={bankOptions}
         onChange={handleChange}
+        placeholder={"Selecciona tu genero"}
         value={defaultOption}
       />
     </>
