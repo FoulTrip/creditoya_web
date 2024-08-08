@@ -10,6 +10,8 @@ import Document00 from "../pdfs/pdfCard00";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
 import Document04 from "../pdfs/pdfCard03";
+import { Document01 } from "../pdfs/pdfCard01";
+import Document03 from "../pdfs/pdfCard03";
 
 function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -128,8 +130,19 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
             signature={data.signature}
           />
         )}
-        {optionView == 1 && <p>1</p>}
-        {optionView == 2 && <p>2</p>}
+        {optionView == 1 && (
+          <Document01
+            numberDocument={numberDocument as string}
+            signature={data.signature}
+            name={name as string}
+          />
+        )}
+        {optionView == 2 && (
+          <Document03
+            name={name as string}
+            numberDocument={numberDocument as string}
+          />
+        )}
         {optionView == 3 && (
           <Document04
             name={name as string}
