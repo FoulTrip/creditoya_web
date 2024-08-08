@@ -104,82 +104,57 @@ function Profile({ params }: { params: { userId: string } }) {
   const router = useRouter();
 
   useEffect(() => {
+    // Check if the user is authenticated and authorized
     if (!user) {
       router.push("/auth");
     } else if (user.id !== params.userId) {
       router.push("/");
-    }
-  }, [user, params.userId, router]);
-
-  useEffect(() => {
-    const getInfoUserDocs = async () => {
-      try {
-        if (user && user.token) {
-          const response = await axios.post(
-            "/api/user/list_docs",
-            {
-              userId: params.userId,
-            },
-            { headers: { Authorization: `Bearer ${user.token}` } }
-          );
-          // console.log(response.data);
-          setInfoUser(response.data.data[0]);
-          if (response.data && response.data.data && response.data.data[0]) {
-            try {
+    } else {
+      // Fetch user information and documents
+      const getInfoUserDocs = async () => {
+        try {
+          if (user.token) {
+            const response = await axios.post(
+              "/api/user/list_docs",
+              { userId: params.userId },
+              { headers: { Authorization: `Bearer ${user.token}` } }
+            );
+            setInfoUser(response.data.data[0]);
+            if (response.data.data[0]) {
               const data: ScalarDocument = response.data.data[0];
-              // console.log(data)
               setNumberCc(data.number as string);
               setImagePreview1(data.documentFront as string);
               setImagePreview2(data.documentBack as string);
               setSelectedImageWithCC(data.imageWithCC as string);
-            } catch (error) {
-              console.log(error);
-            } finally {
-              setLoadingData(false);
             }
-          }
-          setLoading(false);
-        }
-      } catch (error) {
-        console.log(error);
-
-        if (error instanceof Error) {
-          console.log(error.cause);
-        }
-      }
-    };
-
-    getInfoUserDocs();
-  }, [params.userId, user?.id, user?.token, user]);
-
-  useEffect(() => {
-    const getInfoUser = async () => {
-      try {
-        if (user) {
-          try {
-            const response = await axios.post(
-              "/api/user/id",
-              {
-                userId: user.id,
-              },
-              { headers: { Authorization: `Bearer ${user.token}` } }
-            );
-            const data: ScalarUser = response.data.data;
-            setDataProfile(data);
-            setLoading(false);
-          } catch (error) {
-            console.log(error);
-          } finally {
             setLoadingData(false);
           }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    };
+      };
 
-    getInfoUser();
-  }, [params.userId, user?.id, user?.token, user]);
+      const getInfoUser = async () => {
+        try {
+          const response = await axios.post(
+            "/api/user/id",
+            { userId: user.id },
+            { headers: { Authorization: `Bearer ${user.token}` } }
+          );
+          setDataProfile(response.data.data);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoadingData(false);
+        }
+      };
+
+      getInfoUserDocs();
+      getInfoUser();
+    }
+  }, [user, params.userId, router]);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
 
@@ -430,41 +405,63 @@ function Profile({ params }: { params: { userId: string } }) {
         const file = acceptedFiles[0];
         const formData = new FormData();
         formData.append("img", file);
-        formData.append("userId", user?.id as string);
-        formData.append("type", "front");
-        const formDataArray = Array.from(formData.entries());
-        console.log(formDataArray);
-        console.log(formData);
-        console.log(process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG);
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
           formData
         );
 
-        console.log(response);
+        if (response.data.success == true) {
+          // console.log(response);
 
-        await handleSubmitImageFront({
-          image: response.data,
-        });
+          const img = response.data.data;
 
-        if (response.data.success) {
-          const resChangeDoc = await axios.post(
-            "/api/user/docs_update",
+          // console.log(img)
+
+          // Verificar si img contiene el prefijo adecuado
+          if (!img.startsWith("data:image/png;base64,")) {
+            console.error("Base64 image format incorrect");
+            return;
+          }
+
+          const submitCloud = await axios.post(
+            "/api/upload/cc/front",
             {
+              type: "front",
               userId: user?.id,
-              documentFront: response.data.data,
+              img,
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
 
-          console.log(resChangeDoc);
+          // console.log(submitCloud.data);
 
-          if (resChangeDoc.data.success) toast.success("Documento subido");
+          if (submitCloud.data.success == true) {
+            const docNoBg = submitCloud.data.data;
+
+            await handleSubmitImageFront({
+              image: docNoBg,
+            });
+
+            if (response.data.success) {
+              const resChangeDoc = await axios.post(
+                "/api/user/docs_update",
+                {
+                  userId: user?.id,
+                  documentFront: response.data.data,
+                },
+                { headers: { Authorization: `Bearer ${user?.token}` } }
+              );
+
+              // console.log(resChangeDoc);
+
+              if (resChangeDoc.data.success) toast.success("Documento subido");
+            }
+            // console.log("url: ", response.data);
+            setLoadingProccessImg01(false);
+            setImagePreview1(response.data.data);
+            console.log(imagePreview1);
+          }
         }
-        // console.log("url: ", response.data);
-        setLoadingProccessImg01(false);
-        setImagePreview1(response.data.data);
-        console.log(imagePreview1);
       }
     },
     [user?.token, user?.id, handleSubmitImageFront, imagePreview1]
@@ -485,22 +482,40 @@ function Profile({ params }: { params: { userId: string } }) {
         );
 
         if (response.data.success) {
-          const resChangeDoc = await axios.post(
-            "/api/user/docs_update",
+          const img = response.data.data;
+
+          // Verificar si img contiene el prefijo adecuado
+          if (!img.startsWith("data:image/png;base64,")) {
+            console.error("Base64 image format incorrect");
+            return;
+          }
+
+          const submitCloud = await axios.post(
+            "/api/upload/cc/front",
             {
+              type: "back",
               userId: user?.id,
-              documentBack: response.data.data,
+              img,
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
 
-          console.log(resChangeDoc);
+          if (submitCloud.data.success == true) {
+            const resChangeDoc = await axios.post(
+              "/api/user/docs_update",
+              {
+                userId: user?.id,
+                documentBack: response.data.data,
+              },
+              { headers: { Authorization: `Bearer ${user?.token}` } }
+            );
 
-          if (resChangeDoc.data.success) toast.success("Documento subido");
+            if (resChangeDoc.data.success) toast.success("Documento subido");
+
+            setLoadingProccessImg02(false);
+            setImagePreview2(response.data.data);
+          }
         }
-        // console.log(response);
-        setLoadingProccessImg02(false);
-        setImagePreview2(response.data.data);
       }
     },
     [user]
@@ -805,7 +820,7 @@ function Profile({ params }: { params: { userId: string } }) {
                         value={
                           dataProfile?.residence_phone_number == "No definido"
                             ? ""
-                            : dataProfile?.residence_address
+                            : dataProfile?.residence_phone_number
                         }
                         onChange={(e) =>
                           handleChangeProfile(e, "residence_phone_number")

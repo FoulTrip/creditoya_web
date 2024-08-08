@@ -8,8 +8,7 @@
             "Tasas de interés competitivas",
             "Plazos flexibles",
             "Desembolso rápido"
-        ],
-        "tasa_de_interes": "5.5%"
+        ]
     },
     {
         "id": "credito_vivienda_ahorro_programado",
@@ -20,8 +19,7 @@
             "Facilidad de ahorro",
             "Tasas preferenciales",
             "Asesoría personalizada"
-        ],
-        "tasa_de_interes": "4.8%"
+        ]
     },
     {
         "id": "credito_vivienda_adquisicion_o_reparaciones_locativas",
@@ -32,8 +30,7 @@
             "Financiamiento completo",
             "Tasas competitivas",
             "Plazos flexibles"
-        ],
-        "tasa_de_interes": "5.0%"
+        ]
     },
     {
         "id": "libre_inversion_y_consumo",
@@ -44,8 +41,7 @@
             "Uso flexible",
             "Desembolso rápido",
             "Tasas accesibles"
-        ],
-        "tasa_de_interes": "6.0%"
+        ]
     },
     {
         "id": "credito_apoyo_actividades_lucrativas",
@@ -56,8 +52,7 @@
             "Tasas preferenciales",
             "Plazos flexibles",
             "Desembolso rápido"
-        ],
-        "tasa_de_interes": "5.5%"
+        ]
     },
     {
         "id": "credito_transporte",
@@ -68,8 +63,7 @@
             "Financiamiento completo",
             "Tasas competitivas",
             "Plazos flexibles"
-        ],
-        "tasa_de_interes": "4.5%"
+        ]
     },
     {
         "id": "credito_para_complemento_en_salud",
@@ -80,8 +74,7 @@
             "Desembolso rápido",
             "Tasas accesibles",
             "Plazos flexibles"
-        ],
-        "tasa_de_interes": "5.0%"
+        ]
     },
     {
         "id": "credito_para_complemento_familiar_o_financiera",
@@ -92,7 +85,6 @@
             "Uso flexible",
             "Tasas accesibles",
             "Plazos flexibles"
-        ],
-        "tasa_de_interes": "5.5%"
+        ]
     }
 ]

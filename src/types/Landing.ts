@@ -4,5 +4,4 @@ export type DocsPlanType = {
   descripcion: string;
   imagen: string;
   beneficios: string[];
-  tasa_de_interes: string;
 };

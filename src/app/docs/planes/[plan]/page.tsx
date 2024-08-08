@@ -6,7 +6,8 @@ import plansJson from "@/components/Jsons/planes.json";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { MdOutlineQueryStats } from "react-icons/md";
-import { TbDiscountCheckFilled } from "react-icons/tb";
+import { TbArrowLeft, TbDiscountCheckFilled } from "react-icons/tb";
+import { useRouter } from "next/navigation";
 
 function PlanesSection({ params }: { params: { plan: string } }) {
   const plans = plansJson as DocsPlanType[];
@@ -19,16 +20,29 @@ function PlanesSection({ params }: { params: { plan: string } }) {
     setSelectTopic(filterPlan);
   }, [params.plan, plans]);
 
+  const router = useRouter();
+
   return (
     <>
       <main className={styles.mainComponent}>
         <div>
+          <div className={styles.barBack}>
+            <div
+              className={styles.centerBarBack}
+              onClick={() => router.push("/")}
+            >
+              <div className={styles.boxIcon}>
+                <TbArrowLeft size={20} className={styles.iconArrow} />
+              </div>
+              <p className={styles.labelBtn}>Volver</p>
+            </div>
+          </div>
           {selectTopic?.map((topic) => (
             <div className={styles.preCenter} key={topic.id}>
               <div className={styles.boxImgTopic}>
                 <Image
                   width={"300"}
-                  height={400}
+                  height={"400"}
                   className={styles.imgTopic}
                   src={topic.imagen}
                   alt="image"
@@ -37,18 +51,6 @@ function PlanesSection({ params }: { params: { plan: string } }) {
 
               <div className={styles.boxTextInfo}>
                 <div>
-                  <div className={styles.interest}>
-                    <div className={styles.centerInterest}>
-                      <div className={styles.BoxIconInteres}>
-                        <MdOutlineQueryStats
-                          size={18}
-                          className={styles.iconInterest}
-                        />
-                      </div>
-                      <p>Tasa Interes {topic.tasa_de_interes}</p>
-                    </div>
-                  </div>
-
                   <h1 className={styles.textName}>{topic.nombre}</h1>
                   <p className={styles.textDescription}>{topic.descripcion}</p>
                   <h3 className={styles.titleTips}>Beneficios</h3>
