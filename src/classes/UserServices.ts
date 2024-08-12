@@ -340,6 +340,19 @@ class UserService {
 
     return users;
   }
+
+  static async getUserDetailsMail(): Promise<
+    Pick<User, "names" | "firstLastName" | "secondLastName" | "email">[] | null
+  > {
+    return prisma.user.findMany({
+      select: {
+        names: true,
+        firstLastName: true,
+        secondLastName: true,
+        email: true,
+      },
+    });
+  }
 }
 
 // Export the UserService class

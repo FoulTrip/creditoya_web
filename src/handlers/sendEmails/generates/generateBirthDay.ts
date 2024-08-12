@@ -1,5 +1,5 @@
 export const generateMailBirthDay = ({
-  completeName
+  completeName,
 }: {
   completeName: string;
 }) => {
@@ -29,11 +29,12 @@ export const generateMailBirthDay = ({
           />
         </div>
         <p style="margin-top: 1em">
-          ${completeName}, Nos complace informarte que tu solicitud de préstamo ha
-          sido creada exitosamente
+          Estimado ${completeName}
         </p>
+
+        <p style="margin-top: 7px">¡Todo el equipo de Credito Ya te desea un feliz cumpleaños! Agradecemos tu confianza y preferencia. Que tengas un día lleno de alegría y éxito.</p>
   
-        <h5 style="margin-top: 2em; color: #6c6c6c">Con amor,</h5>
+        <h5 style="margin-top: 2em; color: #6c6c6c">Atentamente,</h5>
         <h4>Equipo de Credito Ya</h4>
       </main>
     </body>
