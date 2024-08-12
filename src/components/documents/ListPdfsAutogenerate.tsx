@@ -9,9 +9,9 @@ import Modal from "../modal/Modal";
 import Document00 from "../pdfs/pdfCard00";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
-import Document04 from "../pdfs/pdfCard03";
 import { Document01 } from "../pdfs/pdfCard01";
 import Document03 from "../pdfs/pdfCard03";
+import Document02 from "../pdfs/pdfCard02";
 
 function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -61,12 +61,12 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
     getInfoUser();
   }, [data, user?.token]);
 
-  // console.log(data);
-
   return (
     <>
       <h3 className={styles.tltleDoc}>Documentos generados con tus firma</h3>
+
       <div className={styles.listDocs}>
+
         <div className={styles.cardDoc}>
           <div className={styles.headerCardDoc}>
             <p>Autorizacion centrales de riesgo</p>
@@ -80,6 +80,7 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
             </div>
           </div>
         </div>
+
         <div className={styles.cardDoc}>
           <div className={styles.headerCardDoc}>
             <p>Autorizacion de cobro</p>
@@ -93,6 +94,7 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
             </div>
           </div>
         </div>
+
         <div className={styles.cardDoc}>
           <div className={styles.headerCardDoc}>
             <p>Autorizacion descuento nomina</p>
@@ -106,6 +108,7 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
             </div>
           </div>
         </div>
+
         <div className={styles.cardDoc}>
           <div className={styles.headerCardDoc}>
             <p>Pagare</p>
@@ -119,9 +122,11 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
             </div>
           </div>
         </div>
+
       </div>
 
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+
         {optionView == 0 && (
           <Document00
             numberDocument={numberDocument as string}
@@ -130,6 +135,7 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
             signature={data.signature}
           />
         )}
+
         {optionView == 1 && (
           <Document01
             numberDocument={numberDocument as string}
@@ -137,19 +143,23 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
             name={name as string}
           />
         )}
+
         {optionView == 2 && (
-          <Document03
-            name={name as string}
-            numberDocument={numberDocument as string}
-          />
-        )}
-        {optionView == 3 && (
-          <Document04
+          <Document02
             name={name as string}
             numberDocument={numberDocument as string}
             signature={data.signature}
           />
         )}
+
+        {optionView == 3 && (
+          <Document03
+            name={name as string}
+            numberDocument={numberDocument as string}
+            signature={data.signature}
+          />
+        )}
+        
       </Modal>
     </>
   );

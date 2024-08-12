@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       const bucketName = process.env.NAME_BUCKET_GOOGLE_STORAGE as string;
       return NextResponse.json(
         {
-          success: uploadRes,
+          success: uploadRes.success,
           data: `https://storage.googleapis.com/${bucketName}/${uploadRes.public_name}`,
         },
         { status: 201 }

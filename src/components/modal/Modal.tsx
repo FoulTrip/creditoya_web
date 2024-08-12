@@ -32,7 +32,7 @@ const Modal = ({ isOpen, onClose, children, link }: modalProps) => {
             height="900px"
             style={{ border: 0 }}
             title="PDF Document"
-          />
+          ></iframe>
         )}
 
         <button className={styles.close_button} onClick={onClose}>
