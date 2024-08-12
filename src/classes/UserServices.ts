@@ -310,6 +310,36 @@ class UserService {
       missing: missingFields,
     };
   }
+
+  // Method to get users whose birthdays are today
+  static async getUsersWithBirthdayToday(): Promise<
+    | Pick<User, "names" | "firstLastName" | "secondLastName" | "email">[]
+    | string
+  > {
+    const today = new Date();
+    const month = today.getMonth() + 1; // JavaScript months are 0-based
+    const day = today.getDate();
+
+    // Query users with matching birth month and day
+    const users = await prisma.user.findMany({
+      where: {
+        birth_day: {
+          gte: new Date(today.getFullYear(), month - 1, day), // Ensure correct date range for the current year
+          lt: new Date(today.getFullYear(), month - 1, day + 1), // Only the exact day
+        },
+      },
+      select: {
+        names: true,
+        firstLastName: true,
+        secondLastName: true,
+        email: true,
+      },
+    });
+
+    if (users.length == 0) return "No hay usuarios cumpliendo años";
+
+    return users;
+  }
 }
 
 // Export the UserService class
