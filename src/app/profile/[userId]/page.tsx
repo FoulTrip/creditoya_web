@@ -158,8 +158,6 @@ function Profile({ params }: { params: { userId: string } }) {
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
 
-  // console.log(dataProfile);
-
   const handleUpdatePreviewLoads = async () => {
     try {
       const { id, password, createdAt, updatedAt, ...dataToUpdate } =
@@ -288,28 +286,6 @@ function Profile({ params }: { params: { userId: string } }) {
     }
   };
 
-  const handleSubmitImageFront = useCallback(
-    async ({ image }: { image: string }) => {
-      try {
-        const response = await axios.post(
-          "/api/user/docs_update",
-          {
-            userId: params.userId,
-            documentFront: image,
-          },
-          { headers: { Authorization: `Bearer ${user?.token}` } }
-        );
-
-        if (response.data.success) {
-          toast.success("Parte frontal actualizada");
-        }
-      } catch (error) {
-        console.error("Error updating document front:", error);
-      }
-    },
-    [params.userId, user?.token]
-  );
-
   const handleSetViewDocImg = ({ image }: { image: string }) => {
     setContentOpenDoc(image);
   };
@@ -409,37 +385,32 @@ function Profile({ params }: { params: { userId: string } }) {
         const formData = new FormData();
         formData.append("img", file);
 
+        // Enviar la solicitud al servidor
         const processImgResponse = await axios.post(
           `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
-          formData
+          formData,
+          { responseType: "blob" } // Espera una respuesta en formato Blob
         );
 
-        console.log("Process Image Response:", processImgResponse.data); // Agrega esto para verificar la respuesta
+        // Convertir el blob a base64
+        const reader = new FileReader();
+        reader.readAsDataURL(processImgResponse.data);
+        reader.onload = async () => {
+          const base64data = reader.result as string;
 
-        if (processImgResponse.data.success == true) {
-          const img = processImgResponse.data.data;
-
-          if (!img.startsWith("data:image/png;base64,")) {
-            console.error("Base64 image format incorrect");
-            return;
-          }
-
+          // Enviar la imagen procesada al siguiente endpoint
           const uploadResponse = await axios.post(
             "/api/upload/cc/front",
             {
               type: "front",
               userId: user?.id,
-              img,
+              img: base64data,
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
 
-          console.log("Upload Response:", uploadResponse.data); // Agrega esto para verificar la respuesta
-
-          if (uploadResponse.data.success == true) {
+          if (uploadResponse.data.success === true) {
             const docNoBg = uploadResponse.data.data;
-
-            await handleSubmitImageFront({ image: docNoBg });
 
             const updateDocResponse = await axios.post(
               "/api/user/docs_update",
@@ -450,11 +421,10 @@ function Profile({ params }: { params: { userId: string } }) {
               { headers: { Authorization: `Bearer ${user?.token}` } }
             );
 
-            console.log("Update Doc Response:", updateDocResponse.data); // Agrega esto para verificar la respuesta
-
-            if (updateDocResponse.data.success == true) {
-              setImagePreview1(docNoBg);
+            if (updateDocResponse.data.success === true) {
               toast.success("Documento subido");
+              setImagePreview1(docNoBg);
+              setLoadingProccessImg01(false);
             } else {
               toast.error("Error actualizando el documento");
             }
@@ -462,18 +432,13 @@ function Profile({ params }: { params: { userId: string } }) {
             console.error("Error uploading image");
             toast.error("Error subiendo la imagen");
           }
-        } else {
-          console.error("Error processing image");
-          toast.error("Error procesando la imagen");
-        }
+        };
       } catch (error) {
         console.error("An error occurred:", error);
         toast.error("Ocurrió un error al procesar la imagen");
-      } finally {
-        setLoadingProccessImg01(false);
       }
     },
-    [user?.token, user?.id, handleSubmitImageFront]
+    [user?.token, user?.id]
   );
 
   const onDrop2 = useCallback(
@@ -489,31 +454,31 @@ function Profile({ params }: { params: { userId: string } }) {
         formData.append("userId", user?.id as string);
         formData.append("type", "back");
 
+        // Enviar la solicitud al servidor
         const processImgResponse = await axios.post(
           `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
-          formData
+          formData,
+          { responseType: "blob" } // Espera una respuesta en formato Blob
         );
 
-        if (processImgResponse.data.success == true) {
-          const img = processImgResponse.data.data;
+        // Convertir el blob a base64
+        const reader = new FileReader();
+        reader.readAsDataURL(processImgResponse.data);
+        reader.onload = async () => {
+          const base64data = reader.result as string;
 
-          // Verificar si img contiene el prefijo adecuado
-          if (!img.startsWith("data:image/png;base64,")) {
-            console.error("Base64 image format incorrect");
-            return;
-          }
-
+          // Enviar la imagen procesada al siguiente endpoint
           const uploadResponse = await axios.post(
             "/api/upload/cc/front",
             {
               type: "back",
               userId: user?.id,
-              img,
+              img: base64data, // Usa la URL de objeto aquí
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
 
-          if (uploadResponse.data.success == true) {
+          if (uploadResponse.data.success === true) {
             const docNoBg = uploadResponse.data.data;
 
             const updateDocResponse = await axios.post(
@@ -525,20 +490,21 @@ function Profile({ params }: { params: { userId: string } }) {
               { headers: { Authorization: `Bearer ${user?.token}` } }
             );
 
-            if (updateDocResponse.data.success == true) {
-              setImagePreview2(docNoBg);
+            if (updateDocResponse.data.success === true) {
               toast.success("Documento subido");
+              setImagePreview2(docNoBg);
+              setLoadingProccessImg02(false);
+            } else {
+              toast.error("Error actualizando el documento");
             }
           } else {
             console.error("Error uploading image to cloud");
+            toast.error("Error subiendo la imagen");
           }
-        } else {
-          console.error("Error processing image");
-        }
+        };
       } catch (error) {
         console.error("An error occurred:", error);
-      } finally {
-        setLoadingProccessImg02(false);
+        toast.error("Ocurrió un error al procesar la imagen");
       }
     },
     [user]
@@ -805,7 +771,7 @@ function Profile({ params }: { params: { userId: string } }) {
 
                 <div className={styles.partCenter}>
                   <div className={styles.boxPartInfo}>
-                    <p>Email</p>
+                    <p>Correo electronico</p>
                     <div className={styles.partChange}>
                       <input
                         className={styles.inputCC}
