@@ -392,47 +392,42 @@ function Profile({ params }: { params: { userId: string } }) {
           { responseType: "blob" } // Espera una respuesta en formato Blob
         );
 
-        // Convertir el blob a base64
-        const reader = new FileReader();
-        reader.readAsDataURL(processImgResponse.data);
-        reader.onload = async () => {
-          const base64data = reader.result as string;
+        // Crear un nuevo FormData con la imagen procesada
+        const processedFormData = new FormData();
+        processedFormData.append("img", processImgResponse.data);
+        processedFormData.append("userId", user?.id as string);
+        processedFormData.append("type", "front");
 
-          // Enviar la imagen procesada al siguiente endpoint
-          const uploadResponse = await axios.post(
-            "/api/upload/cc/front",
+        // Enviar la imagen procesada al siguiente endpoint
+        const uploadResponse = await axios.post(
+          "/api/upload/cc/front",
+          processedFormData,
+          { headers: { Authorization: `Bearer ${user?.token}` } }
+        );
+
+        if (uploadResponse.data.success === true) {
+          const docNoBg = uploadResponse.data.data;
+
+          const updateDocResponse = await axios.post(
+            "/api/user/docs_update",
             {
-              type: "front",
               userId: user?.id,
-              img: base64data,
+              documentFront: docNoBg,
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
 
-          if (uploadResponse.data.success === true) {
-            const docNoBg = uploadResponse.data.data;
-
-            const updateDocResponse = await axios.post(
-              "/api/user/docs_update",
-              {
-                userId: user?.id,
-                documentFront: docNoBg,
-              },
-              { headers: { Authorization: `Bearer ${user?.token}` } }
-            );
-
-            if (updateDocResponse.data.success === true) {
-              toast.success("Documento subido");
-              setImagePreview1(docNoBg);
-              setLoadingProccessImg01(false);
-            } else {
-              toast.error("Error actualizando el documento");
-            }
+          if (updateDocResponse.data.success === true) {
+            toast.success("Documento subido");
+            setImagePreview1(docNoBg);
+            setLoadingProccessImg01(false);
           } else {
-            console.error("Error uploading image");
-            toast.error("Error subiendo la imagen");
+            toast.error("Error actualizando el documento");
           }
-        };
+        } else {
+          console.error("Error uploading image");
+          toast.error("Error subiendo la imagen");
+        }
       } catch (error) {
         console.error("An error occurred:", error);
         toast.error("Ocurrió un error al procesar la imagen");
@@ -454,54 +449,49 @@ function Profile({ params }: { params: { userId: string } }) {
         formData.append("userId", user?.id as string);
         formData.append("type", "back");
 
-        // Enviar la solicitud al servidor
+        // Enviar la solicitud al servidor para procesar la imagen
         const processImgResponse = await axios.post(
           `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
           formData,
           { responseType: "blob" } // Espera una respuesta en formato Blob
         );
 
-        // Convertir el blob a base64
-        const reader = new FileReader();
-        reader.readAsDataURL(processImgResponse.data);
-        reader.onload = async () => {
-          const base64data = reader.result as string;
+        // Crear un nuevo FormData con la imagen procesada
+        const processedFormData = new FormData();
+        processedFormData.append("img", processImgResponse.data);
+        processedFormData.append("userId", user?.id as string);
+        processedFormData.append("type", "back");
 
-          // Enviar la imagen procesada al siguiente endpoint
-          const uploadResponse = await axios.post(
-            "/api/upload/cc/front",
+        // Enviar la imagen procesada al siguiente endpoint
+        const uploadResponse = await axios.post(
+          "/api/upload/cc/front",
+          processedFormData,
+          { headers: { Authorization: `Bearer ${user?.token}` } }
+        );
+
+        if (uploadResponse.data.success === true) {
+          const docNoBg = uploadResponse.data.data;
+
+          const updateDocResponse = await axios.post(
+            "/api/user/docs_update",
             {
-              type: "back",
               userId: user?.id,
-              img: base64data, // Usa la URL de objeto aquí
+              documentBack: docNoBg,
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
 
-          if (uploadResponse.data.success === true) {
-            const docNoBg = uploadResponse.data.data;
-
-            const updateDocResponse = await axios.post(
-              "/api/user/docs_update",
-              {
-                userId: user?.id,
-                documentBack: docNoBg,
-              },
-              { headers: { Authorization: `Bearer ${user?.token}` } }
-            );
-
-            if (updateDocResponse.data.success === true) {
-              toast.success("Documento subido");
-              setImagePreview2(docNoBg);
-              setLoadingProccessImg02(false);
-            } else {
-              toast.error("Error actualizando el documento");
-            }
+          if (updateDocResponse.data.success === true) {
+            toast.success("Documento subido");
+            setImagePreview2(docNoBg);
+            setLoadingProccessImg02(false);
           } else {
-            console.error("Error uploading image to cloud");
-            toast.error("Error subiendo la imagen");
+            toast.error("Error actualizando el documento");
           }
-        };
+        } else {
+          console.error("Error uploading image to cloud");
+          toast.error("Error subiendo la imagen");
+        }
       } catch (error) {
         console.error("An error occurred:", error);
         toast.error("Ocurrió un error al procesar la imagen");

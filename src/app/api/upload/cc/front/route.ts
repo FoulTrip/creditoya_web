@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary-conf";
 import TokenService from "@/classes/TokenServices";
+import { Readable } from "stream"; // Asegúrate de que `stream` esté importado desde el módulo adecuado
+import { Buffer } from "buffer"; // Buffer es necesario para convertir ArrayBuffer a Buffer
 
 export async function POST(req: Request) {
   try {
@@ -24,33 +26,48 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
 
-    const { img, type, userId } = await req.json();
+    // Leer los datos del formulario
+    const formData = await req.formData();
+    const imgFile = formData.get("img");
 
-    // Verificar que la imagen esté en formato base64
-    if (!img || !img.startsWith("data:image/png;base64,")) {
-      throw new Error("Imagen en formato incorrecto");
+    if (!(imgFile instanceof Blob)) {
+      throw new Error(
+        "Archivo de imagen no proporcionado o en formato incorrecto"
+      );
     }
 
-    // Eliminar el prefijo 'data:image/png;base64,' del base64
-    const base64Data = img.replace(/^data:image\/png;base64,/, "");
+    // Convertir Blob a Buffer
+    const arrayBuffer = await imgFile.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
-    // Subir la imagen a Cloudinary
-    const response = await cloudinary.v2.uploader.upload(
-      `data:image/png;base64,${base64Data}`, // Asegúrate de que la cadena base64 esté correctamente formateada
-      {
-        folder: "credito_ya_docs",
-        public_id: `${type}-${userId}`,
-        // Puedes agregar más opciones aquí si es necesario
-      }
-    );
+    // Subir el archivo a Cloudinary
+    const cloudinaryResponse = await new Promise<any>((resolve, reject) => {
+      const stream = Readable.from(buffer);
+      const uploadStream = cloudinary.v2.uploader.upload_stream(
+        {
+          folder: "credito_ya_docs",
+          public_id: `${formData.get("type")}-${formData.get("userId")}`,
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+      stream.pipe(uploadStream);
+    });
 
     return NextResponse.json({
       success: true,
-      data: response.secure_url, // URL pública de la imagen subida
+      data: cloudinaryResponse.secure_url, // URL pública de la imagen subida
     });
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ success: false, error: error.message });
     }
+    return NextResponse.json({
+      success: false,
+      error: "Unknown error occurred",
+    });
   }
 }
