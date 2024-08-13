@@ -327,7 +327,7 @@ function Profile({ params }: { params: { userId: string } }) {
       { headers: { Authorization: `Bearer ${user?.token}` } }
     );
 
-    console.log(response);
+    // console.log(response);
 
     if (response.data.success) {
       const { id, names, email, avatar } = response.data.data;
@@ -339,7 +339,7 @@ function Profile({ params }: { params: { userId: string } }) {
         token: user?.token,
       } as AuthUser;
 
-      console.log(updateSessionData);
+      // console.log(updateSessionData);
       setUserData(updateSessionData);
       setSelectedImagePerfil(null);
     }
@@ -400,22 +400,22 @@ function Profile({ params }: { params: { userId: string } }) {
 
   const onDrop1 = useCallback(
     async (acceptedFiles: File[]) => {
-      if (acceptedFiles.length > 0) {
-        setLoadingProccessImg01(true);
+      if (acceptedFiles.length === 0) return;
+
+      setLoadingProccessImg01(true);
+
+      try {
         const file = acceptedFiles[0];
         const formData = new FormData();
         formData.append("img", file);
-        const response = await axios.post(
+
+        const processImgResponse = await axios.post(
           `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
           formData
         );
 
-        if (response.data.success == true) {
-          // console.log(response);
-
-          const img = response.data.data;
-
-          // console.log(img)
+        if (processImgResponse.data.success) {
+          const img = processImgResponse.data.data;
 
           // Verificar si img contiene el prefijo adecuado
           if (!img.startsWith("data:image/png;base64,")) {
@@ -423,7 +423,7 @@ function Profile({ params }: { params: { userId: string } }) {
             return;
           }
 
-          const submitCloud = await axios.post(
+          const uploadResponse = await axios.post(
             "/api/upload/cc/front",
             {
               type: "front",
@@ -433,56 +433,58 @@ function Profile({ params }: { params: { userId: string } }) {
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
 
-          // console.log(submitCloud.data);
+          if (uploadResponse.data.success) {
+            const docNoBg = uploadResponse.data.data;
 
-          if (submitCloud.data.success == true) {
-            const docNoBg = submitCloud.data.data;
+            await handleSubmitImageFront({ image: docNoBg });
 
-            await handleSubmitImageFront({
-              image: docNoBg,
-            });
+            const updateDocResponse = await axios.post(
+              "/api/user/docs_update",
+              {
+                userId: user?.id,
+                documentFront: docNoBg,
+              },
+              { headers: { Authorization: `Bearer ${user?.token}` } }
+            );
 
-            if (response.data.success) {
-              const resChangeDoc = await axios.post(
-                "/api/user/docs_update",
-                {
-                  userId: user?.id,
-                  documentFront: response.data.data,
-                },
-                { headers: { Authorization: `Bearer ${user?.token}` } }
-              );
-
-              // console.log(resChangeDoc);
-
-              if (resChangeDoc.data.success) toast.success("Documento subido");
+            if (updateDocResponse.data.success) {
+              toast.success("Documento subido");
             }
-            // console.log("url: ", response.data);
-            setLoadingProccessImg01(false);
-            setImagePreview1(response.data.data);
-            console.log(imagePreview1);
           }
+
+          setImagePreview1(processImgResponse.data.data);
+        } else {
+          console.error("Error processing image");
         }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      } finally {
+        setLoadingProccessImg01(false);
       }
     },
-    [user?.token, user?.id, handleSubmitImageFront, imagePreview1]
+    [user?.token, user?.id, handleSubmitImageFront]
   );
 
   const onDrop2 = useCallback(
     async (acceptedFiles: File[]) => {
+      if (acceptedFiles.length === 0) return;
+
       const file = acceptedFiles[0];
       setLoadingProccessImg02(true);
-      if (file) {
+
+      try {
         const formData = new FormData();
         formData.append("img", file);
         formData.append("userId", user?.id as string);
         formData.append("type", "back");
-        const response = await axios.post(
+
+        const processImgResponse = await axios.post(
           `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
           formData
         );
 
-        if (response.data.success) {
-          const img = response.data.data;
+        if (processImgResponse.data.success) {
+          const img = processImgResponse.data.data;
 
           // Verificar si img contiene el prefijo adecuado
           if (!img.startsWith("data:image/png;base64,")) {
@@ -490,7 +492,7 @@ function Profile({ params }: { params: { userId: string } }) {
             return;
           }
 
-          const submitCloud = await axios.post(
+          const uploadResponse = await axios.post(
             "/api/upload/cc/front",
             {
               type: "back",
@@ -500,22 +502,31 @@ function Profile({ params }: { params: { userId: string } }) {
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
 
-          if (submitCloud.data.success == true) {
-            const resChangeDoc = await axios.post(
+          if (uploadResponse.data.success) {
+            const updateDocResponse = await axios.post(
               "/api/user/docs_update",
               {
                 userId: user?.id,
-                documentBack: response.data.data,
+                documentBack: uploadResponse.data.data,
               },
               { headers: { Authorization: `Bearer ${user?.token}` } }
             );
 
-            if (resChangeDoc.data.success) toast.success("Documento subido");
-
-            setLoadingProccessImg02(false);
-            setImagePreview2(response.data.data);
+            if (updateDocResponse.data.success) {
+              toast.success("Documento subido");
+            }
+          } else {
+            console.error("Error uploading image to cloud");
           }
+
+          setImagePreview2(processImgResponse.data.data);
+        } else {
+          console.error("Error processing image");
         }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      } finally {
+        setLoadingProccessImg02(false);
       }
     },
     [user]

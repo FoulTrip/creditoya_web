@@ -34,7 +34,7 @@ function Signin() {
 
     try {
       const response = await axios.post("/api/user/signin", formData);
-      console.log(response);
+      // console.log(response);
       const data: AuthUser = response.data.data;
 
       if (response.data.success == true) {

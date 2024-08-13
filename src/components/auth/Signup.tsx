@@ -48,10 +48,10 @@ function Signup() {
     try {
       const response = await axios.post("/api/user/create", data);
 
-      console.log(response);
+      // console.log(response);
 
       if (response.data.success == true) {
-        console.log(response.data);
+        // console.log(response.data);
 
         const send = await axios.post(
           "/api/mail/welcome",
@@ -62,7 +62,7 @@ function Signup() {
           { headers: { Authorization: `Bearer ${user?.token}` } }
         );
 
-        console.log(send.data);
+        // console.log(send.data);
 
         if (send.data.success == true) {
           const bodySignin = {
@@ -71,7 +71,7 @@ function Signup() {
           };
 
           const signinRes = await axios.post("/api/user/signin", bodySignin);
-          console.log(signinRes);
+          // console.log(signinRes);
           const authSession: AuthUser = signinRes.data.data;
           setUserData(authSession);
 
@@ -168,7 +168,9 @@ function Signup() {
         </div>
 
         <div className={styles.btnSubmit}>
-          <button type="submit">{!isLoading ? "Registrarse" : "Creando..."}</button>
+          <button type="submit">
+            {!isLoading ? "Registrarse" : "Creando..."}
+          </button>
         </div>
       </form>
     </>
