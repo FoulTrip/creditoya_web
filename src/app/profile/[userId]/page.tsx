@@ -414,7 +414,7 @@ function Profile({ params }: { params: { userId: string } }) {
           formData
         );
 
-        if (processImgResponse.data.success) {
+        if (processImgResponse.data.success == true) {
           const img = processImgResponse.data.data;
 
           // Verificar si img contiene el prefijo adecuado
@@ -433,7 +433,7 @@ function Profile({ params }: { params: { userId: string } }) {
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
 
-          if (uploadResponse.data.success) {
+          if (uploadResponse.data.success == true) {
             const docNoBg = uploadResponse.data.data;
 
             await handleSubmitImageFront({ image: docNoBg });
@@ -447,12 +447,11 @@ function Profile({ params }: { params: { userId: string } }) {
               { headers: { Authorization: `Bearer ${user?.token}` } }
             );
 
-            if (updateDocResponse.data.success) {
+            if (updateDocResponse.data.success == true) {
+              setImagePreview1(docNoBg);
               toast.success("Documento subido");
             }
           }
-
-          setImagePreview1(processImgResponse.data.data);
         } else {
           console.error("Error processing image");
         }
@@ -483,7 +482,7 @@ function Profile({ params }: { params: { userId: string } }) {
           formData
         );
 
-        if (processImgResponse.data.success) {
+        if (processImgResponse.data.success == true) {
           const img = processImgResponse.data.data;
 
           // Verificar si img contiene el prefijo adecuado
@@ -502,24 +501,25 @@ function Profile({ params }: { params: { userId: string } }) {
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
 
-          if (uploadResponse.data.success) {
+          if (uploadResponse.data.success == true) {
+            const docNoBg = uploadResponse.data.data;
+
             const updateDocResponse = await axios.post(
               "/api/user/docs_update",
               {
                 userId: user?.id,
-                documentBack: uploadResponse.data.data,
+                documentBack: docNoBg,
               },
               { headers: { Authorization: `Bearer ${user?.token}` } }
             );
 
-            if (updateDocResponse.data.success) {
+            if (updateDocResponse.data.success == true) {
+              setImagePreview2(docNoBg);
               toast.success("Documento subido");
             }
           } else {
             console.error("Error uploading image to cloud");
           }
-
-          setImagePreview2(processImgResponse.data.data);
         } else {
           console.error("Error processing image");
         }
