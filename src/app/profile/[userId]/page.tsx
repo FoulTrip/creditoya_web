@@ -493,7 +493,7 @@ function Profile({ params }: { params: { userId: string } }) {
           toast.error("Error subiendo la imagen");
         }
       } catch (error) {
-        console.error("An error occurred:", error);
+        console.log("An error occurred:", error);
         toast.error("Ocurrió un error al procesar la imagen");
       }
     },
