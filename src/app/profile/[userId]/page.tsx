@@ -414,10 +414,11 @@ function Profile({ params }: { params: { userId: string } }) {
           formData
         );
 
+        console.log("Process Image Response:", processImgResponse.data); // Agrega esto para verificar la respuesta
+
         if (processImgResponse.data.success == true) {
           const img = processImgResponse.data.data;
 
-          // Verificar si img contiene el prefijo adecuado
           if (!img.startsWith("data:image/png;base64,")) {
             console.error("Base64 image format incorrect");
             return;
@@ -433,6 +434,8 @@ function Profile({ params }: { params: { userId: string } }) {
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
 
+          console.log("Upload Response:", uploadResponse.data); // Agrega esto para verificar la respuesta
+
           if (uploadResponse.data.success == true) {
             const docNoBg = uploadResponse.data.data;
 
@@ -447,16 +450,25 @@ function Profile({ params }: { params: { userId: string } }) {
               { headers: { Authorization: `Bearer ${user?.token}` } }
             );
 
+            console.log("Update Doc Response:", updateDocResponse.data); // Agrega esto para verificar la respuesta
+
             if (updateDocResponse.data.success == true) {
               setImagePreview1(docNoBg);
               toast.success("Documento subido");
+            } else {
+              toast.error("Error actualizando el documento");
             }
+          } else {
+            console.error("Error uploading image");
+            toast.error("Error subiendo la imagen");
           }
         } else {
           console.error("Error processing image");
+          toast.error("Error procesando la imagen");
         }
       } catch (error) {
         console.error("An error occurred:", error);
+        toast.error("Ocurrió un error al procesar la imagen");
       } finally {
         setLoadingProccessImg01(false);
       }
