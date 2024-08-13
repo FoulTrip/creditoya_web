@@ -16,9 +16,7 @@ export async function POST(req: Request) {
 
     const token = authorizationHeader.split(" ")[1];
 
-    console.log(token)
-
-    const decodedToken = await TokenService.verifyToken(
+    const decodedToken = TokenService.verifyToken(
       token,
       process.env.JWT_SECRET as string
     ); // Reemplaza "tu-clave-secreta" con tu clave secreta

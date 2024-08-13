@@ -1,9 +1,10 @@
+// app/api/upload/route.ts
 import fs from "fs";
 import { NextResponse } from "next/server";
 import path from "path";
 
-// Configura el directorio de subida
-const uploadDir = path.join(process.cwd(), "public/temp");
+// Configura el directorio de subida en /tmp
+const uploadDir = path.join("/tmp", "temp");
 
 export async function POST(req: Request) {
   try {
@@ -28,12 +29,12 @@ export async function POST(req: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Guarda el archivo en el directorio
+    // Guarda el archivo en el directorio temporal
     const filePath = path.join(uploadDir, `${nameFile}.pdf`);
     fs.writeFileSync(filePath, buffer);
 
     // Genera la URL accesible desde el frontend
-    const fileUrl = `/temp/${nameFile}.pdf`;
+    const fileUrl = `/api/temp/${nameFile}.pdf`;
 
     return NextResponse.json({
       success: true,

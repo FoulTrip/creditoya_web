@@ -2,7 +2,6 @@ import TokenService from "@/classes/TokenServices";
 import UserService from "@/classes/UserServices";
 import cloudinary from "@/lib/cloudinary-conf";
 import { NextResponse } from "next/server";
-import { toast } from "sonner";
 
 interface changeImgProps {
   userId: string;
@@ -38,8 +37,7 @@ export async function POST(req: Request) {
     console.log(response);
 
     cloudinary.v2.uploader.destroy(nameFile, (result) => {
-      console.log(result);
-      toast.success("Eliminado de cloudinary");
+      console.log("Eliminado de cloudinary");
     });
 
     return NextResponse.json({ success: true, data: response });
