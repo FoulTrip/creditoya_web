@@ -18,22 +18,20 @@ import {
   TbCircleCheckFilled,
   TbFaceId,
   TbPhotoCancel,
-  TbPhotoSearch,
   TbPhotoUp,
-  TbTextScan2,
   TbTrash,
 } from "react-icons/tb";
 import LoadingPage from "@/components/Loaders/LoadingPage";
 import Modal from "@/components/modal/Modal";
 import { pdfjs } from "react-pdf";
 import SelectGenre from "@/components/accesories/selectGenre";
+import { convertToBase64 } from "@/handlers/convertToBase64";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 function Profile({ params }: { params: { userId: string } }) {
   const { user, setUserData } = useGlobalContext();
   const [imagePreview1, setImagePreview1] = useState("");
-  const [imagePreview2, setImagePreview2] = useState("");
   const [infoUser, setInfoUser] = useState<ScalarDocument>();
 
   const [loading, setLoading] = useState(true);
@@ -191,108 +189,106 @@ function Profile({ params }: { params: { userId: string } }) {
     }
   };
 
-  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files && event.target.files[0];
+  const handleImageChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
 
-    // console.log(file);
+    if (!file) return;
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64String = reader.result as string;
-        setSelectedImagePerfil(base64String);
+    try {
+      // Convierte la imagen a base64 y actualiza el estado
+      const base64String = await convertToBase64(file);
+      setSelectedImagePerfil(base64String);
 
-        if (base64String) {
-          const response = await axios.post(
-            "/api/upload/avatar",
-            {
-              img: base64String,
-              userId: user?.id,
-            },
-            { headers: { Authorization: `Bearer ${user?.token}` } }
-          );
+      // Sube la imagen al servidor
+      const formData = new FormData();
+      formData.append("img", file);
+      formData.append("userId", params.userId);
 
-          console.log(response);
+      const uploadResponse = await axios.post("/api/upload/avatar", formData, {
+        headers: { Authorization: `Bearer ${user?.token}` },
+      });
 
-          if (response.data.success) {
-            const secure_url = response.data.data;
+      console.log(uploadResponse);
 
-            const resAddAvatar = await axios.post(
-              "/api/user/update_avatar",
-              {
-                userId: user?.id,
-                img: secure_url,
-              },
-              { headers: { Authorization: `Bearer ${user?.token}` } }
-            );
+      if (!uploadResponse.data.success) {
+        throw new Error("Error en la carga de imagen");
+      }
 
-            const { id, names, email, avatar } = resAddAvatar.data.data;
-            const updateSessionData = {
-              id,
-              names,
-              email,
-              avatar,
-              token: user?.token,
-            } as AuthUser;
-            setUserData(updateSessionData);
-            setSelectedImagePerfil(null);
-          }
-        }
-      };
-      reader.readAsDataURL(file);
+      const secureUrl = uploadResponse.data.data;
+
+      // Actualiza el avatar del usuario
+      const updateResponse = await axios.post(
+        "/api/user/update_avatar",
+        { userId: user?.id, img: secureUrl },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+
+      console.log(updateResponse);
+
+      if (!updateResponse.data.success) {
+        throw new Error("Error al actualizar el avatar");
+      }
+
+      const { id, names, email, avatar } = updateResponse.data.data;
+      const updateSessionData = {
+        id,
+        names,
+        email,
+        avatar,
+        token: user?.token,
+      } as AuthUser;
+
+      setUserData(updateSessionData);
+      setSelectedImagePerfil(null);
+    } catch (error) {
+      console.error("Error al cambiar la imagen:", error);
     }
   };
 
-  const handleImageWithCC = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleImageWithCC = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64String = reader.result as string;
-        setSelectedImageWithCC(base64String);
+    if (!file) return;
 
-        const response = await axios.post(
-          "/api/upload/pic_with_cc",
+    try {
+      const base64String = convertToBase64(file);
+
+      const response = await axios.post(
+        "/api/upload/pic_with_cc",
+        {
+          docId: infoUser && infoUser.id,
+          img: base64String,
+        },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+
+      if (response.data.success) {
+        const secure_url = response.data.data;
+
+        const resAddPic = await axios.post(
+          "/api/user/img_with_cc",
           {
             docId: infoUser && infoUser.id,
-            img: base64String,
+            image: secure_url,
           },
           { headers: { Authorization: `Bearer ${user?.token}` } }
         );
 
-        if (response.data.success) {
-          const secure_url = response.data.data;
-
-          const resAddPic = await axios.post(
-            "/api/user/img_with_cc",
+        if (resAddPic.data.success) {
+          const response = await axios.post(
+            "/api/user/list_docs",
             {
-              docId: infoUser && infoUser.id,
-              image: secure_url,
+              userId: params.userId,
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
-
-          if (resAddPic.data.success) {
-            const response = await axios.post(
-              "/api/user/list_docs",
-              {
-                userId: params.userId,
-              },
-              { headers: { Authorization: `Bearer ${user?.token}` } }
-            );
-            toast.success("Verificacion creada");
-            setInfoUser(response.data.data);
-            // setSelectedImageWithCC(secure_url);
-          }
+          toast.success("Verificacion creada");
+          setInfoUser(response.data.data);
         }
-      };
-      reader.readAsDataURL(file);
+      }
+    } catch (error) {
+      console.error("Error al manejar la imagen con CC:", error);
     }
-  };
-
-  const handleOpenViewDocImg = () => {
-    setOpenDocs(!openDocs);
   };
 
   const handleDeleteAvatar = async () => {
@@ -372,8 +368,7 @@ function Profile({ params }: { params: { userId: string } }) {
     console.log(response);
 
     if (response.data.success) {
-      setImagePreview1(response.data.data[0].documentFront);
-      setImagePreview2(response.data.data[0].documentBack);
+      setImagePreview1(response.data.data[0].documentSides);
       toast.success("Documento eliminado");
     } else if (response.data.success == false) {
       toast.error("Imposible eliminar documento");
@@ -908,7 +903,7 @@ function Profile({ params }: { params: { userId: string } }) {
           </div>
         </div>
 
-        <Modal isOpen={openDocs} onClose={handleOpenViewDocImg} link={null}>
+        {/* <Modal isOpen={openDocs} onClose={handleOpenViewDocImg} link={null}>
           <div className={styles.boxImageDocPrev}>
             <Image
               src={contentOpenDoc as string}
@@ -918,7 +913,7 @@ function Profile({ params }: { params: { userId: string } }) {
               className={styles.imgPrevDoc}
             />
           </div>
-        </Modal>
+        </Modal> */}
       </main>
 
       <Modal

@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary-conf";
 import TokenService from "@/classes/TokenServices";
+import fs from "fs";
+import path from "path";
+
+const uploadDir = path.join("/tmp", "temp");
 
 export async function POST(req: Request) {
   try {
@@ -19,26 +23,47 @@ export async function POST(req: Request) {
     const decodedToken = TokenService.verifyToken(
       token,
       process.env.JWT_SECRET as string
-    ); // Reemplaza "tu-clave-secreta" con tu clave secreta
+    );
 
     if (!decodedToken) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
 
-    const { img, userId } = await req.json();
+    // Manejo del formulario y carga del archivo
+    const formData = await req.formData();
+    const file = formData.get("img") as File;
+    const userId = formData.get("userId") as string;
 
-    console.log(img);
+    if (!file || !userId) {
+      return NextResponse.json({
+        success: false,
+        error: "Archivo o ID de usuario no proporcionados.",
+      });
+    }
 
-    if (!img) throw new Error("No se cargo la imagen");
+    // Guardar el archivo temporalmente
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
 
-    const response = await cloudinary.v2.uploader.upload(img, {
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const filePath = path.join(uploadDir, `avatar_${userId}.pdf`);
+    fs.writeFileSync(filePath, buffer);
+
+    // Subir el archivo a Cloudinary
+    const responseUpload = await cloudinary.v2.uploader.upload(filePath, {
       folder: "avatars_users",
       public_id: `avatar.${userId}`,
     });
 
+    // Eliminar el archivo temporal
+    fs.unlinkSync(filePath);
+
     return NextResponse.json({
       success: true,
-      data: response.secure_url,
+      data: responseUpload.secure_url,
     });
   } catch (error) {
     if (error instanceof Error) {
