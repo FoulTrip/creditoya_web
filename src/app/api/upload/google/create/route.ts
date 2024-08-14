@@ -1,4 +1,5 @@
 import TokenService from "@/classes/TokenServices";
+import { uploadRandomKey } from "@/handlers/randomUploadKey";
 import { UploadToGcs } from "@/lib/storage";
 import { NextResponse } from "next/server";
 
@@ -30,10 +31,11 @@ export async function POST(req: Request) {
     const form = await req.formData();
     // console.log(form);
     const file = form.get("file") as File;
-    const userId = form.get("userid") as string;
+    const userId = form.get("userId") as string;
     const name = form.get("name") as string;
+    const upId = uploadRandomKey();
 
-    const uploadRes = await UploadToGcs({ file, userId, name }).catch(
+    const uploadRes = await UploadToGcs({ file, userId, name, upId }).catch(
       (error) => {
         console.log(error);
         throw new Error(error.message);
@@ -45,7 +47,10 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: uploadRes.success,
-          data: `https://storage.googleapis.com/${bucketName}/${uploadRes.public_name}`,
+          data: {
+            link: `https://storage.googleapis.com/${bucketName}/${uploadRes.public_name}`,
+            upid: upId,
+          },
         },
         { status: 201 }
       );

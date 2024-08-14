@@ -1,11 +1,13 @@
 import TokenService from "@/classes/TokenServices";
 import UserService from "@/classes/UserServices";
 import cloudinary from "@/lib/cloudinary-conf";
+import { DeleteFileGcs } from "@/lib/storage";
 import { NextResponse } from "next/server";
 
 interface changeImgProps {
   userId: string;
   type: string;
+  upId: string;
 }
 
 export async function POST(req: Request) {
@@ -26,21 +28,20 @@ export async function POST(req: Request) {
       throw new Error("Token inválido");
     }
 
-    const { userId, type }: changeImgProps = await req.json();
+    const { userId, type, upId }: changeImgProps = await req.json();
 
-    console.log(type);
+    const deleteFile = await DeleteFileGcs({ type, userId, upId }).catch(
+      (error) => {
+        console.log(error);
+        throw new Error(error.message);
+      }
+    );
 
-    const nameFile = `credito_ya_docs/${type}-${userId}`;
+    if (deleteFile.success == true) {
+      await UserService.setDocumentToUndefined(userId);
 
-    const response = await UserService.setDocumentToUndefined(userId, type);
-
-    console.log(response);
-
-    cloudinary.v2.uploader.destroy(nameFile, (result) => {
-      console.log("Eliminado de cloudinary");
-    });
-
-    return NextResponse.json({ success: true, data: response });
+      return NextResponse.json({ success: true });
+    }
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ success: false, error: error.message });

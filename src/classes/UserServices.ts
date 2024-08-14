@@ -6,8 +6,37 @@ import bcrypt from "bcryptjs";
 
 // Class definition
 class UserService {
+  private static validatePassword(password: string): void {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasDigits = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (
+      password.length < minLength ||
+      !hasUpperCase ||
+      !hasLowerCase ||
+      !hasDigits ||
+      !hasSpecialChar
+    ) {
+    }
+  }
+
+  private static validateEmail(email: string): void {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      throw new Error("El correo electronico no es valido");
+    }
+  }
+
   // Create user method
   static async create(data: ScalarUser): Promise<User> {
+    // Validar el formato del correo electrónico
+    this.validateEmail(data.email);
+
+    // validar si ya existe el correo
     const existEmail = await prisma.user.findUnique({
       where: { email: data.email },
     });
@@ -15,6 +44,9 @@ class UserService {
     if (existEmail) {
       throw new Error("El correo electrónico ya está en uso");
     }
+
+    // Validar la contraseña antes de hacer hash
+    this.validatePassword(data.password);
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
@@ -111,19 +143,11 @@ class UserService {
 
     // Verificar si hay documentos
     if (!user.Document.length) {
-      missingFields.push(
-        "documentFront",
-        "documentBack",
-        "number",
-        "imageWithCC"
-      );
+      missingFields.push("documentSides", "number", "imageWithCC");
     } else {
       user.Document.forEach((document) => {
-        if (document.documentFront === "No definido") {
-          missingFields.push("documentFront");
-        }
-        if (document.documentBack === "No definido") {
-          missingFields.push("documentBack");
+        if (document.documentSides === "No definido") {
+          missingFields.push("documentSides");
         }
         if (document.number === "No definido") {
           missingFields.push("number");
@@ -143,11 +167,11 @@ class UserService {
   // Update user document method
   static async updateDocument(
     userId: string,
-    documentFront: string,
-    documentBack: string,
-    number: string
+    documentSides: string,
+    number: string,
+    upId: string
   ): Promise<ScalarDocument[]> {
-    if (number && documentBack == undefined && documentFront == undefined) {
+    if (userId && number && documentSides == undefined && upId == undefined) {
       await prisma.document.updateMany({
         where: { userId },
         data: {
@@ -156,20 +180,12 @@ class UserService {
       });
     }
 
-    if (documentBack) {
+    if (userId && documentSides !== undefined && upId !== undefined) {
       await prisma.document.updateMany({
         where: { userId },
         data: {
-          documentBack: { set: documentBack },
-        },
-      });
-    }
-
-    if (documentFront) {
-      await prisma.document.updateMany({
-        where: { userId },
-        data: {
-          documentFront: { set: documentFront },
+          documentSides: { set: documentSides },
+          upId,
         },
       });
     }
@@ -226,24 +242,14 @@ class UserService {
   }
 
   static async setDocumentToUndefined(
-    userId: string,
-    type: string
+    userId: string
   ): Promise<ScalarDocument[] | null> {
-    if (type == "front") {
-      await prisma.document.updateMany({
-        where: { userId },
-        data: {
-          documentFront: "No definido",
-        },
-      });
-    } else if (type == "back") {
-      await prisma.document.updateMany({
-        where: { userId },
-        data: {
-          documentBack: "No definido",
-        },
-      });
-    }
+    await prisma.document.updateMany({
+      where: { userId },
+      data: {
+        documentSides: "No definido",
+      },
+    });
 
     return prisma.document.findMany({
       where: { userId },
@@ -287,18 +293,11 @@ class UserService {
 
     // Check document fields
     if (!user.Document.length) {
-      missingFields.push(
-        "documentFront",
-        "documentBack",
-        "number",
-        "imageWithCC"
-      );
+      missingFields.push("documentSides", "number", "imageWithCC");
     } else {
       user.Document.forEach((document) => {
-        if (document.documentFront === "No definido")
-          missingFields.push("documentFront");
-        if (document.documentBack === "No definido")
-          missingFields.push("documentBack");
+        if (document.documentSides === "No definido")
+          missingFields.push("documentSides");
         if (document.number === "No definido") missingFields.push("number");
         if (document.imageWithCC === "No definido")
           missingFields.push("imageWithCC");

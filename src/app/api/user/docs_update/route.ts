@@ -23,15 +23,19 @@ export async function POST(req: Request) {
       throw new Error("Token no válido");
     }
 
-    const { userId, number, documentFront, documentBack }: ScalarDocument =
+    const { userId, number, documentSides, upId }: ScalarDocument =
       await req.json();
+
+    // console.log(userId, number, documentSides, upId);
 
     const response: ScalarDocument[] = await UserService.updateDocument(
       userId,
-      documentFront as string,
-      documentBack as string,
-      number as string
+      documentSides,
+      number as string,
+      upId
     );
+
+    // console.log(response);
 
     return NextResponse.json({ success: true, data: response });
   } catch (error) {

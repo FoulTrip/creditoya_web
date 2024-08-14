@@ -351,10 +351,17 @@ function Contract({
       if (acceptedFiles.length > 0) {
         setLoadingProccessImg03(true);
         const file = acceptedFiles[0];
+
+        const maxSize = 2.5 * 1024 * 1024; // 2.5MB en bytes
+
+        if (file.size > maxSize) {
+          throw new Error("El archivo debe pesar menos de 2.5MB");
+        }
+
         const formData = new FormData();
         formData.append("file", file);
         formData.append("name", "labor_card");
-        if (user) formData.append("userid", user.id as string);
+        if (user) formData.append("userId", user.id as string);
 
         const tempLink = await axios.post("/api/temp/files/create", formData);
 
@@ -378,18 +385,16 @@ function Contract({
         if (acceptedFiles.length > 0) {
           setLoadingProccessImg04(true);
           const file = acceptedFiles[0];
-          const minSize = 100 * 1024; // 100KB en bytes
-          const maxSize = 1 * 1024 * 1024; // 1MB en bytes
+          const maxSize = 2.5 * 1024 * 1024; // 2.5MB en bytes
 
-          if (file.size < minSize)
-            throw new Error("El archivo debe pesar más de 100KB");
-          if (file.size > maxSize)
-            throw new Error("El archivo debe pesar menos de 1MB");
+          if (file.size > maxSize) {
+            throw new Error("El archivo debe pesar menos de 2.5MB");
+          }
 
           const formData = new FormData();
           formData.append("file", file);
           formData.append("name", "paid_flyer_01");
-          if (user) formData.append("userid", user.id as string);
+          if (user) formData.append("userId", user.id as string);
 
           const tempLink = await axios.post("/api/temp/files/create", formData);
 
@@ -417,10 +422,17 @@ function Contract({
       if (acceptedFiles.length > 0) {
         setLoadingProccessImg05(true);
         const file = acceptedFiles[0];
+
+        const maxSize = 2.5 * 1024 * 1024; // 2.5MB en bytes
+
+        if (file.size > maxSize) {
+          throw new Error("El archivo debe pesar menos de 2.5MB");
+        }
+
         const formData = new FormData();
         formData.append("file", file);
         formData.append("name", "paid_flyer_02");
-        if (user) formData.append("userid", user.id as string);
+        if (user) formData.append("userId", user.id as string);
 
         const tempLink = await axios.post("/api/temp/files/create", formData);
 
@@ -443,11 +455,18 @@ function Contract({
       if (acceptedFiles.length > 0) {
         setLoadingProccessImg06(true);
         const file = acceptedFiles[0];
+
+        const maxSize = 2.5 * 1024 * 1024; // 2.5MB en bytes
+
+        if (file.size > maxSize) {
+          throw new Error("El archivo debe pesar menos de 2.5MB");
+        }
+
         const formData = new FormData();
         formData.append("file", file);
 
         formData.append("name", "paid_flyer_03");
-        if (user) formData.append("userid", user.id as string);
+        if (user) formData.append("userId", user.id as string);
 
         const tempLink = await axios.post("/api/temp/files/create", formData);
 

@@ -70,14 +70,13 @@ model Document {
     id            String        @id @default(uuid()) @map("_id")
     user          User          @relation(fields: [userId], references: [id])
     userId        String
-    documentFront String        @default("No definido")
-    documentBack  String        @default("No definido")
+    documentSides String        @default("No definido")
+    upId          String        @default("No definido")
     imageWithCC   String        @default("No definido")
     typeDocument  TypesDocument @default(CC)
     number        String        @default("No definido")
     createdAt     DateTime      @default(now())
     updatedAt     DateTime      @updatedAt
-    laborCardId   String        @default("No definido")
 }
 
 enum Status {

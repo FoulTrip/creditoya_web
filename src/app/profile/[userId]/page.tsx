@@ -87,7 +87,7 @@ function Profile({ params }: { params: { userId: string } }) {
   };
 
   const [numberCc, setNumberCc] = useState<string | null>(null);
-
+  const [upId, setUpId] = useState<string | null>(null);
   const [selectedImagePerfil, setSelectedImagePerfil] = useState<string | null>(
     null
   );
@@ -95,11 +95,16 @@ function Profile({ params }: { params: { userId: string } }) {
     "No definido"
   );
   const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
-  const [loadingProccessImg02, setLoadingProccessImg02] = useState(false);
+  const [openViewPdf, setOpenViewPdf] = useState<boolean>(false);
+  const [link, setLink] = useState<string>();
   const [openDocs, setOpenDocs] = useState<boolean>(false);
   const [contentOpenDoc, setContentOpenDoc] = useState<
     string | undefined | null
   >(user?.avatar);
+
+  const handleCloseModel = () => {
+    setOpenViewPdf(false);
+  };
 
   const router = useRouter();
 
@@ -123,9 +128,9 @@ function Profile({ params }: { params: { userId: string } }) {
             if (response.data.data[0]) {
               const data: ScalarDocument = response.data.data[0];
               setNumberCc(data.number as string);
-              setImagePreview1(data.documentFront as string);
-              setImagePreview2(data.documentBack as string);
+              setImagePreview1(data.documentSides as string);
               setSelectedImageWithCC(data.imageWithCC as string);
+              setUpId(data.upId as string);
             }
             setLoadingData(false);
           }
@@ -286,10 +291,6 @@ function Profile({ params }: { params: { userId: string } }) {
     }
   };
 
-  const handleSetViewDocImg = ({ image }: { image: string }) => {
-    setContentOpenDoc(image);
-  };
-
   const handleOpenViewDocImg = () => {
     setOpenDocs(!openDocs);
   };
@@ -342,28 +343,33 @@ function Profile({ params }: { params: { userId: string } }) {
       {
         userId: params.userId,
         number: numberCc,
+        documentSides: undefined,
+        upId: undefined,
       },
       { headers: { Authorization: `Bearer ${user?.token}` } }
     );
+
+    // console.log(response);
     if (response.data.success == true) {
       toast.success("Numero de cedula actualizado");
     }
     // console.log(response);
   };
 
-  const handleDeleteDoc = async (type: string) => {
+  const handleDeleteDoc = async () => {
     const response = await axios.post(
       "/api/user/delete_doc",
       {
         userId: params.userId,
-        type,
+        type: "ccScans",
+        upId: infoUser?.upId,
       },
       {
         headers: { Authorization: `Bearer ${user?.token}` },
       }
     );
 
-    // console.log(response);
+    console.log(response);
 
     if (response.data.success) {
       setImagePreview1(response.data.data[0].documentFront);
@@ -380,53 +386,58 @@ function Profile({ params }: { params: { userId: string } }) {
 
       setLoadingProccessImg01(true);
 
+      const file = acceptedFiles[0];
+      const maxSize = 2.5 * 1024 * 1024; // 2.5MB en bytes
+
+      if (file.size > maxSize) {
+        throw new Error("El archivo debe pesar menos de 2.5MB");
+      }
+
       try {
         const file = acceptedFiles[0];
+        // console.log(file);
         const formData = new FormData();
-        formData.append("img", file);
+        formData.append("file", file);
+        formData.append("userId", user?.id as string);
+        formData.append("name", "ccScans");
 
-        // Enviar la solicitud al servidor
-        const processImgResponse = await axios.post(
-          `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
+        const addFirstFlayer = await axios.post(
+          "/api/upload/google/create",
           formData,
-          { responseType: "blob" } // Espera una respuesta en formato Blob
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+              // "Content-Type": "multipart/form-data",
+            },
+          }
         );
 
-        // Crear un nuevo FormData con la imagen procesada
-        const processedFormData = new FormData();
-        processedFormData.append("img", processImgResponse.data);
-        processedFormData.append("userId", user?.id as string);
-        processedFormData.append("type", "front");
+        console.log(addFirstFlayer);
 
-        // Enviar la imagen procesada al siguiente endpoint
-        const uploadResponse = await axios.post(
-          "/api/upload/cc/front",
-          processedFormData,
-          { headers: { Authorization: `Bearer ${user?.token}` } }
-        );
-
-        if (uploadResponse.data.success === true) {
-          const docNoBg = uploadResponse.data.data;
+        if (addFirstFlayer.data.success == true) {
+          const data = addFirstFlayer.data.data;
+          const link = data.link;
+          const upId = data.upid;
 
           const updateDocResponse = await axios.post(
             "/api/user/docs_update",
             {
               userId: user?.id,
-              documentFront: docNoBg,
+              documentSides: link,
+              upId,
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
+          console.log(updateDocResponse);
 
           if (updateDocResponse.data.success === true) {
+            console.log(updateDocResponse.data.data);
             toast.success("Documento subido");
-            setImagePreview1(docNoBg);
+            setImagePreview1(link);
             setLoadingProccessImg01(false);
           } else {
             toast.error("Error actualizando el documento");
           }
-        } else {
-          console.error("Error uploading image");
-          toast.error("Error subiendo la imagen");
         }
       } catch (error) {
         console.error("An error occurred:", error);
@@ -436,74 +447,13 @@ function Profile({ params }: { params: { userId: string } }) {
     [user?.token, user?.id]
   );
 
-  const onDrop2 = useCallback(
-    async (acceptedFiles: File[]) => {
-      if (acceptedFiles.length === 0) return;
-
-      const file = acceptedFiles[0];
-      setLoadingProccessImg02(true);
-
-      try {
-        const formData = new FormData();
-        formData.append("img", file);
-        formData.append("userId", user?.id as string);
-        formData.append("type", "back");
-
-        // Enviar la solicitud al servidor para procesar la imagen
-        const processImgResponse = await axios.post(
-          `${process.env.NEXT_PUBLIC_ENDPOINT_PROCESS_IMG}`,
-          formData,
-          { responseType: "blob" } // Espera una respuesta en formato Blob
-        );
-
-        // Crear un nuevo FormData con la imagen procesada
-        const processedFormData = new FormData();
-        processedFormData.append("img", processImgResponse.data);
-        processedFormData.append("userId", user?.id as string);
-        processedFormData.append("type", "back");
-
-        // Enviar la imagen procesada al siguiente endpoint
-        const uploadResponse = await axios.post(
-          "/api/upload/cc/front",
-          processedFormData,
-          { headers: { Authorization: `Bearer ${user?.token}` } }
-        );
-
-        if (uploadResponse.data.success === true) {
-          const docNoBg = uploadResponse.data.data;
-
-          const updateDocResponse = await axios.post(
-            "/api/user/docs_update",
-            {
-              userId: user?.id,
-              documentBack: docNoBg,
-            },
-            { headers: { Authorization: `Bearer ${user?.token}` } }
-          );
-
-          if (updateDocResponse.data.success === true) {
-            toast.success("Documento subido");
-            setImagePreview2(docNoBg);
-            setLoadingProccessImg02(false);
-          } else {
-            toast.error("Error actualizando el documento");
-          }
-        } else {
-          console.error("Error uploading image to cloud");
-          toast.error("Error subiendo la imagen");
-        }
-      } catch (error) {
-        console.log("An error occurred:", error);
-        toast.error("Ocurrió un error al procesar la imagen");
-      }
-    },
-    [user]
-  );
+  const handlerOpenModel = ({ link }: { link: string }) => {
+    setOpenViewPdf(true);
+    setLink(link);
+  };
 
   const { getRootProps: getRootProps1, getInputProps: getInputProps1 } =
     useDropzone({ onDrop: onDrop1 });
-  const { getRootProps: getRootProps2, getInputProps: getInputProps2 } =
-    useDropzone({ onDrop: onDrop2 });
 
   return loading || loadingData ? (
     <LoadingPage />
@@ -873,11 +823,11 @@ function Profile({ params }: { params: { userId: string } }) {
           </div>
         </div>
 
-        <h1 className={styles.datesBox}>Documentos</h1>
+        <h1 className={styles.datesBox}>Documento de identidad</h1>
 
         <div className={styles.boxCc}>
           <div className={styles.boxPartInfo}>
-            <p>Cedula de Ciudadania</p>
+            <p>Numero de cedula</p>
             <div className={styles.partChange}>
               <input
                 className={styles.inputCC}
@@ -897,6 +847,7 @@ function Profile({ params }: { params: { userId: string } }) {
 
         <div className={styles.containerDocumentsImgs}>
           <div className={styles.onlyImgsDocs}>
+            <p className={styles.titleDocScan}>Cedula escaneada (PDF)</p>
             <div
               className={styles.boxInfoUser}
               {...(imagePreview1 === "No definido" ? getRootProps1() : {})}
@@ -913,27 +864,31 @@ function Profile({ params }: { params: { userId: string } }) {
                           <TbCircleCheckFilled className={styles.iconCheck} />
                         </div>
                         <p className={styles.warninCC}>
-                          Documento frontal subido
+                          Tercer volante de pago
                         </p>
                       </div>
                     </div>
 
-                    <div className={styles.boxIconsStatus}>
-                      <div
-                        className={styles.boxIcon}
-                        onClick={() => {
-                          handleOpenViewDocImg();
-                          handleSetViewDocImg({ image: imagePreview1 });
-                        }}
-                      >
-                        <TbPhotoSearch className={styles.viewIcon} size={20} />
+                    <div className={styles.optionsBox}>
+                      <div className={styles.boxIconsStatus}>
+                        <div
+                          className={styles.boxIcon}
+                          onClick={() => handleDeleteDoc()}
+                        >
+                          <TbTrash className={styles.trashIcon} size={20} />
+                        </div>
                       </div>
-                      <div
-                        className={styles.boxIcon}
-                        onClick={() => handleDeleteDoc("front")}
+
+                      <button
+                        className={styles.btnOpenDoc}
+                        onClick={() =>
+                          handlerOpenModel({
+                            link: imagePreview1,
+                          })
+                        }
                       >
-                        <TbTrash className={styles.trashIcon} size={20} />
-                      </div>
+                        Revisar
+                      </button>
                     </div>
                   </div>
                 </>
@@ -943,71 +898,9 @@ function Profile({ params }: { params: { userId: string } }) {
                     <TbFaceId className={styles.iconPreview} size={60} />
                   </div>
                   <p className={styles.textPreview}>
-                    {loadingProccessImg01 &&
-                      "Procesando imagen (Este proceso puede tardar unos minutos, tenga paciencia)..."}
+                    {loadingProccessImg01 && "Procesando documentos..."}
                     {!loadingProccessImg01 &&
-                      "Toma una foto clara de la parte frontal de tu cedula"}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div
-              className={styles.boxInfoUser}
-              {...(imagePreview2 === "No definido" ? getRootProps2() : {})}
-            >
-              {imagePreview2 === "No definido" && (
-                <input {...getInputProps2()} />
-              )}
-
-              {imagePreview2 && imagePreview2 != "No definido" ? (
-                <>
-                  <div className={styles.supraBarStatus}>
-                    <div className={styles.barStatusDocs}>
-                      <div className={styles.headerCardStatus}>
-                        <div
-                          className={styles.boxIconStatus}
-                          onClick={() => {
-                            handleOpenViewDocImg();
-                            handleSetViewDocImg({ image: imagePreview2 });
-                          }}
-                        >
-                          <TbCircleCheckFilled className={styles.iconCheck} />
-                        </div>
-                        <p className={styles.warninCC}>
-                          Documento posterior subido
-                        </p>
-                      </div>
-                    </div>
-                    <div className={styles.boxIconsStatus}>
-                      <div
-                        onClick={() => {
-                          handleOpenViewDocImg();
-                          handleSetViewDocImg({ image: imagePreview2 });
-                        }}
-                        className={styles.boxIcon}
-                      >
-                        <TbPhotoSearch className={styles.viewIcon} size={20} />
-                      </div>
-                      <div
-                        className={styles.boxIcon}
-                        onClick={() => handleDeleteDoc("back")}
-                      >
-                        <TbTrash className={styles.trashIcon} size={20} />
-                      </div>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className={styles.containerDropDocuments}>
-                  <div className={styles.boxIconPreview}>
-                    <TbTextScan2 className={styles.iconPreview} size={60} />
-                  </div>
-                  <p className={styles.textPreview}>
-                    {loadingProccessImg02 &&
-                      "Procesando imagen (Este proceso puede tardar unos minutos, tenga paciencia)"}
-                    {!loadingProccessImg02 &&
-                      "Toma una foto clara de la parte trasera de tu cedula"}
+                      "Adjunte o arrastre su documento pdf con la cedula por lado y lado"}
                   </p>
                 </div>
               )}
@@ -1027,6 +920,14 @@ function Profile({ params }: { params: { userId: string } }) {
           </div>
         </Modal>
       </main>
+
+      <Modal
+        isOpen={openViewPdf}
+        onClose={handleCloseModel}
+        link={link as string}
+      >
+        <p>hola</p>
+      </Modal>
     </>
   );
 }
