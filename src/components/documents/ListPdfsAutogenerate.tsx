@@ -66,7 +66,6 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
       <h3 className={styles.tltleDoc}>Documentos generados con tus firma</h3>
 
       <div className={styles.listDocs}>
-
         <div className={styles.cardDoc}>
           <div className={styles.headerCardDoc}>
             <p>Autorizacion centrales de riesgo</p>
@@ -83,7 +82,7 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
 
         <div className={styles.cardDoc}>
           <div className={styles.headerCardDoc}>
-            <p>Autorizacion de cobro</p>
+            <p>Carta instrucciones</p>
             <div className={styles.boxIconPdf}>
               <button
                 className={styles.btnIcon}
@@ -122,11 +121,9 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
             </div>
           </div>
         </div>
-
       </div>
 
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
-
         {optionView == 0 && (
           <Document00
             numberDocument={numberDocument as string}
@@ -159,7 +156,6 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
             signature={data.signature}
           />
         )}
-        
       </Modal>
     </>
   );

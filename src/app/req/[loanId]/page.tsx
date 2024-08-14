@@ -215,7 +215,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
             </>
           )}
 
-          {infoLoan?.status == "Rechazado" && (
+          {infoLoan?.status == "Aplazado" && (
             <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
               <h5>Razon del rechazo</h5>
               <p>{infoLoan?.reasonReject}</p>
@@ -240,9 +240,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                   >
                     <h5>Acepta el cambio de cantidad solicitada?</h5>
                     <p>
-                      {infoLoan.newCantityOpt == true
-                        ? "Aceptado"
-                        : "Rechazado"}
+                      {infoLoan.newCantityOpt == true ? "Aceptado" : "Aplazado"}
                     </p>
                   </div>
                 </>
@@ -522,7 +520,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                       size={20}
                     />
                   </div>
-                  <p className={styles.textHeader}>Autorizacion cobro</p>
+                  <p className={styles.textHeader}>Carta instrucciones</p>
                 </div>
 
                 <div className={styles.infoBox}>

@@ -79,18 +79,6 @@ model Document {
     updatedAt     DateTime      @updatedAt
 }
 
-enum Status {
-    Pendiente
-    Aprobado
-    Rechazado
-    Borrador
-    Pagado
-    Vencido
-    En_mora
-    En_proceso_de_cobro
-    En_negociacion
-}
-
 enum TypesDocument {
     CC
     CE
@@ -100,7 +88,7 @@ enum TypesDocument {
 enum StatusLoan {
     Pendiente
     Aprobado
-    Rechazado
+    Aplazado
     Borrador
     Archivado
 }

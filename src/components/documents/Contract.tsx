@@ -336,7 +336,7 @@ function Contract({
   };
 
   const handleSuccessSignature = () => {
-    setSuccessSignature(true);
+    setSuccessSignature(!successSignature);
   };
 
   const handleOptionBank = (option: string) => {
@@ -906,8 +906,31 @@ function Contract({
                       className={styles.iconChecking}
                     />
                   </div>
-                  <h5>Firma digital de los Documentos pagare</h5>
+                  <h5>Firma digital de los Documentos:</h5>
                 </div>
+                <ul>
+                  <li style={{ textAlign: "start", fontSize: "14px" }}>
+                    Autorizacion centrales de riesgo
+                  </li>
+                </ul>
+
+                <ul>
+                  <li style={{ textAlign: "start", fontSize: "14px" }}>
+                    Carta instrucciones
+                  </li>
+                </ul>
+
+                <ul>
+                  <li style={{ textAlign: "start", fontSize: "14px" }}>
+                    Autorizacion descuento nomina
+                  </li>
+                </ul>
+
+                <ul>
+                  <li style={{ textAlign: "start", fontSize: "14px" }}>
+                    Pagare
+                  </li>
+                </ul>
 
                 <div className={styles.boxCharc}>
                   <div className={styles.boxIconChecking}>

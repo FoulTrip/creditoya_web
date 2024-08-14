@@ -104,7 +104,7 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
               {loan.status === "Aprobado" && (
                 <h1 className={styles.statusTextSuccess}>{loan.status}</h1>
               )}
-              {loan.status === "Rechazado" && (
+              {loan.status === "Aplazado" && (
                 <h1 className={styles.statusTextReject}>{loan.status}</h1>
               )}
             </div>

@@ -32,7 +32,7 @@ function AnswerRequest() {
             recibirá una notificación por correo electrónico con la decisión
             sobre su préstamo. Este sistema le ofrece la opción de estar al
             tanto de inmediato si lo desea, manteniéndolo informado sobre la
-            aprobación o rechazo de su solicitud.
+            aprobación o aplazamiento de su solicitud.
           </p>
 
           <h4 className={styles.titleDetails}>Algunos detalles del proceso</h4>
@@ -96,7 +96,7 @@ function AnswerRequest() {
                     Desde el panel, podrá ver el estado actual de su solicitud.
                     El sistema actualizará automáticamente el estado a medida
                     que se procesen las solicitudes, permitiéndole seguir en
-                    tiempo real si su préstamo ha sido aprobado o rechazado.
+                    tiempo real si su préstamo ha sido aprobado o aplazado.
                   </p>
                 </div>
               </>

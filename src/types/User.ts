@@ -93,7 +93,7 @@ export type ScalarDocument = {
 export type Status =
   | "Pendiente"
   | "Aprobado"
-  | "Rechazado"
+  | "Aplazado"
   | "Borrador"
   | "Archivado";
 

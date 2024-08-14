@@ -83,7 +83,7 @@ class LoanApplicationService {
         where: { id: loanId },
         data: {
           newCantityOpt,
-          status: "Rechazado",
+          status: "Aplazado",
         },
       });
     }
