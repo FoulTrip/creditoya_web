@@ -14,7 +14,6 @@ import { TbArrowLeft } from "react-icons/tb";
 import { HiOutlineDocumentChartBar } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
 import Avatar from "react-avatar";
-import Image from "next/image";
 import DateToPretty from "@/handlers/DateToPretty";
 import { stringToPriceCOP } from "@/handlers/StringToCop";
 import LoadingPage from "@/components/Loaders/LoadingPage";
@@ -41,6 +40,9 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
   const [optionOpenDocs, setOptionOpenDocs] = useState<number | null>(null);
   const [openModelDocs, setOpenModelDocs] = useState<boolean>(false);
   const [linkSelect, setLinkSelect] = useState<string | null>(null);
+
+  const [openDocsScan, setOpenDocsScan] = useState(false);
+  const [linkDocsScan, setLinkDocsScan] = useState<string | null>(null);
 
   const [openModelAutoDoc, setOpenModelAutoDoc] = useState<boolean>(false);
   const router = useRouter();
@@ -463,35 +465,20 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
             <div className={styles.titleSection}>
               <h3>Documentos de identidad</h3>
             </div>
-            <div className={styles.barDocuments}>
-              <div className={styles.cardDocs}>
-                <h5 className={styles.titleCardDocs}>
-                  Documento Identidad (Parte frontal)
-                </h5>
-                <div className={styles.boxImgDoc}>
-                  <Image
-                    className={styles.imgDoc}
-                    src={documentsInfo?.documentFront as string}
-                    alt="document"
-                    width={300}
-                    height={400}
-                  />
-                </div>
-              </div>
+            <div className={styles.infoBox}>
+              <div className={styles.barBtns}>
+                <button
+                  onClick={() => {
+                    setOpenDocsScan(true);
+                    setLinkDocsScan(documentsInfo?.documentSides as string);
+                  }}
+                >
+                  Ver
+                </button>
 
-              <div className={styles.cardDocs}>
-                <h5 className={styles.titleCardDocs}>
-                  Documento Identidad (Parte Trasera)
-                </h5>
-                <div className={styles.boxImgDoc}>
-                  <Image
-                    className={styles.imgDoc}
-                    src={documentsInfo?.documentBack as string}
-                    alt="document"
-                    width={300}
-                    height={400}
-                  />
-                </div>
+                <button onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}>
+                  Descargar
+                </button>
               </div>
             </div>
           </div>
@@ -607,6 +594,14 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
         isOpen={openModelDocs}
         link={linkSelect}
         onClose={() => setOpenModelDocs(false)}
+      >
+        <p>Hola</p>
+      </Modal>
+
+      <Modal
+        isOpen={openDocsScan}
+        link={linkDocsScan}
+        onClose={() => setOpenDocsScan(false)}
       >
         <p>Hola</p>
       </Modal>
