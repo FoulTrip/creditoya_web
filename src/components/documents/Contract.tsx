@@ -48,6 +48,11 @@ function Contract({
   const [imagePreview5, setImagePreview5] = useState("No definido");
   const [imagePreview6, setImagePreview6] = useState("No definido");
 
+  const [nameFile01, setNameFile01] = useState<string | null>(null);
+  const [nameFile02, setNameFile02] = useState<string | null>(null);
+  const [nameFile03, setNameFile03] = useState<string | null>(null);
+  const [nameFile04, setNameFile04] = useState<string | null>(null);
+
   const [successSignature, setSuccessSignature] = useState<boolean>(false);
 
   const [link, setLink] = useState<string>();
@@ -184,24 +189,59 @@ function Contract({
     }));
   };
 
-  const handleDeleteDoc = async (type: string) => {
-    const response = await axios.post(
-      "/api/user/delete_doc",
-      {
-        userId,
-        type,
-      },
-      {
-        headers: { Authorization: `Bearer ${user?.token}` },
+  const handleDeleteDoc = async (file: number) => {
+    try {
+      if (file === 0) {
+        const response = await axios.post("/api/temp/files/delete", {
+          nameFile: nameFile01,
+        });
+
+        if (response.data.success) {
+          console.log(response.data.message);
+          setImagePreview4("No definido");
+          toast.success("Archivo eliminado exitosamente");
+        } else {
+          console.error(response.data.error);
+        }
+      } else if (file === 1) {
+        const response = await axios.post("/api/temp/files/delete", {
+          nameFile: nameFile02,
+        });
+
+        if (response.data.success) {
+          console.log(response.data.message);
+          setImagePreview5("No definido");
+          toast.success("Archivo eliminado exitosamente");
+        } else {
+          console.error(response.data.error);
+        }
+      } else if (file === 2) {
+        const response = await axios.post("/api/temp/files/delete", {
+          nameFile: nameFile03,
+        });
+
+        if (response.data.success) {
+          console.log(response.data.message);
+          setImagePreview6("No definido");
+          toast.success("Archivo eliminado exitosamente");
+        } else {
+          console.error(response.data.error);
+        }
+      } else if (file === 3) {
+        const response = await axios.post("/api/temp/files/delete", {
+          nameFile: nameFile04,
+        });
+
+        if (response.data.success) {
+          console.log(response.data.message);
+          setImagePreview3("No definido");
+          toast.success("Archivo eliminado exitosamente");
+        } else {
+          console.error(response.data.error);
+        }
       }
-    );
-
-    // console.log(response);
-
-    if (response.data.success) {
-      toast.success("Documento eliminado");
-    } else if (response.data.success == false) {
-      toast.error("Imposible eliminar documento");
+    } catch (error) {
+      console.error("Error al eliminar el archivo:", error);
     }
   };
 
@@ -359,13 +399,13 @@ function Contract({
         }
 
         const formData = new FormData();
+        const nameFile = "labor_card";
         formData.append("file", file);
-        formData.append("name", "labor_card");
+        formData.append("name", nameFile);
         if (user) formData.append("userId", user.id as string);
+        setNameFile04(nameFile);
 
         const tempLink = await axios.post("/api/temp/files/create", formData);
-
-        console.log(tempLink.data);
 
         if (tempLink.data.success == true) {
           const link = tempLink.data.data;
@@ -392,13 +432,13 @@ function Contract({
           }
 
           const formData = new FormData();
+          const nameFile = "paid_flyer_01";
           formData.append("file", file);
-          formData.append("name", "paid_flyer_01");
+          formData.append("name", nameFile);
+          setNameFile01(nameFile);
           if (user) formData.append("userId", user.id as string);
 
           const tempLink = await axios.post("/api/temp/files/create", formData);
-
-          console.log(tempLink.data);
 
           if (tempLink.data.success == true) {
             const link = tempLink.data.data;
@@ -430,13 +470,13 @@ function Contract({
         }
 
         const formData = new FormData();
+        const nameFile = "paid_flyer_02";
         formData.append("file", file);
-        formData.append("name", "paid_flyer_02");
+        formData.append("name", nameFile);
+        setNameFile02(nameFile);
         if (user) formData.append("userId", user.id as string);
 
         const tempLink = await axios.post("/api/temp/files/create", formData);
-
-        console.log(tempLink.data);
 
         if (tempLink.data.success == true) {
           const link = tempLink.data.data;
@@ -463,14 +503,13 @@ function Contract({
         }
 
         const formData = new FormData();
+        const nameFile = "paid_flyer_03";
         formData.append("file", file);
-
-        formData.append("name", "paid_flyer_03");
+        formData.append("name", nameFile);
+        setNameFile03(nameFile);
         if (user) formData.append("userId", user.id as string);
 
         const tempLink = await axios.post("/api/temp/files/create", formData);
-
-        console.log(tempLink.data);
 
         if (tempLink.data.success == true) {
           const link = tempLink.data.data;
@@ -577,7 +616,7 @@ function Contract({
                             <div className={styles.boxIconsStatus}>
                               <div
                                 className={styles.boxIcon}
-                                onClick={() => handleDeleteDoc("front")}
+                                onClick={() => handleDeleteDoc(0)}
                               >
                                 <TbTrash
                                   className={styles.trashIcon}
@@ -649,7 +688,7 @@ function Contract({
                             <div className={styles.boxIconsStatus}>
                               <div
                                 className={styles.boxIcon}
-                                onClick={() => handleDeleteDoc("front")}
+                                onClick={() => handleDeleteDoc(1)}
                               >
                                 <TbTrash
                                   className={styles.trashIcon}
@@ -721,7 +760,7 @@ function Contract({
                             <div className={styles.boxIconsStatus}>
                               <div
                                 className={styles.boxIcon}
-                                onClick={() => handleDeleteDoc("front")}
+                                onClick={() => handleDeleteDoc(2)}
                               >
                                 <TbTrash
                                   className={styles.trashIcon}
@@ -795,7 +834,7 @@ function Contract({
                             <div className={styles.boxIconsStatus}>
                               <div
                                 className={styles.boxIcon}
-                                onClick={() => handleDeleteDoc("front")}
+                                onClick={() => handleDeleteDoc(3)}
                               >
                                 <TbTrash
                                   className={styles.trashIcon}

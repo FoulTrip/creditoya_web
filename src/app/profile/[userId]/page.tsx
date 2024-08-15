@@ -31,7 +31,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 function Profile({ params }: { params: { userId: string } }) {
   const { user, setUserData } = useGlobalContext();
-  const [imagePreview1, setImagePreview1] = useState("");
+  const [imagePreview1, setImagePreview1] = useState("No definido");
   const [infoUser, setInfoUser] = useState<ScalarDocument>();
 
   const [loading, setLoading] = useState(true);
@@ -300,7 +300,7 @@ function Profile({ params }: { params: { userId: string } }) {
       { headers: { Authorization: `Bearer ${user?.token}` } }
     );
 
-    // console.log(response);
+    console.log(response);
 
     if (response.data.success) {
       const { id, names, email, avatar } = response.data.data;
@@ -353,22 +353,23 @@ function Profile({ params }: { params: { userId: string } }) {
   };
 
   const handleDeleteDoc = async () => {
+    // console.log(infoUser?.upId as string);
     const response = await axios.post(
       "/api/user/delete_doc",
       {
         userId: params.userId,
         type: "ccScans",
-        upId: infoUser?.upId,
+        upId: upId,
       },
       {
         headers: { Authorization: `Bearer ${user?.token}` },
       }
     );
 
-    console.log(response);
+    // console.log(response);
 
-    if (response.data.success) {
-      setImagePreview1(response.data.data[0].documentSides);
+    if (response.data.success == true) {
+      setImagePreview1("No definido");
       toast.success("Documento eliminado");
     } else if (response.data.success == false) {
       toast.error("Imposible eliminar documento");
@@ -423,11 +424,10 @@ function Profile({ params }: { params: { userId: string } }) {
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
-          console.log(updateDocResponse);
 
           if (updateDocResponse.data.success === true) {
-            console.log(updateDocResponse.data.data);
             toast.success("Documento subido");
+            setUpId(upId);
             setImagePreview1(link);
             setLoadingProccessImg01(false);
           } else {
@@ -865,14 +865,12 @@ function Profile({ params }: { params: { userId: string } }) {
                     </div>
 
                     <div className={styles.optionsBox}>
-                      <div className={styles.boxIconsStatus}>
-                        <div
-                          className={styles.boxIcon}
-                          onClick={() => handleDeleteDoc()}
-                        >
-                          <TbTrash className={styles.trashIcon} size={20} />
-                        </div>
-                      </div>
+                      <button
+                        className={styles.btnOpenDocRemove}
+                        onClick={() => handleDeleteDoc()}
+                      >
+                        Eliminar
+                      </button>
 
                       <button
                         className={styles.btnOpenDoc}

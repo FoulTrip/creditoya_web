@@ -248,6 +248,7 @@ class UserService {
       where: { userId },
       data: {
         documentSides: "No definido",
+        upId: "No definido",
       },
     });
 
