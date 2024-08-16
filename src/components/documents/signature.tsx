@@ -8,7 +8,7 @@ import SignatureCanvas, {
 import { useMediaQuery } from "react-responsive";
 
 import styles from "./signature.module.css";
-import { TbCircleCheck, TbCircleX } from "react-icons/tb";
+import { TbCircleCheck, TbCircleX, TbLoader } from "react-icons/tb";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
 
@@ -61,9 +61,7 @@ function Signature({
   };
 
   const canvasProps: ReactSignatureCanvasProps["canvasProps"] = {
-    width: isTabletOrMobile ? 300 : 400,
-    height: "auto",
-    className: "signature-canvas",
+    className: styles.signatureCanvas,
   };
 
   return (
@@ -110,7 +108,14 @@ function Signature({
                   <TbCircleCheck size={20} className={styles.iconSave} />
                 </div>
                 {previewSignature && (
-                  <p onClick={() => setPreviewSignature(null)}>Editar firma</p>
+                  <p
+                    onClick={() => {
+                      setPreviewSignature(null);
+                      success();
+                    }}
+                  >
+                    Editar firma
+                  </p>
                 )}
                 {!previewSignature && <p>Guardar firma</p>}
               </div>
@@ -119,7 +124,18 @@ function Signature({
         </div>
       </div>
 
-      {uploadSuccess && <p>Procesando firma ...</p>}
+      {uploadSuccess && (
+        <div className={styles.containerLoaderDocs}>
+          <div className={styles.centerContainerDocs}>
+            <div className={styles.boxIconLoader}>
+              <TbLoader size={20} className={styles.loaderIcon} />
+            </div>
+            <p className={styles.textGenDocs}>
+              Generando documentos con tu firma
+            </p>
+          </div>
+        </div>
+      )}
     </>
   );
 }

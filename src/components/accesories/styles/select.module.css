@@ -13,4 +13,5 @@
 
 .select {
   color: var(--white-400);
+  text-align: start;
 }

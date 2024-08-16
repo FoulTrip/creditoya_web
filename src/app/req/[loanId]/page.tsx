@@ -14,7 +14,6 @@ import { TbArrowLeft } from "react-icons/tb";
 import { HiOutlineDocumentChartBar } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
 import Avatar from "react-avatar";
-import Image from "next/image";
 import DateToPretty from "@/handlers/DateToPretty";
 import { stringToPriceCOP } from "@/handlers/StringToCop";
 import LoadingPage from "@/components/Loaders/LoadingPage";
@@ -24,6 +23,8 @@ import { Document01 } from "@/components/pdfs/pdfCard01";
 import Document03 from "@/components/pdfs/pdfCard03";
 import Document02 from "@/components/pdfs/pdfCard02";
 import CopyText from "@/components/accesories/CopyText";
+import { RefreshDataLoan } from "@/handlers/requests/RefreshLoanData";
+import { toast } from "sonner";
 
 function RequestInfo({ params }: { params: { loanId: string } }) {
   const { user } = useGlobalContext();
@@ -40,6 +41,9 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
   const [openModelDocs, setOpenModelDocs] = useState<boolean>(false);
   const [linkSelect, setLinkSelect] = useState<string | null>(null);
 
+  const [openDocsScan, setOpenDocsScan] = useState(false);
+  const [linkDocsScan, setLinkDocsScan] = useState<string | null>(null);
+
   const [openModelAutoDoc, setOpenModelAutoDoc] = useState<boolean>(false);
   const router = useRouter();
 
@@ -54,12 +58,45 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
     setOpenModelAutoDoc(true);
   };
 
-  useEffect(() => {
-    if (!user) {
-      router.push("/auth");
-      return;
-    }
+  const handleOtherDocsDownloadFile = (option: number) => {
+    console.log(option);
 
+    if (option == 0) {
+      Document00({
+        numberDocument: documentsInfo?.number as string,
+        entity: infoLoan?.entity as string,
+        numberBank: infoLoan?.bankNumberAccount as string,
+        signature: infoLoan?.signature,
+        autoDownload: true,
+      });
+    }
+  };
+
+  const handleAceptChangeCantity = async (option: boolean) => {
+    if (option == null) throw new Error("Option is required!");
+
+    const desicion = await axios.post(
+      "/api/loan/change_cantity",
+      {
+        loanId: infoLoan?.id,
+        newCantityOpt: option,
+      },
+      { headers: { Authorization: `Bearer ${user?.token}` } }
+    );
+
+    console.log(desicion);
+
+    if (desicion.data.success) {
+      const updataLoan = await RefreshDataLoan(
+        infoLoan?.id as string,
+        user?.token as string
+      );
+      setInfoLoan(updataLoan);
+      toast.success("Desicion tomada, gracias");
+    }
+  };
+
+  useEffect(() => {
     const loanInfo = async () => {
       const loanId: string = params.loanId;
 
@@ -121,7 +158,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
               {
                 userId: infoLoan?.userId,
               },
-              { headers: { Authorization: `Bearer ${user.token}` } }
+              { headers: { Authorization: `Bearer ${user?.token}` } }
             );
 
             if (responseClient.data.success) {
@@ -134,7 +171,11 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
       }
     };
 
-    loanInfo();
+    if (user) {
+      loanInfo();
+    } else {
+      router.push("/auth");
+    }
   }, [params.loanId, user, user?.token, infoLoan?.userId, router]);
 
   if (loading) {
@@ -156,7 +197,8 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
               <p className={styles.labelBtn}>Volver</p>
             </div>
           </div>
-          <h1>Solicitud de prestamo</h1>
+
+          <h1 className={styles.titleReq}>Solicitud de prestamo</h1>
 
           <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
             <h5>Solicitud Id</h5>
@@ -166,7 +208,14 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
           <h3 className={styles.banckTitle}>Cantidad requerida</h3>
           <h1>{stringToPriceCOP(infoLoan?.cantity as string)}</h1>
 
-          {infoLoan?.status == "Rechazado" && (
+          {infoLoan?.newCantity && (
+            <>
+              <h3 className={styles.banckTitle}>Cantidad aprobada</h3>
+              <h1>{stringToPriceCOP(infoLoan?.newCantity as string)}</h1>
+            </>
+          )}
+
+          {infoLoan?.status == "Aplazado" && (
             <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
               <h5>Razon del rechazo</h5>
               <p>{infoLoan?.reasonReject}</p>
@@ -174,13 +223,53 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
           )}
 
           {infoLoan?.reasonChangeCantity && (
-            <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
-              <h5>Razon del cambio de cantidad solicitada</h5>
-              <CopyText
-                text={infoLoan?.reasonChangeCantity as string}
-                copy={true}
-              />
-            </div>
+            <>
+              <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
+                <h5>Razon del cambio de cantidad solicitada</h5>
+                <CopyText
+                  text={infoLoan?.reasonChangeCantity as string}
+                  copy={true}
+                />
+              </div>
+
+              {infoLoan.newCantityOpt && (
+                <>
+                  <div
+                    className={styles.cardInfoBank}
+                    style={{ marginTop: "1em" }}
+                  >
+                    <h5>Acepta el cambio de cantidad solicitada?</h5>
+                    <p>
+                      {infoLoan.newCantityOpt == true ? "Aceptado" : "Aplazado"}
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {infoLoan.status == "Pendiente" &&
+                infoLoan.newCantityOpt == null && (
+                  <div
+                    className={styles.cardInfoBank}
+                    style={{ marginTop: "1em" }}
+                  >
+                    <h5>Acepta el cambio de cantidad solicitada?</h5>
+                    <div className={styles.boxAceptCantity}>
+                      <p
+                        className={styles.btnAcceptCantity}
+                        onClick={() => handleAceptChangeCantity(true)}
+                      >
+                        Aceptar
+                      </p>
+                      <p
+                        className={styles.btnRejectCantity}
+                        onClick={() => handleAceptChangeCantity(false)}
+                      >
+                        Rechazar
+                      </p>
+                    </div>
+                  </div>
+                )}
+            </>
           )}
 
           <h3 className={styles.banckTitle}>Informacion financiera</h3>
@@ -374,35 +463,20 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
             <div className={styles.titleSection}>
               <h3>Documentos de identidad</h3>
             </div>
-            <div className={styles.barDocuments}>
-              <div className={styles.cardDocs}>
-                <h5 className={styles.titleCardDocs}>
-                  Documento Identidad (Parte frontal)
-                </h5>
-                <div className={styles.boxImgDoc}>
-                  <Image
-                    className={styles.imgDoc}
-                    src={documentsInfo?.documentFront as string}
-                    alt="document"
-                    width={300}
-                    height={400}
-                  />
-                </div>
-              </div>
+            <div className={styles.infoBox}>
+              <div className={styles.barBtns}>
+                <button
+                  onClick={() => {
+                    setOpenDocsScan(true);
+                    setLinkDocsScan(documentsInfo?.documentSides as string);
+                  }}
+                >
+                  Ver
+                </button>
 
-              <div className={styles.cardDocs}>
-                <h5 className={styles.titleCardDocs}>
-                  Documento Identidad (Parte Trasera)
-                </h5>
-                <div className={styles.boxImgDoc}>
-                  <Image
-                    className={styles.imgDoc}
-                    src={documentsInfo?.documentBack as string}
-                    alt="document"
-                    width={300}
-                    height={400}
-                  />
-                </div>
+                <button onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}>
+                  Descargar
+                </button>
               </div>
             </div>
           </div>
@@ -446,16 +520,14 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                       size={20}
                     />
                   </div>
-                  <p className={styles.textHeader}>Autorizacion cobro</p>
+                  <p className={styles.textHeader}>Carta instrucciones</p>
                 </div>
 
                 <div className={styles.infoBox}>
                   <div className={styles.barBtns}>
                     <button onClick={() => handleAutoOpenModel(5)}>Ver</button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
+                    <button onClick={() => handleOtherDocsDownloadFile(0)}>
                       Descargar
                     </button>
                   </div>
@@ -520,6 +592,14 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
         isOpen={openModelDocs}
         link={linkSelect}
         onClose={() => setOpenModelDocs(false)}
+      >
+        <p>Hola</p>
+      </Modal>
+
+      <Modal
+        isOpen={openDocsScan}
+        link={linkDocsScan}
+        onClose={() => setOpenDocsScan(false)}
       >
         <p>Hola</p>
       </Modal>

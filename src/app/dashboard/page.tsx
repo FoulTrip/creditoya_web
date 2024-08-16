@@ -7,12 +7,17 @@ import styles from "./page.module.css";
 
 import { useRouter } from "next/navigation";
 import Contract from "@/components/documents/Contract";
-import { ScalarLoanApplication } from "@/types/User";
+import { ScalarLoanApplication, ScalarUser } from "@/types/User";
 
 import CardLoan from "@/components/accesories/CardLoan";
 import LoadingPage from "@/components/Loaders/LoadingPage";
 import { useWebSocket } from "next-ws/client";
-import { TbFingerprint } from "react-icons/tb";
+import { TbExclamationCircle, TbFingerprint } from "react-icons/tb";
+import { handleKeyToString } from "@/handlers/typeToString";
+import ChangeDatesPerfil from "@/components/banner/ChangeDatesPerfil";
+import Instructions from "@/components/accesories/Instructions";
+import Image from "next/image";
+import seacrhIlus from "@/assets/Search-bro.svg";
 
 function Dashboard() {
   const router = useRouter();
@@ -22,6 +27,11 @@ function Dashboard() {
   const [completeDocs, setCompleteDocs] = useState<boolean | null>(null);
   const [openContract, setOpenContract] = useState<boolean>(false);
   const [Loans, setLoans] = useState<ScalarLoanApplication[] | null>(null);
+  const [openInstructions, setOpenInstructions] = useState<boolean>(false);
+
+  const [datesMissing, setDatesMissing] = useState<string[] | null>(null);
+
+  const [openBanner, setOpenBanner] = useState<boolean>(true);
 
   const ws = useWebSocket();
 
@@ -30,17 +40,14 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    if (user == null) {
-      if (!checkingUser) {
-        router.push("/auth");
-      }
-    } else {
-      setCheckingUser(false);
+    if (user == null && !checkingUser) {
+      router.push("/auth");
     }
-  });
+  }, [user, checkingUser, router]);
 
   useEffect(() => {
     if (user !== null) {
+      setCheckingUser(false);
       const documentsVerify = async () => {
         try {
           const response = await axios.post(
@@ -49,8 +56,13 @@ function Dashboard() {
             { headers: { Authorization: `Bearer ${user.token}` } }
           );
 
+          // console.log(response);
+
           if (response.data.success) {
-            setCompleteDocs(response.data.data);
+            const docsMissingsBool = response.data.data.complete;
+            const nameMissings = response.data.data.missing;
+            setDatesMissing(nameMissings);
+            setCompleteDocs(docsMissingsBool);
           } else {
             setCompleteDocs(false);
           }
@@ -63,8 +75,11 @@ function Dashboard() {
       };
 
       documentsVerify();
+    } else {
+      setLoading(false);
+      setCheckingUser(false);
     }
-  }, [user, router]);
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -119,24 +134,63 @@ function Dashboard() {
     setOpenContract(!openContract);
   };
 
-  if (loading) {
+  const handleCloseBanner = () => {
+    setOpenBanner(false);
+  };
+
+  if (loading || checkingUser) {
     return <LoadingPage />;
   }
 
   if (completeDocs === true) {
     return (
       <main className={styles.containerDashboard}>
-        {!openContract && (
+        {!openContract && Loans && (
           <>
-            <div className={styles.btnNew}>
-              <h5 onClick={handleOpenContract}>Solicitar Prestamo</h5>
-              <button className={styles.inputSearch}>Instrucciones</button>
-            </div>
-            <div className={styles.listLoans}>
-              {Loans?.filter((loan) => loan.userId === user?.id).map((loan) => (
-                <CardLoan key={loan.id} loan={loan} />
-              ))}
-            </div>
+            {openBanner && Loans.length > 0 && (
+              <ChangeDatesPerfil
+                userId={user?.id as string}
+                onClose={handleCloseBanner}
+              />
+            )}
+
+            {!openInstructions && (
+              <>
+                <div className={styles.btnNew}>
+                  <h5 onClick={handleOpenContract}>Solicitar Prestamo</h5>
+                  <h5
+                    className={styles.inputSearch}
+                    onClick={() => setOpenInstructions(true)}
+                  >
+                    Instrucciones
+                  </h5>
+                </div>
+
+                <div className={styles.listLoans}>
+                  {Loans?.filter((loan) => loan.userId === user?.id).map(
+                    (loan) => (
+                      <CardLoan key={loan.id} loan={loan} />
+                    )
+                  )}
+                  {Loans.length === 0 && (
+                    <div className={styles.containerWait}>
+                      <div className={styles.boxWaiting}>
+                        <Image
+                          src={seacrhIlus}
+                          className={styles.iconWait}
+                          alt="waiting"
+                        />
+                      </div>
+                      <h1>Sin Solicitudes activas</h1>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+
+            {openInstructions && (
+              <Instructions onClose={() => setOpenInstructions(false)} />
+            )}
           </>
         )}
 
@@ -156,9 +210,22 @@ function Dashboard() {
       <div className={styles.mainVoidDocuments}>
         <div className={styles.centerMainVoid}>
           <div className={styles.boxIconVoid}>
-            <TbFingerprint className={styles.fingerIcon} size={300} />
+            <TbFingerprint className={styles.fingerIcon} size={100} />
           </div>
-          <p>Completa tus datos antes de requerir un prestamo</p>
+          <p>Completa tus datos antes de solicitar un prestamo</p>
+          <div className={styles.diccMissings}>
+            {datesMissing?.map((missing) => (
+              <div className={styles.boxCenter} key={missing}>
+                <div className={styles.boxIconCircle}>
+                  <TbExclamationCircle
+                    className={styles.iconWarnCircle}
+                    size={20}
+                  />
+                </div>
+                <p>{handleKeyToString(missing)}</p>
+              </div>
+            ))}
+          </div>
           <div className={styles.boxBtnComplete}>
             <button onClick={() => router.push(`/profile/${user?.id}`)}>
               Completar

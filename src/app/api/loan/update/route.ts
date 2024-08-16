@@ -1,7 +1,6 @@
-import LoanApplicationService from "@/classes/LoanApplicationServices";
 import TokenService from "@/classes/TokenServices";
 import { NextResponse } from "next/server";
-import UserService from "@/classes/UserServices"; // Importamos la clase UserService
+import UserService from "@/classes/UserServices";
 
 export async function PUT(req: Request) {
   try {
@@ -28,32 +27,21 @@ export async function PUT(req: Request) {
 
     const { userId, data } = await req.json();
 
-    console.log(data);
-
     if (!userId) throw new Error("LoanId is required!");
-    if (!data) throw new Error("LoanId is required!");
+    if (!data) throw new Error("Data user is required!");
 
     // Obtenemos el usuario
     const user = await UserService.get(userId);
-
-    console.log(user);
 
     if (!user) {
       throw new Error("Usuario no encontrado");
     }
 
-    // Actualizamos los datos del usuario
-    const updatedUser = { ...user, ...data };
-
-    console.log(updatedUser);
-
     // Actualizamos los datos del usuario utilizando el UserService
     const response = await UserService.update({
       id: userId,
-      data: updatedUser,
+      data: data,
     });
-
-    console.log(response);
 
     return NextResponse.json({ success: true, data: response });
   } catch (error) {

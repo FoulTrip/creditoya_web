@@ -26,6 +26,17 @@
   object-fit: cover;
 }
 
+.avatarIconCC {
+  filter: drop-shadow(5px 5px 10px var(--white-300));
+  border-radius: 8px;
+  width: 200px;
+  height: 300px;
+  z-index: 1;
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+}
+
 .barPicturesAuth {
   display: flex;
   flex-wrap: wrap;
@@ -48,10 +59,10 @@
   flex-direction: column;
   flex-basis: 400px;
   flex-grow: 1;
-  background: var(--white-100);
-  border: 1px solid var(--white-200);
+  /* background: var(--white-100); */
+  /* border: 1px solid var(--white-200); */
   padding: 20px;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
   border-radius: 8px;
 }
 
@@ -134,6 +145,24 @@
   flex: 1;
 }
 
+.boxCenterUpdate {
+  display: grid;
+  place-content: center;
+}
+
+.boxCenterUpdate button {
+  padding: 10px 25px;
+  border-radius: 8px;
+  border: 1px solid var(--white-200);
+  font-weight: 500;
+  color: var(--white-600);
+}
+
+.boxCenterUpdate button:hover {
+  border: 1px solid var(--white-300);
+  cursor: pointer;
+}
+
 .boxInfoUser {
   display: flex;
   flex-direction: column;
@@ -189,12 +218,22 @@
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
+.SelectGenre {
+  font-size: 16px;
+  width: 100%;
+}
+
 .boxPartInfo {
-  margin-top: 1em;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 5px;
   margin-bottom: 1em;
+}
+
+.boxPartInfo p {
+  font-weight: 400;
+  color: var(--green-950);
 }
 
 .btnSaveInfo {
@@ -217,7 +256,7 @@
 
 .datesBox {
   margin-top: 1em;
-  margin-bottom: 1em;
+  margin-bottom: 10px;
 }
 
 .containerDocumentsImgs {
@@ -234,20 +273,31 @@
   gap: 10px;
 }
 
+.titleDocScan {
+  font-weight: 400;
+  color: var(--green-950);
+}
+
 .supraBarStatus {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  gap: 10px;
-  /* border: 1px solid var(--white-200); */
-  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+  background: var(--green-50);
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  height: 40px;
+}
+
+.headerCardStatus {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
 }
 
 .barStatusDocs {
-  padding: 10px 15px;
-  background: var(--white-50);
-  gap: 10px;
-  border-radius: 16px;
+  display: grid;
+  place-content: center;
 }
 
 .boxIconStatus {
@@ -255,10 +305,62 @@
   place-content: center;
 }
 
-.warninCC {
+.boxIconsStatus {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.boxDoc {
   display: grid;
   place-content: center;
-  font-weight: 500;
+  height: 250px;
+}
+
+.iconCheck {
+  color: var(--green-500);
+  /* filter: drop-shadow(0px 0px 10px var(--green-400)); */
+}
+
+.warninCC {
+  font-weight: 300;
+  color: var(--green-800);
+}
+
+.btnOpenDoc {
+  background: var(--green-100);
+  border: 1px solid var(--green-200);
+  padding: 10px;
+  border-radius: 8px;
+  color: var(--green-600);
+  font-weight: 400;
+  cursor: pointer;
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+}
+
+.btnOpenDocRemove {
+  background: var(--red-300);
+  border: 1px solid var(--red-400);
+  padding: 10px;
+  border-radius: 8px;
+  color: var(--white-50);
+  font-weight: 400;
+  cursor: pointer;
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+}
+
+.btnOpenDocRemove:hover {
+  background: var(--red-400);
+}
+
+.btnOpenDoc:hover {
+  background: var(--green-200);
+}
+
+.optionsBox {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .boxIconsStatus {
@@ -293,12 +395,6 @@
 
 .trashIcon {
   color: var(--red-600);
-}
-
-.headerCardStatus {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
 }
 
 .boxIcon:hover {
@@ -350,11 +446,6 @@
 
 .iconLock {
   color: var(--green-900);
-  filter: drop-shadow(0px 0px 10px #000000);
-}
-
-.iconCheck {
-  color: var(--green-600);
   filter: drop-shadow(0px 0px 10px #000000);
 }
 
@@ -463,5 +554,9 @@
 
   .centerBoxTitleSelfie p {
     font-size: 15px;
+  }
+
+  .supraPartCenter {
+    gap: 0px;
   }
 }

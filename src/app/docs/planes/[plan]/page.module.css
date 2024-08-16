@@ -1,0 +1,141 @@
+.mainComponent {
+  min-height: 100dvh;
+  display: grid;
+  place-content: center;
+  width: 90%;
+  margin-left: 5%;
+  margin-top: 3em;
+}
+
+.preCenter {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.boxTextInfo {
+  display: grid;
+  place-content: center;
+}
+
+.interest {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.centerInterest {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  /* padding: 5px 15px;
+  background: var(--white-100);
+  border-radius: 8px; */
+}
+
+.BoxIconInteres {
+  display: grid;
+  place-content: center;
+}
+
+.iconInterest {
+  color: var(--green-500);
+  filter: drop-shadow(0px 0px 10px #000000);
+}
+
+.centerInterest p {
+  font-weight: 300;
+  color: var(--green-800);
+}
+
+.textName {
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: var(--green-900);
+}
+
+.textDescription {
+  font-weight: 300;
+  margin-bottom: 10px;
+  color: var(--green-950);
+}
+
+.PreBoxTips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  flex-grow: 1;
+}
+
+.boxTips {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+  padding: 5px 10px;
+  background: var(--green-50);
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.boxTips:hover {
+  border: 1px solid var(--green-100);
+}
+
+.boxIconTips {
+  display: grid;
+  place-content: center;
+}
+
+.iconTip {
+  color: var(--green-400);
+}
+
+.textTip {
+  color: var(--green-800);
+  font-weight: 500;
+}
+
+.titleTips {
+  margin-bottom: 10px;
+  font-weight: 400;
+  color: var(--green-900);
+}
+
+.boxImgTopic {
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+
+.imgTopic {
+  width: 100%;
+  height: auto;
+}
+
+.barBack {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1em;
+}
+
+.centerBarBack {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  padding: 5px 10px;
+  background: var(--white-100);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.centerBarBack:hover {
+  background: var(--white-200);
+  border-radius: 8px;
+}
+
+.boxIcon {
+  display: grid;
+  place-content: center;
+}
+
+.iconArrow {
+  color: var(--white-600);
+}

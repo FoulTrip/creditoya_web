@@ -1,51 +1,52 @@
 import TokenService from "@/classes/TokenServices";
 import UserService from "@/classes/UserServices";
 import cloudinary from "@/lib/cloudinary-conf";
+import { DeleteFileGcs } from "@/lib/storage";
 import { NextResponse } from "next/server";
-import { toast } from "sonner";
 
-interface changeImgProps {
+interface ChangeImgProps {
   userId: string;
   type: string;
+  upId: string;
 }
 
 export async function POST(req: Request) {
   try {
+    // Verificar si el token de autorización está presente
     const authToken = req.headers.get("authorization");
-    const token = authToken?.split(" ")[1];
-
-    if (!token) {
-      throw new Error("Token is required");
+    if (!authToken) {
+      return NextResponse.json({ success: false, error: "Token is required" });
     }
 
+    const token = authToken.split(" ")[1];
     const payload = TokenService.verifyToken(
-      token as string,
+      token,
       process.env.JWT_SECRET as string
     );
 
     if (!payload) {
-      throw new Error("Token inválido");
+      return NextResponse.json({ success: false, error: "Invalid token" });
     }
 
-    const { userId, type }: changeImgProps = await req.json();
+    const { userId, type, upId }: ChangeImgProps = await req.json();
 
-    console.log(type);
+    // Intentar eliminar el archivo y manejar el resultado
+    const deleteResult = await DeleteFileGcs({ type, userId, upId });
 
-    const nameFile = `credito_ya_docs/${type}-${userId}`;
+    if (!deleteResult.success) {
+      throw new Error(deleteResult.message);
+    }
 
-    const response = await UserService.setDocumentToUndefined(userId, type);
+    // Actualizar el documento del usuario
+    await UserService.setDocumentToUndefined(userId);
 
-    console.log(response);
-
-    cloudinary.v2.uploader.destroy(nameFile, (result) => {
-      console.log(result);
-      toast.success("Eliminado de cloudinary");
-    });
-
-    return NextResponse.json({ success: true, data: response });
+    return NextResponse.json({ success: true, message: deleteResult.message });
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json({ success: false, error: error.message });
-    }
+    console.error("Error in POST /change-image:", error);
+    return NextResponse.json({
+      success: false,
+      error:
+        error instanceof Error ? error.message : "An unknown error occurred",
+    });
   }
 }

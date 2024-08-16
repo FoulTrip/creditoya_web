@@ -44,7 +44,7 @@ export type Document01Type = {
 };
 
 /** Types of Document02 */
-export type Document02Type = {
+export type Document02SubType = {
   title: string;
   firstParagraph: string;
   subFirstParagraph: string;
@@ -52,6 +52,15 @@ export type Document02Type = {
   ThreeSubFirstParagraph: string;
   FourSubFirstParagraph: string;
   FiveSubFirstParagraph: string;
+};
+
+export type Document02Type = {
+  title: string;
+  firstParagraph: string;
+  subFirstParagraph: string;
+  secondParagraph: string;
+  thirdParagraph: string;
+  footer: string;
 };
 
 /** Types of Document04 */

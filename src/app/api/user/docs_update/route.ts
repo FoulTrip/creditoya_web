@@ -5,39 +5,37 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { userId, number, documentFront, documentBack }: ScalarDocument =
-      await req.json();
+    // Verificar la autenticación JWT
+    const authorizationHeader = req.headers.get("Authorization");
 
-    console.log(userId, number, documentBack, documentFront);
-
-    const authToken = req.headers.get("Authorization");
-    const token = authToken?.split(" ")[1];
-
-    console.log(token);
-
-    if (!token) {
-      throw new Error("Token is required");
+    if (!authorizationHeader) {
+      throw new Error("Token de autorización no proporcionado");
     }
 
-    const payload = TokenService.verifyToken(
-      token as string,
+    const token = authorizationHeader.split(" ")[1];
+
+    const decodedToken = TokenService.verifyToken(
+      token,
       process.env.JWT_SECRET as string
     );
 
-    console.log(token);
-    console.log(payload);
-
-    if (!payload) {
-      throw new Error("Token inválido");
+    if (!decodedToken) {
+      throw new Error("Token no válido");
     }
+
+    const { userId, number, documentSides, upId }: ScalarDocument =
+      await req.json();
+
+    // console.log(userId, number, documentSides, upId);
 
     const response: ScalarDocument[] = await UserService.updateDocument(
       userId,
-      documentFront as string,
-      documentBack as string,
+      documentSides,
+      number as string,
+      upId
     );
 
-    console.log(response);
+    // console.log(response);
 
     return NextResponse.json({ success: true, data: response });
   } catch (error) {

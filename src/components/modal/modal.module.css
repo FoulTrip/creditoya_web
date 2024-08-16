@@ -35,6 +35,10 @@
   cursor: pointer;
 }
 
+.pdfIframe {
+  margin-top: 3em;
+}
+
 .close_button:hover {
   border: 1px solid var(--red-400);
 }

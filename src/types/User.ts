@@ -12,7 +12,7 @@ export type ScalarUser = {
   phone_whatsapp?: string;
   birth_day?: Date;
   place_of_birth?: string;
-  genre?: string;
+  genre?: GenreUser;
   residence_address?: string;
   city?: string;
   createdAt?: Date;
@@ -33,10 +33,23 @@ export type ScalarEmployee = {
 };
 
 export type AuthUser = {
-  id: string;
-  names: string;
+  id?: string;
   email: string;
+  names: string;
+  firstLastName: string;
+  secondLastName: string;
   avatar?: string;
+  phone?: string;
+  residence_phone_number?: string;
+  phone_is_wp?: boolean;
+  phone_whatsapp?: string;
+  birth_day?: Date;
+  place_of_birth?: string;
+  genre?: GenreUser;
+  residence_address?: string;
+  city?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   token: string;
 };
 
@@ -53,6 +66,8 @@ export type ScalarLoanApplication = {
   status: Status;
   reasonReject?: string;
   reasonChangeCantity?: string;
+  newCantity?: string;
+  newCantityOpt?: boolean;
   bankSavingAccount: boolean;
   bankNumberAccount: string;
   labor_card: string;
@@ -67,20 +82,21 @@ export type ScalarDocument = {
   id: string;
   userId: string;
   typeDocument: TypesDocument;
-  documentFront: string | undefined;
-  documentBack: string | undefined;
+  documentSides: string;
   imageWithCC: string | undefined;
-  laborCardId: string | undefined;
   number: string | undefined;
   createdAt: Date;
   updatedAt: Date;
+  upId: string;
 };
 
 export type Status =
   | "Pendiente"
   | "Aprobado"
-  | "Rechazado"
+  | "Aplazado"
   | "Borrador"
   | "Archivado";
 
 export type TypesDocument = "CC" | "CE" | "PASAPORTE";
+
+export type GenreUser = "Femenino" | "Masculino" | "No";

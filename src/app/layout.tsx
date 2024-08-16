@@ -15,8 +15,6 @@ export const metadata: Metadata = {
   description: "Developed by TripCode",
 };
 
-const inter = Inter({ subsets: ["latin"] });
-
 export default function RootLayout({
   children,
 }: {
@@ -24,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <WsProvider>
           <GlobalProvider>
             <Toaster richColors position="top-center" />

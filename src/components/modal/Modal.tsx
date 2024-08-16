@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from "react";
 import styles from "./modal.module.css";
-import { Document, Page, pdfjs } from "react-pdf";
+import { pdfjs } from "react-pdf";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -32,7 +32,7 @@ const Modal = ({ isOpen, onClose, children, link }: modalProps) => {
             height="900px"
             style={{ border: 0 }}
             title="PDF Document"
-          />
+          ></iframe>
         )}
 
         <button className={styles.close_button} onClick={onClose}>

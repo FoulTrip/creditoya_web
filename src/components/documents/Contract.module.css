@@ -1,3 +1,12 @@
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .ContractContainer {
   min-height: 100dvh;
   display: flex;
@@ -12,6 +21,7 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
+  height: auto;
 }
 
 .accountInput {
@@ -68,12 +78,24 @@
 
 .supraBarStatus {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
-  padding: 8px;
   background: var(--white-50);
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  border-radius: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  height: 40px;
+}
+
+.optionsBox {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.barStatusDocs {
+  display: grid;
+  place-content: center;
 }
 
 .headerCardStatus {
@@ -109,20 +131,24 @@
   display: grid;
   place-content: center;
   cursor: pointer;
+  color: var(--white-50);
+  background: var(--red-300);
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .boxIcon:hover {
-  filter: drop-shadow(0px 0px 10px var(--green-500));
+  background: var(--red-500);
 }
 
 .iconCheck {
-  color: var(--green-500);
-  filter: drop-shadow(0px 0px 10px var(--green-500));
+  color: var(--green-300);
+  filter: drop-shadow(0px 0px 10px var(--green-400));
 }
 
 .warninCC {
-  font-weight: 400;
-  color: var(--white-600);
+  font-weight: 300;
+  color: var(--green-800);
 }
 
 .titleActions {
@@ -212,7 +238,7 @@
 }
 
 .iconPreview {
-  color: var(--green-500);
+  color: var(--green-400);
   filter: drop-shadow(0px 0px 10px var(--green-300));
 }
 
@@ -225,8 +251,8 @@
 }
 
 .textPreview {
-  font-weight: 500;
-  color: var(--white-400);
+  font-weight: 400;
+  color: var(--green-900);
 }
 
 .columnCards {
@@ -268,11 +294,19 @@
 }
 
 .boxInfoPay {
-  padding: 10px;
-  background: var(--green-50);
+  padding: 40px;
+  background: var(--white-50);
   border-radius: 8px;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--green-100);
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+  border: 2px dashed var(--green-200);
+  cursor: pointer;
+}
+
+.boxInfoPayActive {
+  background: var(--white-50);
+  border-radius: 8px;
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
+  border: 2px solid var(--green-100);
   cursor: pointer;
 }
 
@@ -304,18 +338,18 @@
 }
 
 .btnOpenDoc {
-  background: var(--green-100);
-  border: 1px solid var(--green-500);
+  background: var(--green-50);
+  border: 1px solid var(--green-100);
   padding: 10px;
   border-radius: 8px;
   color: var(--green-600);
   font-weight: 400;
   cursor: pointer;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); */
 }
 
 .btnOpenDoc:hover {
-  background: var(--green-200);
+  background: var(--green-100);
 }
 
 .btnSoli:hover {
@@ -370,6 +404,56 @@
 
 .inputPrice {
   padding: 10px;
+}
+
+.linkTerms {
+  color: var(--blue-600);
+  cursor: pointer;
+}
+
+.linkTerms:hover {
+  text-decoration: underline;
+}
+
+.componentTerms {
+  margin-top: 2em;
+  margin-bottom: 1em;
+  display: grid;
+  place-content: center;
+}
+
+.centerCoponentsTerms {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.componentTerms h3 {
+  margin-bottom: 1em;
+  color: var(--green-900);
+}
+
+.boxCharc {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.boxCharc p {
+  text-align: start;
+}
+
+.boxIconChecking {
+  display: grid;
+  place-content: center;
+}
+
+.iconChecking {
+  color: var(--green-300);
+}
+
+.loaderLoanIcon {
+  animation: spin 2s linear infinite;
 }
 
 @media screen and (max-width: 900px) {

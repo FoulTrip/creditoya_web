@@ -1,13 +1,16 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
+import jsPDF from "jspdf";
 import skeletonPdf from "@/components/Jsons/AboutLoan.json";
 import { DocumentTypes00 } from "@/types/PDFs";
-import jsPDF from "jspdf";
 
 interface PdfViewProps {
   numberDocument: string;
   entity: string;
   numberBank: string;
   signature?: string;
+  autoDownload?: boolean;
 }
 
 function Document00({
@@ -15,13 +18,14 @@ function Document00({
   signature,
   numberBank,
   entity,
+  autoDownload = false,
 }: PdfViewProps) {
+
   const [jsonData, setJsonData] = useState<DocumentTypes00>(skeletonPdf);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const updatedJsonData = { ...skeletonPdf };
-
     updatedJsonData.optionAccount.entityAccount = entity;
     updatedJsonData.optionAccount.numberAccount = numberBank;
     setJsonData(updatedJsonData);
@@ -127,15 +131,20 @@ function Document00({
       const pdfBlob = doc.output("blob");
       const pdfUrl = URL.createObjectURL(pdfBlob);
       setPdfUrl(pdfUrl);
-    };
 
-    const pdfBlob = doc.output("blob");
-    const pdfUrl = URL.createObjectURL(pdfBlob);
-    setPdfUrl(pdfUrl);
-  }, [jsonData, numberDocument, signature]);
+      if (autoDownload) {
+        const link = document.createElement("a");
+        link.href = pdfUrl;
+        link.download = `document_${numberDocument}.pdf`;
+        link.click();
+        URL.revokeObjectURL(pdfUrl);
+      }
+    };
+  }, [jsonData, numberDocument, signature, autoDownload]);
+
   return (
     <>
-      {pdfUrl && (
+      {pdfUrl && !autoDownload && (
         <iframe
           src={pdfUrl}
           width={"100%"}

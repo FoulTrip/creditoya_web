@@ -25,14 +25,17 @@ export const generateMailSignup = (completeName: string) => {
       </div>
       <p style="margin-top: 1em;">
         ${completeName}, ¡Bienvenido a Credito Ya! Gracias por registrarte.
-        Estamos emocionados de tenerte con nosotros.
       </p>
+      
       <p style="margin-top: 1em;">
-        Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.
+        Es genial contar con tu vinculación y tenerte con nosotros, a través de nuestra plataforma amigable puedes realizar tus solicitudes de crédito, fácil, rápido y con respuesta inmediata.
+        Nuestro equipo está a tu disposición para guiarte  y atender todas tus inquietudes y requerimientos.
       </p>
 
-      <h5 style="margin-top: 2em; color: #6c6c6c">Saludos,</h5>
-      <h4>Equipo de Credito Ya</h4>
+      <p style="margin-top: 1em;">Gracias y Bienvenido nuevamente</p>
+
+      <h5 style="margin-top: 2em; color: #6c6c6c">Equipo Creditoya</h5>
+      <h4>Celular Whatsapp 3138994982</h4>
     </main>
   </body>
 </html>

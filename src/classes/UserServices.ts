@@ -6,8 +6,37 @@ import bcrypt from "bcryptjs";
 
 // Class definition
 class UserService {
+  private static validatePassword(password: string): void {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasDigits = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (
+      password.length < minLength ||
+      !hasUpperCase ||
+      !hasLowerCase ||
+      !hasDigits ||
+      !hasSpecialChar
+    ) {
+    }
+  }
+
+  private static validateEmail(email: string): void {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      throw new Error("El correo electronico no es valido");
+    }
+  }
+
   // Create user method
   static async create(data: ScalarUser): Promise<User> {
+    // Validar el formato del correo electrónico
+    this.validateEmail(data.email);
+
+    // validar si ya existe el correo
     const existEmail = await prisma.user.findUnique({
       where: { email: data.email },
     });
@@ -15,6 +44,9 @@ class UserService {
     if (existEmail) {
       throw new Error("El correo electrónico ya está en uso");
     }
+
+    // Validar la contraseña antes de hacer hash
+    this.validatePassword(data.password);
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
@@ -35,15 +67,25 @@ class UserService {
   }
 
   // Update user method
-  static async update({
-    id,
-    data,
-  }: {
-    id: string;
-    data: Omit<ScalarUser, "password">;
-  }) {
-    const { id: userId, ...userData } = data;
-    return await prisma.user.update({ where: { id }, data: userData });
+  static async update({ id, data }: { id: string; data: Partial<User> }) {
+    const {
+      id: userId,
+      password,
+      createdAt,
+      updatedAt,
+      ...updatableData
+    } = data;
+    try {
+      const updatedUser = await prisma.user.update({
+        where: { id },
+        data: updatableData,
+      });
+      return updatedUser;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
   }
 
   // Update Avatar
@@ -69,18 +111,25 @@ class UserService {
   }
 
   // Sign in user method
-  static async signin(email: string, password: string): Promise<User> {
+  static async signin(
+    email: string,
+    password: string
+  ): Promise<Omit<User, "password">> {
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new Error("Credenciales inválidas");
     }
 
-    return user;
+    const { password: _, ...userWithPass } = user;
+
+    return userWithPass;
   }
 
   // Check if user has document data method
-  static async hasDocumentData(userId: string): Promise<boolean> {
+  static async hasDocumentData(
+    userId: string
+  ): Promise<{ complete: boolean; missing: string[] }> {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: { Document: true },
@@ -90,37 +139,53 @@ class UserService {
       throw new Error("Usuario no encontrado");
     }
 
-    // Comprueba si el usuario tiene documentos y si los campos son diferentes de "void"
-    return user.Document.some(
-      (document) =>
-        document.documentFront !== "No definido" &&
-        document.documentBack !== "No definido"
-      // document.number !== "No definido" &&
-      // document.imageWithCC !== "No definido"
-      // document.laborCardId != "No definido"
-    );
+    const missingFields: string[] = [];
+
+    // Verificar si hay documentos
+    if (!user.Document.length) {
+      missingFields.push("documentSides", "number", "imageWithCC");
+    } else {
+      user.Document.forEach((document) => {
+        if (document.documentSides === "No definido") {
+          missingFields.push("documentSides");
+        }
+        if (document.number === "No definido") {
+          missingFields.push("number");
+        }
+        if (document.imageWithCC === "No definido") {
+          missingFields.push("imageWithCC");
+        }
+      });
+    }
+
+    return {
+      complete: missingFields.length === 0,
+      missing: missingFields,
+    };
   }
 
   // Update user document method
   static async updateDocument(
     userId: string,
-    documentFront: string,
-    documentBack: string
+    documentSides: string,
+    number: string,
+    upId: string
   ): Promise<ScalarDocument[]> {
-    if (documentBack) {
+    if (userId && number && documentSides == undefined && upId == undefined) {
       await prisma.document.updateMany({
         where: { userId },
         data: {
-          documentBack: { set: documentBack },
+          number: { set: number },
         },
       });
     }
 
-    if (documentFront) {
+    if (userId && documentSides !== undefined && upId !== undefined) {
       await prisma.document.updateMany({
         where: { userId },
         data: {
-          documentFront: { set: documentFront },
+          documentSides: { set: documentSides },
+          upId,
         },
       });
     }
@@ -177,27 +242,115 @@ class UserService {
   }
 
   static async setDocumentToUndefined(
-    userId: string,
-    type: string
+    userId: string
   ): Promise<ScalarDocument[] | null> {
-    if (type == "front") {
-      await prisma.document.updateMany({
-        where: { userId },
-        data: {
-          documentFront: "No definido",
-        },
-      });
-    } else if (type == "back") {
-      await prisma.document.updateMany({
-        where: { userId },
-        data: {
-          documentBack: "No definido",
-        },
-      });
-    }
+    await prisma.document.updateMany({
+      where: { userId },
+      data: {
+        documentSides: "No definido",
+        upId: "No definido",
+      },
+    });
 
     return prisma.document.findMany({
       where: { userId },
+    });
+  }
+
+  // Method to check for missing fields in User and Document models
+  static async checkMissingFields(
+    userId: string
+  ): Promise<{ complete: boolean; missing: string[] }> {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { Document: true },
+    });
+
+    if (!user) {
+      throw new Error("Usuario no encontrado");
+    }
+
+    const missingFields: string[] = [];
+
+    // Check user fields
+    // if (!user.avatar || user.avatar === "No definido")
+    //   missingFields.push("avatar");
+    if (!user.phone || user.phone === "No definido")
+      missingFields.push("phone");
+    if (
+      !user.residence_phone_number ||
+      user.residence_phone_number === "No definido"
+    )
+      missingFields.push("residence_phone_number");
+    if (!user.phone_whatsapp || user.phone_whatsapp === "No definido")
+      missingFields.push("phone_whatsapp");
+    if (!user.birth_day) missingFields.push("birth_day");
+    if (!user.genre || user.genre === "No") missingFields.push("genre");
+    if (!user.residence_address || user.residence_address === "No definido")
+      missingFields.push("residence_address");
+    if (!user.city || user.city === "No definido") missingFields.push("city");
+    if (!user.place_of_birth || user.place_of_birth === "No definido")
+      missingFields.push("place_of_birth");
+
+    // Check document fields
+    if (!user.Document.length) {
+      missingFields.push("documentSides", "number", "imageWithCC");
+    } else {
+      user.Document.forEach((document) => {
+        if (document.documentSides === "No definido")
+          missingFields.push("documentSides");
+        if (document.number === "No definido") missingFields.push("number");
+        if (document.imageWithCC === "No definido")
+          missingFields.push("imageWithCC");
+      });
+    }
+
+    return {
+      complete: missingFields.length === 0,
+      missing: missingFields,
+    };
+  }
+
+  // Method to get users whose birthdays are today
+  static async getUsersWithBirthdayToday(): Promise<
+    | Pick<User, "names" | "firstLastName" | "secondLastName" | "email">[]
+    | string
+  > {
+    const today = new Date();
+    const month = today.getMonth() + 1; // JavaScript months are 0-based
+    const day = today.getDate();
+
+    // Query users with matching birth month and day
+    const users = await prisma.user.findMany({
+      where: {
+        birth_day: {
+          gte: new Date(today.getFullYear(), month - 1, day), // Ensure correct date range for the current year
+          lt: new Date(today.getFullYear(), month - 1, day + 1), // Only the exact day
+        },
+      },
+      select: {
+        names: true,
+        firstLastName: true,
+        secondLastName: true,
+        email: true,
+      },
+    });
+
+    if (users.length == 0) return "No hay usuarios cumpliendo años";
+
+    return users;
+  }
+
+  static async getUserDetailsMail(): Promise<
+    Pick<User, "names" | "firstLastName" | "secondLastName" | "email">[] | null
+  > {
+    return prisma.user.findMany({
+      select: {
+        names: true,
+        firstLastName: true,
+        secondLastName: true,
+        email: true,
+      },
     });
   }
 }

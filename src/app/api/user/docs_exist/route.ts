@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
     const { userId } = await req.json();
 
-    const response = await UserService.hasDocumentData(userId);
+    const response = await UserService.checkMissingFields(userId);
     return NextResponse.json({ success: true, data: response });
   } catch (error) {
     if (error instanceof Error) {

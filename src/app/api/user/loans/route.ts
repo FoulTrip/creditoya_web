@@ -1,6 +1,5 @@
 import LoanApplicationService from "@/classes/LoanApplicationServices";
 import TokenService from "@/classes/TokenServices";
-import UserService from "@/classes/UserServices";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {

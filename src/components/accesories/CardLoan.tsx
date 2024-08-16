@@ -1,31 +1,37 @@
 import { ScalarEmployee, ScalarLoanApplication } from "@/types/User";
 import React, { useEffect, useState } from "react";
 import styles from "./styles/cardLoan.module.css";
-import { TbChecklist, TbMailFilled, TbPhoneFilled } from "react-icons/tb";
+import {
+  TbBell,
+  TbChecklist,
+  TbMailFilled,
+  TbPhoneFilled,
+} from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
 import CopyText from "./CopyText";
 import Avatar from "react-avatar";
+import { stringToPriceCOP } from "@/handlers/StringToCop";
 
 function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
   const router = useRouter();
   const { user } = useGlobalContext();
   const [infoEmployee, setInfoEmployee] = useState<ScalarEmployee | null>(null);
 
-  const formattedPrice = (price: string) => {
-    const number = parseFloat(price);
+  // const formattedPrice = (price: string) => {
+  //   const number = parseFloat(price);
 
-    const formatter = new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+  //   const formatter = new Intl.NumberFormat("es-CO", {
+  //     style: "currency",
+  //     currency: "COP",
+  //     minimumFractionDigits: 2,
+  //     maximumFractionDigits: 2,
+  //   });
 
-    const formattedNumber = formatter.format(number);
-    return formattedNumber;
-  };
+  //   const formattedNumber = formatter.format(number);
+  //   return formattedNumber;
+  // };
 
   useEffect(() => {
     const getEmployee = async () => {
@@ -51,24 +57,40 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
           <div className={styles.prevInfo}>
             <h3>Solicitud de prestamo</h3>
 
-            <div>
-              <h5 className={styles.titleId}>Solicitud Id</h5>
-              <CopyText text={loan?.id as string} copy={true} h5={true} />
-            </div>
+            <div className={styles.btnsContainer}>
+              <div
+                className={styles.goAll}
+                onClick={() => router.push(`/req/${loan.id}`)}
+              >
+                <h5>Detalles completos</h5>
+              </div>
 
-            <div
-              className={styles.goAll}
-              onClick={() => router.push(`/req/${loan.id}`)}
-            >
-              <h5>Ver datos completos</h5>
+              <div className={styles.notificationsBox}>
+                <div className={styles.headerNotBtn}>
+                  <div className={styles.boxIconNot}>
+                    <TbBell className={styles.iconBell} size={20} />
+                  </div>
+                  <h4>Notificaciones</h4>
+                </div>
+                {loan.newCantityOpt == null && loan.newCantity && (
+                  <p className={styles.messageWarn}>
+                    La cantidad aprobada ha cambiado
+                  </p>
+                )}
+                {!loan.newCantityOpt !== null && !loan.newCantity && (
+                  <p className={styles.messageNot}>Sin acciones pendientes</p>
+                )}
+                {loan.newCantityOpt !== null && loan.newCantity && (
+                  <p className={styles.messageNot}>Sin acciones pendientes</p>
+                )}
+              </div>
             </div>
-            {/* <h4>Prestamo</h4> */}
           </div>
         </h1>
         <div className={styles.requirements}>
           <div className={styles.boxAmount}>
             <p>Cantidad Solicitada</p>
-            <h1>{formattedPrice(loan.cantity)}</h1>
+            <h1>{stringToPriceCOP(loan.cantity)}</h1>
           </div>
         </div>
 
@@ -82,7 +104,7 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
               {loan.status === "Aprobado" && (
                 <h1 className={styles.statusTextSuccess}>{loan.status}</h1>
               )}
-              {loan.status === "Rechazado" && (
+              {loan.status === "Aplazado" && (
                 <h1 className={styles.statusTextReject}>{loan.status}</h1>
               )}
             </div>
