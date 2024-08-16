@@ -7,10 +7,12 @@ const uploadDir = path.join(process.cwd(), "public/temp");
 
 export async function POST(req: Request) {
   try {
+    // Asegúrate de que el directorio existe
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
 
+    // Obtén los datos del formulario
     const { nameFile } = await req.json();
 
     if (!nameFile) {
@@ -20,8 +22,10 @@ export async function POST(req: Request) {
       });
     }
 
+    // Construye la ruta del archivo a eliminar
     const filePath = path.join(uploadDir, `${nameFile}.pdf`);
 
+    // Verifica si el archivo existe y elimínalo
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
       return NextResponse.json({

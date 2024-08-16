@@ -1,7 +1,7 @@
+// app/api/upload/route.ts
 import fs from "fs";
 import { NextResponse } from "next/server";
 import path from "path";
-import mime from "mime-types";
 
 // Configura el directorio de subida en /tmp
 const uploadDir = path.join("/tmp", "temp");
@@ -25,20 +25,16 @@ export async function POST(req: Request) {
       });
     }
 
-    // Determinar la extensión del archivo según el tipo MIME
-    const fileType = file.type;
-    const fileExtension = mime.extension(fileType) || "pdf";
-
     // Lee el archivo como un buffer
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Guarda el archivo en el directorio público con la extensión correcta
-    const filePath = path.join(uploadDir, `${nameFile}.${fileExtension}`);
+    // Guarda el archivo en el directorio temporal
+    const filePath = path.join(uploadDir, `${nameFile}.pdf`);
     fs.writeFileSync(filePath, buffer);
 
     // Genera la URL accesible desde el frontend
-    const fileUrl = `/temp/${nameFile}.${fileExtension}`;
+    const fileUrl = `/api/temp/${nameFile}.pdf`;
 
     return NextResponse.json({
       success: true,
