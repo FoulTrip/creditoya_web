@@ -74,6 +74,7 @@ function Contract({
   const [secondFlayer, setSecondFlayer] = useState<FormData | null>(null);
   const [threeFlayer, setThreeFlayer] = useState<FormData | null>(null);
   const [laborCard, setLaborCard] = useState<FormData | null>(null);
+  const [signatureSrc, setSignatureSrc] = useState<FormData | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -254,8 +255,15 @@ function Contract({
       if (secondFlayer === null) throw new Error("Falta segundo volante");
       if (threeFlayer === null) throw new Error("Falta tercer volante");
       if (laborCard === null) throw new Error("Falta cuarto volante");
+      if (signatureSrc === null) throw new Error("Falta tu firma");
 
-      const formArrays = [firstFlayer, secondFlayer, threeFlayer, laborCard];
+      const formArrays = [
+        firstFlayer,
+        secondFlayer,
+        threeFlayer,
+        laborCard,
+        signatureSrc,
+      ];
 
       const addFirstFlayer = await axios.post(
         "/api/upload/google/create",
@@ -301,9 +309,19 @@ function Contract({
         }
       );
 
+      const addSignature = await axios.post(
+        "/api/upload/signature",
+        {
+          img: signatureSrc.get("img"),
+          userId,
+          upSignatureId: signatureSrc.get("upSignatureId"),
+        },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+
       // Eliminación de archivos temporales
       for (const formData of formArrays) {
-        const nameDoc = formData.get("name");
+        const nameDoc = formData.get("name") || formData.get("img");
         if (nameDoc) {
           await axios.post("/api/temp/files/delete", {
             nameFile: nameDoc,
@@ -316,10 +334,12 @@ function Contract({
         {
           loanData: {
             ...dataContract,
-            fisrt_flyer: addFirstFlayer.data.data,
-            second_flyer: addSecondFlayer.data.data,
-            third_flyer: addThreeFlayer.data.data,
-            labor_card: addLaborCard.data.data,
+            fisrt_flyer: addFirstFlayer.data.data.link,
+            second_flyer: addSecondFlayer.data.data.link,
+            third_flyer: addThreeFlayer.data.data.link,
+            labor_card: addLaborCard.data.data.link,
+            signature: addSignature.data.data,
+            upSignatureId: signatureSrc.get("upSignatureId"),
           },
         },
         { headers: { Authorization: `Bearer ${user?.token}` } }
@@ -368,11 +388,20 @@ function Contract({
     }
   };
 
-  const handleSaveSignature = (signatureUrl: string) => {
+  const handleSaveSignature = (
+    signatureUrl: string,
+    upSignatureId: string,
+    base64: string
+  ) => {
+    const signFormData = new FormData();
+    signFormData.append("img", base64);
+    signFormData.append("upSignatureId", upSignatureId);
+    signFormData.append("userId", userId);
     setDataContract((prevFormData) => ({
       ...(prevFormData as ScalarLoanApplication),
       signature: signatureUrl,
     }));
+    setSignatureSrc(signFormData);
   };
 
   const handleSuccessSignature = () => {
@@ -442,6 +471,7 @@ function Contract({
 
           if (tempLink.data.success == true) {
             const link = tempLink.data.data;
+            console.log(link);
             setFirstFlayer(formData);
             setLoadingProccessImg04(false);
             toast.success("Archivo cargado exitosamente");
@@ -480,6 +510,7 @@ function Contract({
 
         if (tempLink.data.success == true) {
           const link = tempLink.data.data;
+          console.log(link);
           setSecondFlayer(formData);
           toast.success("Archivo cargado exitosamente");
           setLoadingProccessImg05(false);
@@ -513,6 +544,7 @@ function Contract({
 
         if (tempLink.data.success == true) {
           const link = tempLink.data.data;
+          console.log(link);
           setThreeFlayer(formData);
           toast.success("Archivo cargado exitosamente");
           setLoadingProccessImg06(false);
@@ -701,7 +733,7 @@ function Contract({
                               className={styles.btnOpenDoc}
                               onClick={() =>
                                 handlerOpenModel({
-                                  link: imagePreview4,
+                                  link: imagePreview5,
                                 })
                               }
                             >
@@ -773,7 +805,7 @@ function Contract({
                               className={styles.btnOpenDoc}
                               onClick={() =>
                                 handlerOpenModel({
-                                  link: imagePreview4,
+                                  link: imagePreview6,
                                 })
                               }
                             >

@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Token no válido" }, { status: 401 });
     }
 
-    const { img, userId } = await req.json();
+    const { img, userId, upSignatureId } = await req.json();
 
     console.log(img);
 
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
     const response = await cloudinary.v2.uploader.upload(img, {
       folder: "signatures",
-      public_id: `signature.${userId}`,
+      public_id: `signature-${userId}-${upSignatureId}`,
     });
 
     return NextResponse.json({

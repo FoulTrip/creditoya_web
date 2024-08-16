@@ -129,7 +129,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
           // console.log(responseDoc.data.data);
         }
 
-        if (loan.employeeId == "Standby") console.log("Sin asesor");
+        // if (loan.employeeId == "Standby") console.log("Sin asesor");
 
         if (loan.employeeId !== "Standby") {
           const infoEmployee = await axios
@@ -459,24 +459,37 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
             </div>
           </div>
 
-          <div className={styles.backgroundDocs}>
+          <div>
             <div className={styles.titleSection}>
-              <h3>Documentos de identidad</h3>
+              <h3>Documento de identidad</h3>
             </div>
-            <div className={styles.infoBox}>
-              <div className={styles.barBtns}>
-                <button
-                  onClick={() => {
-                    setOpenDocsScan(true);
-                    setLinkDocsScan(documentsInfo?.documentSides as string);
-                  }}
-                >
-                  Ver
-                </button>
+            <div className={styles.cardFlyerDocs}>
+              <div className={styles.centerHeaderFlyer}>
+                <div className={styles.boxDocument}>
+                  <HiOutlineDocumentChartBar
+                    className={styles.iconDocument}
+                    size={20}
+                  />
+                </div>
+                <p className={styles.textHeader}>Cedula de ciudadania</p>
+              </div>
 
-                <button onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}>
-                  Descargar
-                </button>
+              <div className={styles.infoBox}>
+                <div className={styles.barBtns}>
+                  <button
+                    onClick={() =>
+                      handleOpenModel(0, documentsInfo?.documentSides as string)
+                    }
+                  >
+                    Ver
+                  </button>
+
+                  <button
+                    onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
+                  >
+                    Descargar
+                  </button>
+                </div>
               </div>
             </div>
           </div>

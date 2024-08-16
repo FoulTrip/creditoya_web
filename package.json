@@ -29,6 +29,7 @@
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^2.5.1",
+    "mime-types": "^2.1.35",
     "next": "13.5.6",
     "next-swagger-doc": "^0.4.0",
     "next-video": "^1.1.1",
@@ -55,6 +56,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/crypto-js": "^4.2.2",
+    "@types/mime-types": "^2.1.4",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.14",
     "@types/react": "^18",

@@ -251,7 +251,9 @@ function Profile({ params }: { params: { userId: string } }) {
     if (!file) return;
 
     try {
-      const base64String = convertToBase64(file);
+      const base64String = await convertToBase64(file);
+
+      setSelectedImageWithCC(base64String);
 
       const response = await axios.post(
         "/api/upload/pic_with_cc",

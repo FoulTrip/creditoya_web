@@ -11,6 +11,7 @@ import styles from "./signature.module.css";
 import { TbCircleCheck, TbCircleX, TbLoader } from "react-icons/tb";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
+import { uploadRandomKey } from "@/handlers/randomUploadKey";
 
 function Signature({
   success,
@@ -18,7 +19,7 @@ function Signature({
   userId,
 }: {
   success: () => void;
-  src: (url: string) => void;
+  src: (url: string, upSignatureId: string, base64: string) => void;
   userId: string;
 }) {
   const signatureCanvasRef = useRef<SignatureCanvas | null>(null);
@@ -27,8 +28,6 @@ function Signature({
 
   // const { loan, setLoanInfo } = useContractContext();
   const { user } = useGlobalContext();
-
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 800px)" });
 
   const clearSignature = () => {
     if (signatureCanvasRef.current) {
@@ -41,22 +40,31 @@ function Signature({
       const signatureImage = signatureCanvasRef.current.toDataURL();
       setUploadSuccess(true);
       setPreviewSignature(signatureImage);
-      const response = await axios.post(
-        "/api/upload/signature",
-        {
-          img: signatureImage,
-          userId,
+      const upSignatureId = uploadRandomKey();
+
+      const blob = await (await fetch(signatureImage)).blob();
+      const formData = new FormData();
+
+      // Agregar el blob (archivo) y el nombre al FormData
+      formData.append("file", blob, `signature-${userId}-${upSignatureId}.png`);
+      formData.append("name", upSignatureId);
+
+      // Hacer la petición al nuevo endpoint usando axios
+      const tempSigUrl = await axios.post("/api/temp/files/create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${user?.token}`,
         },
-        { headers: { Authorization: `Bearer ${user?.token}` } }
-      );
+      });
 
-      const link = response.data.data;
+      console.log(tempSigUrl.data.data);
 
-      if (link) {
+      if (tempSigUrl.data.success == true) {
+        const link = tempSigUrl.data.data;
         setUploadSuccess(false);
-        src(link);
+        src(link, upSignatureId, signatureImage);
+        success();
       }
-      success();
     }
   };
 
