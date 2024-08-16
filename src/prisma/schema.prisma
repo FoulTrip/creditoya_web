@@ -61,6 +61,7 @@ model LoanApplication {
     labor_card           String
     terms_and_conditions Boolean
     signature            String
+    upSignatureId        String
     status               StatusLoan @default(Pendiente)
     created_at           DateTime   @default(now())
     updated_at           DateTime   @updatedAt

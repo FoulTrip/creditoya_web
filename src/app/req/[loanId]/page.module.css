@@ -280,6 +280,22 @@
   padding: 20px 15px;
 }
 
+.backgroundCarts {
+  margin-bottom: 1em;
+}
+
+.cardFlyerDocs {
+  flex-grow: 1;
+  border-radius: 16px;
+  border: 1px solid var(--green-500);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  background: var(--green-50);
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 20px 15px;
+}
+
 .cardFlyer:hover {
   border: 1px solid var(--white-300);
 }
@@ -376,7 +392,7 @@
 
 .titleSection h3 {
   color: var(--white-600);
-  font-weight: 500;
+  font-weight: 800;
 }
 
 .backgroundDocs {

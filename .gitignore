@@ -36,3 +36,4 @@ next-env.d.ts
 
 /credentials
 /src/handlers/encrypt.js
+/public/temp
