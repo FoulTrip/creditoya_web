@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 import path from "path";
 import mime from "mime-types";
 
-// Configura el directorio de subida en /public/temp
-const uploadDir = path.join(process.cwd(), "public", "temp");
+// Configura el directorio de subida en /tmp
+const uploadDir = path.join("/tmp", "temp");
 
 export async function POST(req: Request) {
   try {
