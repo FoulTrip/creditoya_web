@@ -7,6 +7,10 @@
   margin-top: 3em;
 }
 
+.centerMainComp {
+  margin-top: 3em;
+}
+
 .preCenter {
   display: flex;
   flex-wrap: wrap;

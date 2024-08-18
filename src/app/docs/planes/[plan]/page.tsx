@@ -25,7 +25,7 @@ function PlanesSection({ params }: { params: { plan: string } }) {
   return (
     <>
       <main className={styles.mainComponent}>
-        <div>
+        <div className={styles.centerMainComp}>
           <div className={styles.barBack}>
             <div
               className={styles.centerBarBack}
