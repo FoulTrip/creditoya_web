@@ -20,9 +20,11 @@ function HeroinSection() {
           <div className={styles.centerInfoContent}>
             <div className={styles.boxLogoMinimalist}>
               <Image
-                src={logoApp}
+                src={logoApp.src}
                 className={styles.secondIlus}
                 alt="logoApp"
+                width={500}
+                height={500}
               />
             </div>
             <p className={styles.slogan}>
