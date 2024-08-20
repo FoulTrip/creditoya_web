@@ -860,9 +860,7 @@ function Profile({ params }: { params: { userId: string } }) {
                         <div className={styles.boxIconStatus}>
                           <TbCircleCheckFilled className={styles.iconCheck} />
                         </div>
-                        <p className={styles.warninCC}>
-                          Tercer volante de pago
-                        </p>
+                        <p className={styles.warninCC}>Cedula de ciudadania</p>
                       </div>
                     </div>
 
