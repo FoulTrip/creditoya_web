@@ -246,28 +246,29 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                 </>
               )}
 
-              {infoLoan.status == "Pendiente" && (
-                <div
-                  className={styles.cardInfoBank}
-                  style={{ marginTop: "1em" }}
-                >
-                  <h5>Acepta el cambio de cantidad solicitada?</h5>
-                  <div className={styles.boxAceptCantity}>
-                    <p
-                      className={styles.btnAcceptCantity}
-                      onClick={() => handleAceptChangeCantity(true)}
-                    >
-                      Aceptar
-                    </p>
-                    <p
-                      className={styles.btnRejectCantity}
-                      onClick={() => handleAceptChangeCantity(false)}
-                    >
-                      Rechazar
-                    </p>
+              {infoLoan.status == "Pendiente" &&
+                infoLoan.newCantityOpt == null && (
+                  <div
+                    className={styles.cardInfoBank}
+                    style={{ marginTop: "1em" }}
+                  >
+                    <h5>Acepta el cambio de cantidad solicitada?</h5>
+                    <div className={styles.boxAceptCantity}>
+                      <p
+                        className={styles.btnAcceptCantity}
+                        onClick={() => handleAceptChangeCantity(true)}
+                      >
+                        Aceptar
+                      </p>
+                      <p
+                        className={styles.btnRejectCantity}
+                        onClick={() => handleAceptChangeCantity(false)}
+                      >
+                        Rechazar
+                      </p>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </>
           )}
 
