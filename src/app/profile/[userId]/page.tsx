@@ -178,9 +178,9 @@ function Profile({ params }: { params: { userId: string } }) {
       );
 
       if (response.data.success === true) {
-        toast.success("Dato actualizado");
+        toast.success("Tus datos han sido actualizados");
       } else if (response.data.success === false) {
-        throw new Error("Error al actualizar dato");
+        throw new Error("Error al actualizar tus datos");
       }
     } catch (error) {
       if (error instanceof Error) {
