@@ -946,7 +946,7 @@ function Profile({ params }: { params: { userId: string } }) {
             </div>
           </div>
         </div>
-
+{/* 
         <div style={{ marginTop: "3em" }}>
           <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
             <div style={{ display: "grid", placeContent: "center" }}>
@@ -966,9 +966,9 @@ function Profile({ params }: { params: { userId: string } }) {
                 : "Tu perfil sigue incompleto"}
             </p>
           </div>
-        </div>
+        </div> */}
 
-        <div
+        {/* <div
           style={{
             width: "100%",
             background: "var(--green-300)",
@@ -1018,7 +1018,7 @@ function Profile({ params }: { params: { userId: string } }) {
               </div>
             </div>
           </>
-        )}
+        )} */}
       </main>
 
       <Modal
