@@ -107,8 +107,6 @@ function StepSection() {
               src={
                 "https://res.cloudinary.com/dvquomppa/video/upload/v1724228923/videos_guia/u51npgvxsebnkhnhsh0x.mp4"
               }
-              width={800}
-              height={400}
               controls
             />
           )}
@@ -120,6 +118,8 @@ function StepSection() {
                 "https://res.cloudinary.com/dvquomppa/video/upload/v1724228923/videos_guia/u51npgvxsebnkhnhsh0x.mp4"
               }
               controls
+              width={800}
+              height={400}
             />
           )}
         </div>
