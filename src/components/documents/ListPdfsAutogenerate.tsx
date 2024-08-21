@@ -12,6 +12,7 @@ import { useGlobalContext } from "@/context/Auth";
 import { Document01 } from "../pdfs/pdfCard01";
 import Document03 from "../pdfs/pdfCard03";
 import Document02 from "../pdfs/pdfCard02";
+import { BankTypes, handleKeyToStringBank } from "@/handlers/typeBankPretty";
 
 function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -127,7 +128,7 @@ function ListPdfsAutogenerate({ data }: { data: ScalarLoanApplication }) {
         {optionView == 0 && (
           <Document00
             numberDocument={numberDocument as string}
-            entity={data.entity}
+            entity={handleKeyToStringBank(data.entity as BankTypes)}
             numberBank={data.bankNumberAccount}
             signature={data.signature}
           />

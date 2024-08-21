@@ -57,7 +57,7 @@ function Signature({
         },
       });
 
-      console.log(tempSigUrl.data.data);
+      // console.log(tempSigUrl.data.data);
 
       if (tempSigUrl.data.success == true) {
         const link = tempSigUrl.data.data;

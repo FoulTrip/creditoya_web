@@ -20,10 +20,11 @@ const bankOptions = [
   { value: "banco-agrario", label: "Banco Agrario de Colombia" },
   { value: "banco-cooperativo", label: "Banco Cooperativo Coopcentral" },
   { value: "bancamia", label: "Bancamía" },
+  { value: "banco-occidente", label: "Banco de occidente" },
+  { value: "banco-falabella", label: "Banco Falabella" },
 ];
 
 function SelectBanks({ select }: { select: (option: string) => void }) {
-
   const handleChange = (selectedOption: any) => {
     select(selectedOption ? selectedOption.value : "");
   };

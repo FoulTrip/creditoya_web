@@ -13,133 +13,156 @@ interface PdfViewProps {
   autoDownload?: boolean;
 }
 
-function Document00({
+interface TextOptions {
+  maxWidth?: number;
+  // Agrega otros posibles campos que necesites según la documentación de jsPDF
+}
+
+const loadImage = (src: string): Promise<HTMLImageElement> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => resolve(img);
+    img.onerror = (err) => reject(err);
+  });
+};
+
+const addText = (
+  doc: jsPDF,
+  text: string,
+  x: number,
+  y: number,
+  options?: TextOptions
+) => {
+  doc.text(text, x, y, options);
+};
+
+const addSignature = (
+  doc: jsPDF,
+  img: HTMLImageElement,
+  x: number,
+  y: number,
+  label: string
+) => {
+  const imgWidth = 50;
+  const imgHeight = (img.height * imgWidth) / img.width;
+
+  doc.addImage(img, "PNG", x, y, imgWidth, imgHeight);
+  const lineY = y + imgHeight + 2;
+  doc.line(x, lineY, x + imgWidth, lineY);
+  addText(doc, label, x, lineY + 6);
+};
+
+const Document00: React.FC<PdfViewProps> = ({
   numberDocument,
   signature,
   numberBank,
   entity,
   autoDownload = false,
-}: PdfViewProps) {
-
+}) => {
   const [jsonData, setJsonData] = useState<DocumentTypes00>(skeletonPdf);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const updatedJsonData = { ...skeletonPdf };
-    updatedJsonData.optionAccount.entityAccount = entity;
-    updatedJsonData.optionAccount.numberAccount = numberBank;
+    const updatedJsonData = {
+      ...skeletonPdf,
+      optionAccount: {
+        entityAccount: entity,
+        numberAccount: numberBank,
+      },
+    };
     setJsonData(updatedJsonData);
   }, [entity, numberBank]);
 
   useEffect(() => {
-    const doc = new jsPDF();
+    const generatePdf = async () => {
+      const doc = new jsPDF();
+      doc.setFontSize(10);
+      let y = 15;
 
-    doc.setFontSize(10);
-    let y = 15;
+      addText(
+        doc,
+        `${jsonData.TitlePrevExplain}${jsonData.prevExplain}`,
+        10,
+        y,
+        { maxWidth: 190 }
+      );
+      y += 90;
 
-    doc.text(jsonData.TitlePrevExplain + jsonData.prevExplain, 10, y, {
-      maxWidth: 190,
-    });
-    y += 90;
+      addText(
+        doc,
+        `${jsonData.headerTitle} ${jsonData.firstExplainText} `,
+        10,
+        y,
+        { maxWidth: 190 }
+      );
+      y += 167;
 
-    doc.text(
-      jsonData.headerTitle + " " + jsonData.firstExplainText + " ",
-      10,
-      y,
-      {
+      addText(doc, jsonData.secondTitle, 10, y, { maxWidth: 190 });
+      y += 10;
+
+      doc.setFontSize(13);
+      addText(
+        doc,
+        `Cuenta Ahorros Nro. Cuenta ${jsonData.optionAccount.numberAccount} Entidad: ${jsonData.optionAccount.entityAccount}`,
+        10,
+        y,
+        { maxWidth: 190 }
+      );
+      y += -265;
+
+      doc.setFontSize(10);
+      doc.addPage();
+
+      addText(doc, jsonData.threeTitle, 10, y, { maxWidth: 190 });
+      y += 5;
+
+      addText(doc, jsonData.justifyText, 10, y, { maxWidth: 190 });
+      y += 15;
+
+      addText(doc, jsonData.numberOnce + jsonData.textOnce, 10, y, {
         maxWidth: 190,
-      }
-    );
-    y += 167;
+      });
+      y += 25;
 
-    doc.text(jsonData.secondTitle, 10, y, { maxWidth: 190 });
-    y += 10;
+      addText(doc, jsonData.finalTitle, 10, y, { maxWidth: 190 });
+      y += 6;
 
-    doc.setFontSize(13);
+      addText(doc, jsonData.subFinalText, 10, y, { maxWidth: 190 });
+      y += 65;
 
-    doc.text(
-      "Cuenta Ahorros " +
-        ` Nro. Cuenta ${jsonData.optionAccount.numberAccount}` +
-        ` Entidad: ${jsonData.optionAccount.entityAccount}`,
-      10,
-      y,
-      {
-        maxWidth: 190,
-      }
-    );
-    y += -265;
+      addText(doc, jsonData.finalText, 10, y, { maxWidth: 190 });
+      y += 10;
 
-    doc.setFontSize(10);
+      if (signature) {
+        try {
+          const img = await loadImage(signature);
+          addSignature(doc, img, 10, y, "Firma del solicitante");
 
-    doc.addPage();
+          const docX = 70;
+          const docY = y + (img.height * 50) / img.width / 1;
+          addText(doc, numberDocument, docX, docY);
+          doc.line(docX, docY + 2, docX + 40, docY + 2);
+          addText(doc, "C.C.", docX, docY + 6);
 
-    doc.text(jsonData.threeTitle, 10, y, {
-      maxWidth: 190,
-    });
-    y += 5;
+          const pdfBlob = doc.output("blob");
+          const pdfUrl = URL.createObjectURL(pdfBlob);
+          setPdfUrl(pdfUrl);
 
-    doc.text(jsonData.justifyText, 10, y, {
-      maxWidth: 190,
-    });
-    y += 15;
-
-    doc.text(jsonData.numberOnce + jsonData.textOnce, 10, y, {
-      maxWidth: 190,
-    });
-    y += 25;
-
-    doc.text(jsonData.finalTitle, 10, y, {
-      maxWidth: 190,
-    });
-    y += 6;
-
-    doc.text(jsonData.subFinalText, 10, y, {
-      maxWidth: 190,
-    });
-    y += 65;
-
-    doc.text(jsonData.finalText, 10, y, {
-      maxWidth: 190,
-    });
-    y += 10;
-
-    const img = new Image();
-    img.src = signature as string;
-
-    img.onload = () => {
-      const imgWidth = 50; // Ancho de la imagen en el PDF
-      const imgHeight = (img.height * imgWidth) / img.width; // Mantener la proporción de la imagen
-
-      // Agregar la imagen de la firma
-      doc.addImage(img, "PNG", 10, y, imgWidth, imgHeight);
-
-      // Línea de separación debajo de la firma
-      const lineY = y + imgHeight + 2; // Posición Y de la línea debajo de la firma
-      doc.line(10, lineY, 10 + imgWidth, lineY); // Línea debajo de la firma
-      doc.text("Firma del solicitante", 10, lineY + 6); // Texto debajo de la línea
-
-      // Agregar el número de documento junto a la firma
-      const docX = 70; // Posición x del número de documento junto a la firma
-      const docY = y + imgHeight / 1; // Centrar verticalmente el número de documento respecto a la firma
-
-      doc.text(numberDocument, docX, docY);
-
-      // Línea de separación debajo del número de documento
-      doc.line(docX, docY + 2, docX + 40, docY + 2); // Línea debajo del número de documento
-      doc.text("C.C.", docX, docY + 6); // Texto debajo de la línea
-
-      const pdfBlob = doc.output("blob");
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      setPdfUrl(pdfUrl);
-
-      if (autoDownload) {
-        const link = document.createElement("a");
-        link.href = pdfUrl;
-        link.download = `document_${numberDocument}.pdf`;
-        link.click();
-        URL.revokeObjectURL(pdfUrl);
+          if (autoDownload) {
+            const link = document.createElement("a");
+            link.href = pdfUrl;
+            link.download = `document_${numberDocument}.pdf`;
+            link.click();
+            URL.revokeObjectURL(pdfUrl);
+          }
+        } catch (error) {
+          console.error("Error loading signature image", error);
+        }
       }
     };
+
+    generatePdf();
   }, [jsonData, numberDocument, signature, autoDownload]);
 
   return (
@@ -154,6 +177,6 @@ function Document00({
       )}
     </>
   );
-}
+};
 
 export default Document00;

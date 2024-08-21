@@ -11,7 +11,12 @@ import { toast } from "sonner";
 import { useGlobalContext } from "@/context/Auth";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
-
+import {
+  TbCircleChevronRight,
+  TbDiscountCheck,
+  TbLockOpen,
+  TbUserCancel,
+} from "react-icons/tb";
 import ImageDefault from "@/assets/avatar-default.jpg";
 
 import {
@@ -19,7 +24,6 @@ import {
   TbFaceId,
   TbPhotoCancel,
   TbPhotoUp,
-  TbTrash,
 } from "react-icons/tb";
 import LoadingPage from "@/components/Loaders/LoadingPage";
 import Modal from "@/components/modal/Modal";
@@ -33,7 +37,7 @@ function Profile({ params }: { params: { userId: string } }) {
   const { user, setUserData } = useGlobalContext();
   const [imagePreview1, setImagePreview1] = useState("No definido");
   const [infoUser, setInfoUser] = useState<ScalarDocument>();
-
+  const [progress, setProgress] = useState(0); // Progress state
   const [loading, setLoading] = useState(true);
   const [loadingData, setLoadingData] = useState(true);
 
@@ -95,10 +99,6 @@ function Profile({ params }: { params: { userId: string } }) {
   const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
   const [openViewPdf, setOpenViewPdf] = useState<boolean>(false);
   const [link, setLink] = useState<string>();
-  const [openDocs, setOpenDocs] = useState<boolean>(false);
-  const [contentOpenDoc, setContentOpenDoc] = useState<
-    string | undefined | null
-  >(user?.avatar);
 
   const handleCloseModel = () => {
     setOpenViewPdf(false);
@@ -158,6 +158,52 @@ function Profile({ params }: { params: { userId: string } }) {
       getInfoUser();
     }
   }, [user, params.userId, router]);
+
+  useEffect(() => {
+    if (!loading && !loadingData) {
+      // Calculate progress based on the completeness of the profile
+      const totalSteps = 6; // Number of required steps
+      let completedSteps = 0;
+
+      if (
+        dataProfile &&
+        dataProfile.avatar !== "No definido" &&
+        dataProfile?.birth_day &&
+        dataProfile.city !== "No definido" &&
+        dataProfile.genre !== "No" &&
+        dataProfile.phone !== "No definido" &&
+        dataProfile.phone_whatsapp !== "No definido" &&
+        dataProfile.place_of_birth !== "No definido" &&
+        dataProfile.residence_address !== "No definido" &&
+        dataProfile.residence_phone_number !== "No definido"
+      )
+        completedSteps += 1;
+      if (
+        infoUser &&
+        infoUser.documentSides !== "No definido" &&
+        infoUser.imageWithCC !== "No definido" &&
+        infoUser.number !== "No definido" &&
+        infoUser.upId !== "No definido"
+      )
+        completedSteps += 1;
+      if (numberCc) completedSteps += 1;
+      if (imagePreview1) completedSteps += 1;
+      if (selectedImageWithCC) completedSteps += 1;
+      if (upId) completedSteps += 1;
+
+      const percentage = Math.min((completedSteps / totalSteps) * 100, 100);
+      setProgress(percentage);
+    }
+  }, [
+    loading,
+    loadingData,
+    dataProfile,
+    infoUser,
+    numberCc,
+    imagePreview1,
+    selectedImageWithCC,
+    upId,
+  ]);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
 
@@ -901,17 +947,78 @@ function Profile({ params }: { params: { userId: string } }) {
           </div>
         </div>
 
-        {/* <Modal isOpen={openDocs} onClose={handleOpenViewDocImg} link={null}>
-          <div className={styles.boxImageDocPrev}>
-            <Image
-              src={contentOpenDoc as string}
-              alt="content"
-              width={300}
-              height={300}
-              className={styles.imgPrevDoc}
-            />
+        <div style={{ marginTop: "3em" }}>
+          <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
+            <div style={{ display: "grid", placeContent: "center" }}>
+              {progress === 100 && (
+                <TbDiscountCheck
+                  style={{ color: "var(--green-500)" }}
+                  size={20}
+                />
+              )}
+              {progress !== 100 && progress < 100 && (
+                <TbUserCancel style={{ color: "var(--red-500)" }} size={20} />
+              )}
+            </div>
+            <p style={{ fontWeight: "900", color: "var(--green-800)" }}>
+              {progress === 100
+                ? "Tu perfil esta completo"
+                : "Tu perfil sigue incompleto"}
+            </p>
           </div>
-        </Modal> */}
+        </div>
+
+        <div
+          style={{
+            width: "100%",
+            background: "var(--green-300)",
+            height: "20px",
+            borderRadius: "5px",
+            marginBottom: "10px",
+            marginTop: "10px",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              height: "100%",
+              background: "#4caf50",
+              borderRadius: "5px",
+              textAlign: "center",
+              color: "white",
+              lineHeight: "20px",
+              transition: "width 0.3s ease-in-out",
+              width: `${progress}%`,
+            }}
+          >
+            {Math.round(progress)}%
+          </div>
+        </div>
+
+        {progress === 100 && (
+          <>
+            <p style={{ marginBottom: "5px", marginTop: "1em" }}>
+              Ya tienes permitido:
+            </p>
+            <div
+              className={styles.btnRedirLoan}
+              onClick={() => (window.location.href = "/dashboard")}
+            >
+              <div style={{ display: "flex", gap: "5px" }}>
+                <div style={{ display: "grid", placeContent: "center" }}>
+                  <TbLockOpen style={{ color: "var(--blue-500)" }} />
+                </div>
+                <p>Crear solicitud de prestamo</p>
+              </div>
+              <div style={{ display: "grid", placeContent: "center" }}>
+                <TbCircleChevronRight />
+              </div>
+            </div>
+          </>
+        )}
       </main>
 
       <Modal

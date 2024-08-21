@@ -25,6 +25,7 @@ import Document02 from "@/components/pdfs/pdfCard02";
 import CopyText from "@/components/accesories/CopyText";
 import { RefreshDataLoan } from "@/handlers/requests/RefreshLoanData";
 import { toast } from "sonner";
+import { BankTypes, handleKeyToStringBank } from "@/handlers/typeBankPretty";
 
 function RequestInfo({ params }: { params: { loanId: string } }) {
   const { user } = useGlobalContext();
@@ -215,12 +216,14 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
             </>
           )}
 
-          {infoLoan?.status == "Aplazado" && (
-            <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
-              <h5>Razon del rechazo</h5>
-              <p>{infoLoan?.reasonReject}</p>
-            </div>
-          )}
+          {infoLoan &&
+            infoLoan.status == "Aplazado" &&
+            infoLoan.reasonReject && (
+              <div className={styles.cardInfoBank} style={{ marginTop: "1em" }}>
+                <h5>Razon del rechazo</h5>
+                <p>{infoLoan?.reasonReject}</p>
+              </div>
+            )}
 
           {infoLoan?.reasonChangeCantity && (
             <>
@@ -289,7 +292,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
 
             <div className={styles.cardInfoBank}>
               <h5>Entidad bancaria</h5>
-              <p>{infoLoan?.entity}</p>
+              <p>{handleKeyToStringBank(infoLoan?.entity as BankTypes)}</p>
             </div>
           </div>
 

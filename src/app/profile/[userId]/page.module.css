@@ -539,6 +539,19 @@
   color: var(--white-50);
 }
 
+.btnRedirLoan {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.btnRedirLoan:hover {
+  background: var(--green-50);
+  cursor: pointer;
+}
+
 @media screen and (max-width: 800px) {
   .boxIconAvatar,
   .boxChangeImage {
