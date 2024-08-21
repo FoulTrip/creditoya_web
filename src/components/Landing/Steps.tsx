@@ -3,12 +3,14 @@
 import React from "react";
 import styles from "./styles/StepSection.module.css";
 import Image from "next/image";
-import Video from "next-video";
 
 import imgService01 from "@/assets/imageService01.svg";
 import imgService02 from "@/assets/imageService02.svg";
 import imgService03 from "@/assets/Online document-bro.svg";
 import { useMediaQuery } from "react-responsive";
+
+const videoUrl =
+  "https://res.cloudinary.com/dvquomppa/video/upload/v1724228923/videos_guia/u51npgvxsebnkhnhsh0x.mp4";
 
 function StepSection() {
   const isDesktop = useMediaQuery({ query: "(max-width: 900px)" });
@@ -102,21 +104,13 @@ function StepSection() {
 
         <div className={styles.serviceVideo}>
           {isDesktop && (
-            <Video
-              className={styles.videoLit}
-              src={
-                "https://res.cloudinary.com/dvquomppa/video/upload/v1724228923/videos_guia/u51npgvxsebnkhnhsh0x.mp4"
-              }
-              controls
-            />
+            <video className={styles.videoLit} src={videoUrl} controls />
           )}
 
           {!isDesktop && (
-            <Video
+            <video
               className={styles.videoLit}
-              src={
-                "https://res.cloudinary.com/dvquomppa/video/upload/v1724228923/videos_guia/u51npgvxsebnkhnhsh0x.mp4"
-              }
+              src={videoUrl}
               controls
               width={800}
               height={400}
