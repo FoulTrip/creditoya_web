@@ -164,7 +164,7 @@
 }
 
 .serviceVideo {
-  margin-top: 2em;
+  margin-top: 5em;
   width: 90%;
   margin-left: 5%;
   display: grid;
@@ -176,10 +176,7 @@
 }
 
 .videoLit {
-  width: 600px; /* Ancho fijo */
-  height: auto; /* Altura automática para mantener la proporción */
-  display: block;
-  max-width: 100%;
+  width: 100%;
   background-color: transparent;
 }
 

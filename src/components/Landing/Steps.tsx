@@ -11,7 +11,7 @@ import imgService03 from "@/assets/Online document-bro.svg";
 import { useMediaQuery } from "react-responsive";
 
 function StepSection() {
-  const isDesktop = useMediaQuery({ minWidth: "900px" });
+  const isDesktop = useMediaQuery({ query: "(max-width: 900px)" });
 
   return (
     <>
