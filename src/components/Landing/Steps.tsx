@@ -8,8 +8,11 @@ import Video from "next-video";
 import imgService01 from "@/assets/imageService01.svg";
 import imgService02 from "@/assets/imageService02.svg";
 import imgService03 from "@/assets/Online document-bro.svg";
+import { useMediaQuery } from "react-responsive";
 
 function StepSection() {
+  const isDesktop = useMediaQuery({ minWidth: "900px" });
+
   return (
     <>
       <main className={styles.mainServices}>
@@ -98,12 +101,27 @@ function StepSection() {
         </div>
 
         <div className={styles.serviceVideo}>
-          <Video
-            src={
-              "https://res.cloudinary.com/dvquomppa/video/upload/v1724228923/videos_guia/u51npgvxsebnkhnhsh0x.mp4"
-            }
-            controls
-          />
+          {isDesktop && (
+            <Video
+              className={styles.videoLit}
+              src={
+                "https://res.cloudinary.com/dvquomppa/video/upload/v1724228923/videos_guia/u51npgvxsebnkhnhsh0x.mp4"
+              }
+              width={800}
+              height={400}
+              controls
+            />
+          )}
+
+          {!isDesktop && (
+            <Video
+              className={styles.videoLit}
+              src={
+                "https://res.cloudinary.com/dvquomppa/video/upload/v1724228923/videos_guia/u51npgvxsebnkhnhsh0x.mp4"
+              }
+              controls
+            />
+          )}
         </div>
       </main>
     </>
