@@ -40,7 +40,7 @@ function VideoGuiaSteps() {
             ref={videoRef}
             className={styles.video}
             src={
-              "https://res.cloudinary.com/dvquomppa/video/upload/v1724170783/videos_guia/bee7ljjrjhc8dneivaay.mp4"
+              "https://res.cloudinary.com/dvquomppa/video/upload/v1724228923/videos_guia/u51npgvxsebnkhnhsh0x.mp4"
             }
             controls
           />

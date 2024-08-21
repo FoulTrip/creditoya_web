@@ -90,6 +90,19 @@
   animation-fill-mode: both;
 }
 
+.serviceVideo {
+  width: 90%;
+  margin-left: 5%;
+  view-timeline-name: --image;
+  view-timeline-axis: block;
+
+  animation-timeline: --image;
+  animation-name: show;
+
+  animation-range: entry 20% cover 30%;
+  animation-fill-mode: both;
+}
+
 .centerServiceBox {
   display: flex;
   flex-direction: row;
