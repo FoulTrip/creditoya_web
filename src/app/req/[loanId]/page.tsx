@@ -98,6 +98,19 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
   };
 
   useEffect(() => {
+    // Check if the user is authenticated and authorized
+    if (user === undefined || user === null) return;
+
+    if (!user) {
+      window.location.href = "/auth";
+      return;
+    }
+
+    // if (user.id !== params.loanId) {
+    //   window.location.href = "/";
+    //   return;
+    // }
+
     const loanInfo = async () => {
       const loanId: string = params.loanId;
 
@@ -127,10 +140,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
 
         if (responseDoc && responseDoc.data.success == true) {
           setDocumentsInfo(responseDoc.data.data);
-          // console.log(responseDoc.data.data);
         }
-
-        // if (loan.employeeId == "Standby") console.log("Sin asesor");
 
         if (loan.employeeId !== "Standby") {
           const infoEmployee = await axios
@@ -172,11 +182,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
       }
     };
 
-    if (user) {
-      loanInfo();
-    } else {
-      router.push("/auth");
-    }
+    loanInfo();
   }, [params.loanId, user, user?.token, infoLoan?.userId, router]);
 
   if (loading) {
