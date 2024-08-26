@@ -3,7 +3,6 @@ import styles from "./auth.module.css";
 import { TbLoader, TbMail } from "react-icons/tb";
 import { toast } from "sonner";
 import axios from "axios";
-import TokenService from "@/classes/TokenServices";
 import { ScalarUser } from "@/types/User";
 
 function RecoverPassword({ onCancel }: { onCancel: () => void }) {
@@ -14,7 +13,6 @@ function RecoverPassword({ onCancel }: { onCancel: () => void }) {
   const [coverNumberMail, setCoverNumberMail] = useState<string | null>(null);
 
   const [codeSent, setCodeSent] = useState(false);
-  const [completeName, setCompleteName] = useState<string | null>(null);
 
   const [isTimeNewPass, setIsTimeNewPass] = useState(false);
   const [userData, setUserData] = useState<ScalarUser | null>(null);
@@ -34,10 +32,7 @@ function RecoverPassword({ onCancel }: { onCancel: () => void }) {
         const data: ScalarUser = searchUser.data.data;
         setUserData(data);
         console.log(data);
-
-        setCompleteName(
-          `${data.names} ${data.firstLastName} ${data.secondLastName}`
-        );
+        const completeName = `${data.names} ${data.firstLastName} ${data.secondLastName}`;
 
         const newKey = (Math.floor(Math.random() * 90000) + 10000)
           .toString()
@@ -46,7 +41,6 @@ function RecoverPassword({ onCancel }: { onCancel: () => void }) {
         setGenerateKey(newKey);
 
         const numberCode: number = Number(newKey);
-        const name: string = completeName as string;
 
         console.log(data);
 
@@ -63,7 +57,7 @@ function RecoverPassword({ onCancel }: { onCancel: () => void }) {
           "/api/mail/recover",
           {
             addressee: emailRecover,
-            name,
+            name: completeName,
             code: numberCode,
           }
           // { headers: { Authorization: `Bearer ${token}` } }
