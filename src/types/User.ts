@@ -8,7 +8,6 @@ export type ScalarUser = {
   avatar?: string;
   phone?: string;
   residence_phone_number?: string;
-  phone_is_wp?: boolean;
   phone_whatsapp?: string;
   birth_day?: Date;
   place_of_birth?: string;

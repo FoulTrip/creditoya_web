@@ -7,14 +7,20 @@ import Image from "next/image";
 import imgService01 from "@/assets/imageService01.svg";
 import imgService02 from "@/assets/imageService02.svg";
 import imgService03 from "@/assets/Online document-bro.svg";
+import { useMediaQuery } from "react-responsive";
+
+const videoUrl =
+  "https://res.cloudinary.com/dvquomppa/video/upload/v1724228923/videos_guia/u51npgvxsebnkhnhsh0x.mp4";
 
 function StepSection() {
+  const isDesktop = useMediaQuery({ query: "(max-width: 900px)" });
+
   return (
     <>
       <main className={styles.mainServices}>
         <div>
           <h1 className={styles.TitleServices}>
-            ¡Solicita tu credito en menos de 30 minutos!
+            ¡Solicita tu credito en menos de 5 minutos!
           </h1>
           <p className={styles.viewText}>Observa como lo puedes lograr</p>
         </div>
@@ -94,6 +100,22 @@ function StepSection() {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className={styles.serviceVideo}>
+          {isDesktop && (
+            <video className={styles.videoLit} src={videoUrl} controls />
+          )}
+
+          {!isDesktop && (
+            <video
+              className={styles.videoLit}
+              src={videoUrl}
+              controls
+              width={800}
+              height={400}
+            />
+          )}
         </div>
       </main>
     </>

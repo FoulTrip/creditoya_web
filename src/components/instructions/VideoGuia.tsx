@@ -22,7 +22,7 @@ function VideoGuia({ switche, statusOpen }: VideoProps) {
           <div className={styles.boxTexts}>
             <div className={styles.Texts}>
               <h5>Video Tutorial</h5>
-              <h3>Creacion de cuenta Credito Ya</h3>
+              <h3>Aprende a usar nuestra app</h3>
             </div>
           </div>
         </div>

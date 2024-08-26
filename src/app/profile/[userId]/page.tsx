@@ -11,7 +11,8 @@ import { toast } from "sonner";
 import { useGlobalContext } from "@/context/Auth";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
-
+import { TbArrowNarrowRight } from "react-icons/tb";
+import iconWarnComplete from "@/assets/enhorabuena.png";
 import ImageDefault from "@/assets/avatar-default.jpg";
 
 import {
@@ -19,7 +20,6 @@ import {
   TbFaceId,
   TbPhotoCancel,
   TbPhotoUp,
-  TbTrash,
 } from "react-icons/tb";
 import LoadingPage from "@/components/Loaders/LoadingPage";
 import Modal from "@/components/modal/Modal";
@@ -33,11 +33,25 @@ function Profile({ params }: { params: { userId: string } }) {
   const { user, setUserData } = useGlobalContext();
   const [imagePreview1, setImagePreview1] = useState("No definido");
   const [infoUser, setInfoUser] = useState<ScalarDocument>();
-
   const [loading, setLoading] = useState(true);
   const [loadingData, setLoadingData] = useState(true);
-
+  const [isWarnComplete, setIsWarnComplete] = useState(false);
   const [dataProfile, setDataProfile] = useState<ScalarUser | null>(null);
+
+  const [v, setV] = useState(false);
+
+  const [numberCc, setNumberCc] = useState<string | null>(null);
+  const [upId, setUpId] = useState<string | null>(null);
+  const [selectedImagePerfil, setSelectedImagePerfil] = useState<string | null>(
+    null
+  );
+  const [selectedImageWithCC, setSelectedImageWithCC] = useState<string | null>(
+    "No definido"
+  );
+  const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
+  const [openViewPdf, setOpenViewPdf] = useState<boolean>(false);
+  const [link, setLink] = useState<string>();
+  const [isProfileComplete, setIsProfileComplete] = useState<boolean>(false);
 
   const handleChangeProfile = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -84,22 +98,6 @@ function Profile({ params }: { params: { userId: string } }) {
     }));
   };
 
-  const [numberCc, setNumberCc] = useState<string | null>(null);
-  const [upId, setUpId] = useState<string | null>(null);
-  const [selectedImagePerfil, setSelectedImagePerfil] = useState<string | null>(
-    null
-  );
-  const [selectedImageWithCC, setSelectedImageWithCC] = useState<string | null>(
-    "No definido"
-  );
-  const [loadingProccessImg01, setLoadingProccessImg01] = useState(false);
-  const [openViewPdf, setOpenViewPdf] = useState<boolean>(false);
-  const [link, setLink] = useState<string>();
-  const [openDocs, setOpenDocs] = useState<boolean>(false);
-  const [contentOpenDoc, setContentOpenDoc] = useState<
-    string | undefined | null
-  >(user?.avatar);
-
   const handleCloseModel = () => {
     setOpenViewPdf(false);
   };
@@ -108,56 +106,80 @@ function Profile({ params }: { params: { userId: string } }) {
 
   useEffect(() => {
     // Check if the user is authenticated and authorized
-    if (!user) {
-      router.push("/auth");
-    } else if (user.id !== params.userId) {
-      router.push("/");
-    } else {
-      // Fetch user information and documents
-      const getInfoUserDocs = async () => {
-        try {
-          if (user.token) {
-            const response = await axios.post(
-              "/api/user/list_docs",
-              { userId: params.userId },
-              { headers: { Authorization: `Bearer ${user.token}` } }
-            );
-            setInfoUser(response.data.data[0]);
-            if (response.data.data[0]) {
-              const data: ScalarDocument = response.data.data[0];
-              setNumberCc(data.number as string);
-              setImagePreview1(data.documentSides as string);
-              setSelectedImageWithCC(data.imageWithCC as string);
-              setUpId(data.upId as string);
-            }
-            setLoadingData(false);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setLoading(false);
-        }
-      };
+    if (user === undefined || user === null) return;
 
-      const getInfoUser = async () => {
-        try {
+    if (!user) {
+      window.location.href = "/auth";
+      return;
+    }
+
+    if (user.id !== params.userId) {
+      window.location.href = "/";
+      return;
+    }
+
+    // Fetch user information and documents
+    const getInfoUserDocs = async () => {
+      try {
+        if (user.token) {
           const response = await axios.post(
-            "/api/user/id",
-            { userId: user.id },
+            "/api/user/list_docs",
+            { userId: params.userId },
             { headers: { Authorization: `Bearer ${user.token}` } }
           );
-          setDataProfile(response.data.data);
-        } catch (error) {
-          console.error(error);
-        } finally {
+          setInfoUser(response.data.data[0]);
+          if (response.data.data[0]) {
+            const data: ScalarDocument = response.data.data[0];
+            setNumberCc(data.number as string);
+            setImagePreview1(data.documentSides as string);
+            setSelectedImageWithCC(data.imageWithCC as string);
+            setUpId(data.upId as string);
+          }
           setLoadingData(false);
         }
-      };
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      getInfoUserDocs();
-      getInfoUser();
-    }
+    const getInfoUser = async () => {
+      try {
+        const response = await axios.post(
+          "/api/user/id",
+          { userId: user.id },
+          { headers: { Authorization: `Bearer ${user.token}` } }
+        );
+        setDataProfile(response.data.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoadingData(false);
+      }
+    };
+
+    getInfoUserDocs();
+    getInfoUser();
   }, [user, params.userId, router]);
+
+  useEffect(() => {
+    const verifyDocs = async () => {
+      const response = await axios.post(
+        "/api/user/docs_exist",
+        { userId: dataProfile?.id },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+
+      if (response.data.success == true) {
+        const isComplete = response.data.data.complete;
+        setIsProfileComplete(isComplete);
+        setIsWarnComplete(true);
+      }
+    };
+
+    verifyDocs();
+  }, [v, dataProfile]);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 700px)" });
 
@@ -178,9 +200,10 @@ function Profile({ params }: { params: { userId: string } }) {
       );
 
       if (response.data.success === true) {
-        toast.success("Dato actualizado");
+        setV((prev) => !prev);
+        toast.success("Tus datos han sido actualizados");
       } else if (response.data.success === false) {
-        throw new Error("Error al actualizar dato");
+        throw new Error("Error al actualizar tus datos");
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -284,6 +307,7 @@ function Profile({ params }: { params: { userId: string } }) {
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
+          setV((prev) => !prev);
           toast.success("Verificacion creada");
           setInfoUser(response.data.data);
         }
@@ -349,6 +373,7 @@ function Profile({ params }: { params: { userId: string } }) {
 
     // console.log(response);
     if (response.data.success == true) {
+      setV((prev) => !prev);
       toast.success("Numero de cedula actualizado");
     }
     // console.log(response);
@@ -428,6 +453,7 @@ function Profile({ params }: { params: { userId: string } }) {
           );
 
           if (updateDocResponse.data.success === true) {
+            setV((prev) => !prev);
             toast.success("Documento subido");
             setUpId(upId);
             setImagePreview1(link);
@@ -860,9 +886,7 @@ function Profile({ params }: { params: { userId: string } }) {
                         <div className={styles.boxIconStatus}>
                           <TbCircleCheckFilled className={styles.iconCheck} />
                         </div>
-                        <p className={styles.warninCC}>
-                          Tercer volante de pago
-                        </p>
+                        <p className={styles.warninCC}>Cedula de ciudadania</p>
                       </div>
                     </div>
 
@@ -903,17 +927,32 @@ function Profile({ params }: { params: { userId: string } }) {
           </div>
         </div>
 
-        {/* <Modal isOpen={openDocs} onClose={handleOpenViewDocImg} link={null}>
-          <div className={styles.boxImageDocPrev}>
-            <Image
-              src={contentOpenDoc as string}
-              alt="content"
-              width={300}
-              height={300}
-              className={styles.imgPrevDoc}
-            />
-          </div>
-        </Modal> */}
+        {isProfileComplete && isWarnComplete && (
+          <>
+            <div
+              className={styles.warnComplete}
+              onClick={() => (window.location.href = "/dashboard")}
+            >
+              <div className={styles.boxCompleteWarn}>
+                <div className={styles.boxIconWarn}>
+                  <Image
+                    src={iconWarnComplete}
+                    className={styles.iconWarn}
+                    alt={"icon"}
+                  />
+                </div>
+                <div className={styles.boxText}>
+                  <h5>Perfil Completado</h5>
+                  <p>Ya puedes comenzar a solicitar tus prestamos</p>
+                </div>
+              </div>
+
+              <div className={styles.boxIconArrow}>
+                <TbArrowNarrowRight size={20} />
+              </div>
+            </div>
+          </>
+        )}
       </main>
 
       <Modal

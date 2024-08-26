@@ -12,6 +12,14 @@ interface ScalarUser {
 
 export async function GET() {
   try {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+    const currentMonth = currentDate.getMonth();
+
+    if (currentDay !== 24 || currentMonth !== 12) {
+      return NextResponse.json({ message: "No es el día" });
+    }
+
     const allUsers: ScalarUser[] | null =
       await UserService.getUserDetailsMail();
 

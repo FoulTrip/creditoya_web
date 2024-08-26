@@ -23,7 +23,7 @@
   display: flex;
   flex-direction: column;
   padding-top: 5em;
-  padding-bottom: 5em;
+  padding-bottom: 3em;
 }
 
 .TitleServices {
@@ -163,6 +163,23 @@
   padding-left: 20px;
 }
 
+.serviceVideo {
+  margin-top: 5em;
+  width: 90%;
+  margin-left: 5%;
+  display: grid;
+  place-content: center;
+  animation-timeline: --image;
+  animation-name: show;
+  animation-range: entry 20% cover 30%;
+  animation-fill-mode: both;
+}
+
+.videoLit {
+  width: 100%;
+  background-color: transparent;
+}
+
 @media screen and (max-width: 800px) {
   .mainServices {
     gap: 40px;
@@ -173,5 +190,10 @@
 
   .serviceBox {
     padding: 10px 0px;
+  }
+
+  .videoLit {
+    width: 100%;
+    height: auto;
   }
 }

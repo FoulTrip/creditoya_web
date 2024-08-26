@@ -5,6 +5,7 @@ import FormRequest from "../instructions/FormReq";
 import AnswerRequest from "../instructions/answerRequest";
 import VideoGuia from "../instructions/VideoGuia";
 import Video from "next-video";
+import VideoGuiaSteps from "../videoGuia/VideoGuia";
 
 function Instructions({ onClose }: { onClose: () => void }) {
   const [openVideo, setOpenVideo] = useState(false);
@@ -24,17 +25,15 @@ function Instructions({ onClose }: { onClose: () => void }) {
 
       <VideoGuia switche={handleOpenVideo} statusOpen={openVideo} />
 
-      {openVideo == true && (
-        <Video
-        style={{ marginTop: "1em" }}
-          src={
-            "https://res.cloudinary.com/dvquomppa/video/upload/v1722845128/videos_guia/iolghbmv7sycocooiu1v.mp4"
-          }
-        />
+      {openVideo == true && <VideoGuiaSteps />}
+
+      {openVideo == false && (
+        <>
+          <DocsRequires />
+          <FormRequest />
+          <AnswerRequest />
+        </>
       )}
-      <DocsRequires />
-      <FormRequest />
-      <AnswerRequest />
     </>
   );
 }

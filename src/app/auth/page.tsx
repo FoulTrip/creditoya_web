@@ -7,9 +7,12 @@ import Image from "next/image";
 import logoTripCode from "@/assets/only_object_logo.png";
 import Signin from "@/components/auth/Signin";
 import Signup from "@/components/auth/Signup";
+import RecoverPassword from "@/components/auth/RecoverPassword";
 
 function OneContent() {
   const [selectLogin, setSelectLogin] = useState("signin");
+  const [recoverPass, setRecoverPass] = useState(false);
+
   return (
     <>
       <main className={styles.main}>
@@ -23,28 +26,42 @@ function OneContent() {
             />
           </div>
           {/* <p>Accede a nuestros servicios</p> */}
-          {selectLogin == "signin" ? <Signin /> : null}
-          {selectLogin == "signup" ? <Signup /> : null}
-
-          {selectLogin == "signin" && (
-            <p className={styles.warnAccount}>
-              No tienes cuenta?{" "}
-              <span
-                className={styles.bntWarn}
-                onClick={() => setSelectLogin("signup")}
-              >
-                Ingresa aqui
-              </span>
-            </p>
+          {selectLogin == "signin" && recoverPass == false ? <Signin /> : null}
+          {selectLogin == "signup" && recoverPass == false ? <Signup /> : null}
+          {recoverPass == true && (
+            <RecoverPassword onCancel={() => setRecoverPass(false)} />
           )}
-          {selectLogin == "signup" && (
+          {selectLogin == "signin" && recoverPass == false && (
+            <>
+              <div>
+                <p className={styles.warnAccount}>
+                  No tienes cuenta?{" "}
+                  <span
+                    className={styles.bntWarn}
+                    onClick={() => setSelectLogin("signup")}
+                  >
+                    Crea tu cuenta
+                  </span>
+                </p>
+              </div>
+
+              <div className={styles.boxRecoverPass}>
+                <h5 className={styles.textPass}>Olvidaste tu contraseña?</h5>
+                <p onClick={() => setRecoverPass(true)}>
+                  Recupera tu contraseña
+                </p>
+              </div>
+            </>
+          )}
+
+          {selectLogin == "signup" && recoverPass == false && (
             <p className={styles.warnAccount}>
               Ya tienes cuenta?{" "}
               <span
                 className={styles.bntWarn}
                 onClick={() => setSelectLogin("signin")}
               >
-                Ingresa aqui
+                Ingresa
               </span>
             </p>
           )}
