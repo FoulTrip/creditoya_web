@@ -1,3 +1,12 @@
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .form {
   margin-top: 10px;
   min-width: 300px;
@@ -95,4 +104,50 @@
 
 .inputImg {
   margin-top: 10px;
+}
+
+.warnText {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.bntSubPass {
+  margin-top: 1em;
+}
+
+.cancelBtn {
+  display: flex;
+  border-radius: 8px;
+  cursor: pointer;
+  justify-content: flex-start;
+  /* margin-top: 1em; */
+}
+
+.cancelBtn p {
+  /* border: 1px solid var(--red-200); */
+  font-weight: 800;
+  color: var(--red-500);
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: var(--white-100);
+}
+
+.cancelBtn p:hover {
+  background: var(--red-400);
+  color: var(--white-50);
+}
+
+.containerLoader, .boxIconLoader {
+  display: grid;
+  place-content: center;
+}
+
+.bocCenterLoader {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.iconLoader {
+  animation: spin 2s linear infinite;
 }

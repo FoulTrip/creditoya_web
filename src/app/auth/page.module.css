@@ -36,9 +36,39 @@
 .bntWarn {
   cursor: pointer;
   font-weight: 500;
+  padding: 5px 10px;
   color: var(--white-500);
 }
 
 .bntWarn:hover {
-  color: var(--white-600);
+  background: var(--white-100);
+  border-radius: 8px;
+}
+
+.boxRecoverPass {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 1em;
+  gap: 10px;
+}
+
+.textRecover {
+  display: flex;
+  flex-direction: row;
+}
+
+.boxRecoverPass p, .textPass {
+  display: grid;
+  place-content: center;
+}
+
+.boxRecoverPass p {
+  padding: 5px 10px;
+}
+
+.boxRecoverPass p:hover {
+  background: var(--white-100);
+  cursor: pointer;
+  border-radius: 8px;
 }
