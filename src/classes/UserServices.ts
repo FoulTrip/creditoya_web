@@ -105,6 +105,33 @@ class UserService {
     });
   }
 
+  static async getUserByMail(
+    email: string
+  ): Promise<Pick<
+    User,
+    "id" | "names" | "firstLastName" | "secondLastName" | "email"
+  > | null> {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { email },
+        select: {
+          id: true,
+          names: true,
+          firstLastName: true,
+          secondLastName: true,
+          email: true,
+        },
+      });
+
+      return user;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      return null;
+    }
+  }
+
   // Delete user method
   static async delete(id: string): Promise<User> {
     return prisma.user.delete({ where: { id } });

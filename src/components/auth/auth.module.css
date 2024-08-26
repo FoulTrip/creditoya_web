@@ -113,6 +113,8 @@
 
 .bntSubPass {
   margin-top: 1em;
+  display: grid;
+  place-content: center;
 }
 
 .cancelBtn {
@@ -137,7 +139,8 @@
   color: var(--white-50);
 }
 
-.containerLoader, .boxIconLoader {
+.containerLoader,
+.boxIconLoader {
   display: grid;
   place-content: center;
 }
@@ -150,4 +153,20 @@
 
 .iconLoader {
   animation: spin 2s linear infinite;
+}
+
+.BtnReq {
+  background: var(--white-50);
+  font-weight: 800;
+  outline: none;
+  border: 1px solid var(--white-50);
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--white-500);
+  text-align: center;
+}
+
+.BtnReq:hover {
+  background: var(--white-100);
 }
