@@ -3,7 +3,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./Contract.module.css";
 import { useDropzone } from "react-dropzone";
-import { TbCircleCheckFilled, TbLoader, TbTrash } from "react-icons/tb";
+import {
+  TbCircleCheckFilled,
+  TbInfoCircle,
+  TbLoader,
+  TbTrash,
+  TbX,
+} from "react-icons/tb";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
 import { toast } from "sonner";
@@ -75,6 +81,8 @@ function Contract({
   const [threeFlayer, setThreeFlayer] = useState<FormData | null>(null);
   const [laborCard, setLaborCard] = useState<FormData | null>(null);
   const [signatureSrc, setSignatureSrc] = useState<FormData | null>(null);
+
+  const [openWarnBanner, setOpenWarnBanner] = useState(true);
 
   useEffect(() => {
     setLoading(true);
@@ -421,6 +429,13 @@ function Contract({
         setLoadingProccessImg03(true);
         const file = acceptedFiles[0];
 
+        const allowedExtensions = ["application/pdf"];
+        if (!allowedExtensions.includes(file.type)) {
+          setLoadingProccessImg03(false);
+          toast.error("El archivo debe ser un PDF");
+          throw new Error("El archivo debe ser un PDF");
+        }
+
         const maxSize = 2.5 * 1024 * 1024; // 2.5MB en bytes
 
         if (file.size > maxSize) {
@@ -454,6 +469,14 @@ function Contract({
         if (acceptedFiles.length > 0) {
           setLoadingProccessImg04(true);
           const file = acceptedFiles[0];
+
+          const allowedExtensions = ["application/pdf"];
+          if (!allowedExtensions.includes(file.type)) {
+            setLoadingProccessImg04(false);
+            toast.error("El archivo debe ser un PDF");
+            throw new Error("El archivo debe ser un PDF");
+          }
+
           const maxSize = 2.5 * 1024 * 1024; // 2.5MB en bytes
 
           if (file.size > maxSize) {
@@ -493,6 +516,13 @@ function Contract({
         setLoadingProccessImg05(true);
         const file = acceptedFiles[0];
 
+        const allowedExtensions = ["application/pdf"];
+        if (!allowedExtensions.includes(file.type)) {
+          setLoadingProccessImg05(false);
+          toast.error("El archivo debe ser un PDF");
+          throw new Error("El archivo debe ser un PDF");
+        }
+
         const maxSize = 2.5 * 1024 * 1024; // 2.5MB en bytes
 
         if (file.size > maxSize) {
@@ -526,6 +556,13 @@ function Contract({
       if (acceptedFiles.length > 0) {
         setLoadingProccessImg06(true);
         const file = acceptedFiles[0];
+
+        const allowedExtensions = ["application/pdf"];
+        if (!allowedExtensions.includes(file.type)) {
+          setLoadingProccessImg03(false);
+          toast.error("El archivo debe ser un PDF");
+          throw new Error("El archivo debe ser un PDF");
+        }
 
         const maxSize = 2.5 * 1024 * 1024; // 2.5MB en bytes
 
@@ -573,6 +610,26 @@ function Contract({
 
   return (
     <>
+      {openWarnBanner && (
+        <div className={styles.bannerWarn}>
+          <div className={styles.boxInfoText}>
+            <div className={styles.boxIconInfo}>
+              <TbInfoCircle className={styles.iconInfo} />
+            </div>
+            <p className={styles.textInfo}>
+              Porfavor contenga los documentos requeridos en los archivos de su
+              telefono antes empezar a llenar la solicitud de prestamo
+            </p>
+          </div>
+          <div
+            className={styles.boxIconX}
+            onClick={() => setOpenWarnBanner(false)}
+          >
+            <TbX className={styles.iconX} size={20} />
+          </div>
+        </div>
+      )}
+
       {creatingLoan == false && (
         <>
           <div className={styles.btnClose}>

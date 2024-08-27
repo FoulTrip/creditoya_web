@@ -410,6 +410,14 @@ function Profile({ params }: { params: { userId: string } }) {
       setLoadingProccessImg01(true);
 
       const file = acceptedFiles[0];
+
+      const allowedExtensions = ["application/pdf"];
+      if (!allowedExtensions.includes(file.type)) {
+        setLoadingProccessImg01(false);
+        toast.error("El archivo debe ser un PDF");
+        throw new Error("El archivo debe ser un PDF");
+      }
+
       const maxSize = 2.5 * 1024 * 1024; // 2.5MB en bytes
 
       if (file.size > maxSize) {

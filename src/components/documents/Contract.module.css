@@ -456,6 +456,54 @@
   animation: spin 2s linear infinite;
 }
 
+.bannerWarn {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 2em;
+  gap: 15px;
+  background: var(--white-100);
+  padding: 10px;
+  border-radius: 16px;
+}
+
+.boxInfoText {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.boxIconInfo {
+  display: grid;
+  place-content: center;
+}
+
+.boxIconX {
+  display: grid;
+  place-content: center;
+  padding: 10px 15px;
+}
+
+.boxIconX:hover {
+  background: var(--white-50);
+  border-radius: 8px;
+}
+
+.iconInfo {
+  color: var(--blue-600);
+}
+
+.textInfo {
+  text-align: start;
+  display: grid;
+  place-content: center;
+}
+
+.iconX {
+  color: var(--white-600);
+  cursor: pointer;
+}
+
 @media screen and (max-width: 900px) {
   .prevDoc {
     width: 250px;
