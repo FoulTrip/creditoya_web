@@ -26,12 +26,12 @@ function RecoverPassword({ onCancel }: { onCancel: () => void }) {
         email: emailRecover,
       });
 
-      console.log(searchUser);
+      // console.log(searchUser);
 
       if (searchUser.data.success == true) {
         const data: ScalarUser = searchUser.data.data;
         setUserData(data);
-        console.log(data);
+        // console.log(data);
         const completeName = `${data.names} ${data.firstLastName} ${data.secondLastName}`;
 
         const newKey = (Math.floor(Math.random() * 90000) + 10000)
@@ -42,7 +42,7 @@ function RecoverPassword({ onCancel }: { onCancel: () => void }) {
 
         const numberCode: number = Number(newKey);
 
-        console.log(data);
+        // console.log(data);
 
         // const token = TokenService.createToken(
         //   data,
@@ -63,10 +63,10 @@ function RecoverPassword({ onCancel }: { onCancel: () => void }) {
           // { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        console.log(response);
+        // console.log(response);
 
         if (response.data.success == true) {
-          console.log(response.data);
+          // console.log(response.data);
           setCodeSent(true);
           setLoadingVerify(false);
         }

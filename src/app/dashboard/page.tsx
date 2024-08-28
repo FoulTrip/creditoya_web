@@ -41,7 +41,7 @@ function Dashboard() {
 
   useEffect(() => {
     if (user == null && !checkingUser) {
-      router.push("/auth");
+      window.location.href = "/auth";
     }
   }, [user, checkingUser, router]);
 
@@ -227,7 +227,9 @@ function Dashboard() {
             ))}
           </div>
           <div className={styles.boxBtnComplete}>
-            <button onClick={() => router.push(`/profile/${user?.id}`)}>
+            <button
+              onClick={() => (window.location.href = `/profile/${user?.id}`)}
+            >
               Completar
             </button>
           </div>

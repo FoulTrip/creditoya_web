@@ -58,8 +58,11 @@ export type ScalarLoanApplication = {
   userId: string;
   employeeId?: string;
   fisrt_flyer: string;
+  upid_first_flayer: string;
   second_flyer: string;
+  upid_second_flyer: string;
   third_flyer: string;
+  upid_third_flayer: string;
   signature: string;
   upSignatureId: string;
   cantity: string;
@@ -71,6 +74,7 @@ export type ScalarLoanApplication = {
   bankSavingAccount: boolean;
   bankNumberAccount: string;
   labor_card: string;
+  upid_labor_card: string;
   entity: string;
   terms_and_conditions: boolean;
   created_at: Date;

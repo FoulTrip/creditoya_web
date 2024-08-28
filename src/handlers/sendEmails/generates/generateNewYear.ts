@@ -32,7 +32,7 @@ export const generateMailNewYear = ({
             Estimado ${completeName}
           </p>
   
-          <p style="margin-top: 7px">En esta temporada tan especial, todo el equipo de [Nombre de la Empresa] quiere desearte una muy Feliz Navidad y un próspero Año Nuevo. Agradecemos sinceramente tu confianza y apoyo durante el año. Que estas fiestas te brinden alegría, paz y éxito en el año que comienza.</p>
+          <p style="margin-top: 7px">En esta temporada tan especial, todo el equipo de Credito Ya quiere desearte una muy Feliz Navidad y un próspero Año Nuevo. Agradecemos sinceramente tu confianza y apoyo durante el año. Que estas fiestas te brinden alegría, paz y éxito en el año que comienza.</p>
 
           <p style="margin-top: 7px">¡Felices fiestas!</p>
     
