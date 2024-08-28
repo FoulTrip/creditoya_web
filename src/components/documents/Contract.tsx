@@ -284,6 +284,8 @@ function Contract({
         }
       );
 
+      // console.log(addFirstFlayer)
+
       const addSecondFlayer = await axios.post(
         "/api/upload/google/create",
         secondFlayer,
@@ -294,6 +296,8 @@ function Contract({
           },
         }
       );
+
+      // console.log(addSecondFlayer)
 
       const addThreeFlayer = await axios.post(
         "/api/upload/google/create",
@@ -306,6 +310,8 @@ function Contract({
         }
       );
 
+      // console.log(addThreeFlayer)
+
       const addLaborCard = await axios.post(
         "/api/upload/google/create",
         laborCard,
@@ -316,6 +322,8 @@ function Contract({
           },
         }
       );
+
+      // console.log(addLaborCard)
 
       const addSignature = await axios.post(
         "/api/upload/signature",
@@ -343,15 +351,21 @@ function Contract({
           loanData: {
             ...dataContract,
             fisrt_flyer: addFirstFlayer.data.data.link,
+            upid_first_flayer: addFirstFlayer.data.data.upid,
             second_flyer: addSecondFlayer.data.data.link,
+            upid_second_flyer: addSecondFlayer.data.data.upid,
             third_flyer: addThreeFlayer.data.data.link,
+            upid_third_flayer: addThreeFlayer.data.data.upid,
             labor_card: addLaborCard.data.data.link,
+            upid_labor_card: addLaborCard.data.data.upid,
             signature: addSignature.data.data,
             upSignatureId: signatureSrc.get("upSignatureId"),
           },
         },
         { headers: { Authorization: `Bearer ${user?.token}` } }
       );
+
+      // console.log(response)
 
       if (response.data.success == true) {
         const data: ScalarLoanApplication = response.data.data;
@@ -365,6 +379,7 @@ function Contract({
           },
           { headers: { Authorization: `Bearer ${user?.token}` } }
         );
+        // console.log(send)
 
         if (send.data.success == true) {
           ws?.send(

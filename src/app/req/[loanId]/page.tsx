@@ -45,6 +45,11 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
   const [openDocsScan, setOpenDocsScan] = useState(false);
   const [linkDocsScan, setLinkDocsScan] = useState<string | null>(null);
 
+  const [newFileUpload00, setNewFileUpload00] = useState<File | null>(null);
+  const [newFileUpload01, setNewFileUpload01] = useState<File | null>(null);
+  const [newFileUpload02, setNewFileUpload02] = useState<File | null>(null);
+  const [newFileUpload03, setNewFileUpload03] = useState<File | null>(null);
+
   const [openModelAutoDoc, setOpenModelAutoDoc] = useState<boolean>(false);
   const router = useRouter();
 
@@ -94,6 +99,90 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
       );
       setInfoLoan(updataLoan);
       toast.success("Desicion tomada, gracias");
+    }
+  };
+
+  const handleReUpload = async ({
+    // upId,
+    userId,
+    name,
+    loanId,
+    newFile,
+  }: {
+    // upId: string;
+    userId: string;
+    name: string;
+    loanId: string;
+    newFile: File;
+  }) => {
+    try {
+      // if (!upId) throw new Error("upId is required!");
+      if (!userId) throw new Error("userId is required!");
+      if (!loanId) throw new Error("loan is required!");
+      if (!name) throw new Error("name is required!");
+
+      const file = newFile;
+
+      // console.log(file);
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("userId", userId);
+      // formData.append("upId", upId);
+      formData.append("name", name);
+      formData.append("loanId", loanId);
+
+      const modifyLoad = await axios.post("/api/loan/change_docs", formData, {
+        headers: { Authorization: `Bearer ${user?.token}` },
+      });
+
+      console.log(modifyLoad);
+
+      if (modifyLoad.data.success == true) {
+        const dataFresh = await RefreshDataLoan(
+          infoLoan?.id as string,
+          user?.token as string
+        );
+        if (name == "labor_card") {
+          setNewFileUpload00(null);
+        } else if (name == "paid_flyer_01") {
+          setNewFileUpload01(null);
+        } else if (name == "paid_flyer_02") {
+          setNewFileUpload02(null);
+        } else if (name == "paid_flyer_03") {
+          setNewFileUpload03(null);
+        }
+        setInfoLoan(dataFresh);
+        toast.success("Documento enviado, gracias");
+      }
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
+
+  const handleFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    idx: number
+  ) => {
+    const file = event.target.files?.[0];
+    console.log(file, idx);
+    if (file) {
+      if (idx == 0) {
+        console.log("este");
+        setNewFileUpload00(file);
+      } else if (idx == 1) {
+        console.log("este");
+        setNewFileUpload01(file);
+      } else if (idx == 2) {
+        console.log("este");
+        setNewFileUpload02(file);
+      } else if (idx == 3) {
+        console.log("este");
+        setNewFileUpload03(file);
+      }
     }
   };
 
@@ -196,7 +285,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
           <div className={styles.barBack}>
             <div
               className={styles.centerBarBack}
-              onClick={() => router.push("/dashboard")}
+              onClick={() => (window.location.href = "/dashboard")}
             >
               <div className={styles.boxIcon}>
                 <TbArrowLeft size={20} className={styles.iconArrow} />
@@ -347,24 +436,74 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                       className={styles.iconDocument}
                     />
                   </div>
-                  <p className={styles.textHeader}>Carta laboral actualizada</p>
+                  <p className={styles.textHeader}>
+                    {infoLoan?.labor_card !== "No definido" &&
+                    infoLoan?.upid_labor_card !== "No definido"
+                      ? "Carta laboral actualizada"
+                      : "Carta laboral rechazada, vuelve a subir"}
+                  </p>
                 </div>
 
                 <div className={styles.infoBox}>
                   <div className={styles.barBtns}>
-                    <button
-                      onClick={() =>
-                        handleOpenModel(0, infoLoan?.labor_card as string)
-                      }
-                    >
-                      Ver
-                    </button>
+                    {infoLoan?.labor_card !== "No definido" &&
+                      infoLoan?.upid_labor_card !== "No definido" && (
+                        <>
+                          <button
+                            onClick={() =>
+                              handleOpenModel(0, infoLoan?.labor_card as string)
+                            }
+                          >
+                            Ver
+                          </button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Descargar
-                    </button>
+                          <button
+                            onClick={() =>
+                              router.push(`${infoLoan?.labor_card as string}`)
+                            }
+                          >
+                            Descargar
+                          </button>
+                        </>
+                      )}
+
+                    {infoLoan?.labor_card === "No definido" &&
+                      infoLoan?.upid_labor_card === "No definido" &&
+                      !newFileUpload00 && (
+                        <>
+                          <input
+                            type="file"
+                            id="fileInput"
+                            style={{ display: "none" }}
+                            onChange={(e) => handleFileChange(e, 0)}
+                          />
+                          <button
+                            onClick={() => {
+                              document.getElementById("fileInput")?.click();
+                            }}
+                          >
+                            Subir
+                          </button>
+                        </>
+                      )}
+
+                    {newFileUpload00 &&
+                      infoLoan?.labor_card == "No definido" &&
+                      infoLoan?.upid_labor_card == "No definido" && (
+                        <button
+                          onClick={() =>
+                            handleReUpload({
+                              name: "labor_card",
+                              // upId: documentsInfo?.upId as string,
+                              userId: infoLoan?.userId as string,
+                              loanId: infoLoan?.id as string,
+                              newFile: newFileUpload00,
+                            })
+                          }
+                        >
+                          Confirmar Subida
+                        </button>
+                      )}
                   </div>
                 </div>
               </div>
@@ -388,21 +527,64 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                 </div>
 
                 <div className={styles.infoBox}>
-                  <div className={styles.barBtns}>
-                    <button
-                      onClick={() =>
-                        handleOpenModel(1, infoLoan?.fisrt_flyer as string)
-                      }
-                    >
-                      Ver
-                    </button>
+                  {infoLoan?.fisrt_flyer !== "No definido" &&
+                    infoLoan?.upid_first_flayer !== "No definido" && (
+                      <div className={styles.barBtns}>
+                        <button
+                          onClick={() =>
+                            handleOpenModel(1, infoLoan?.fisrt_flyer as string)
+                          }
+                        >
+                          Ver
+                        </button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Descargar
-                    </button>
-                  </div>
+                        <button
+                          onClick={() =>
+                            router.push(`${infoLoan?.fisrt_flyer}`)
+                          }
+                        >
+                          Descargar
+                        </button>
+                      </div>
+                    )}
+
+                  {infoLoan?.fisrt_flyer === "No definido" &&
+                    infoLoan?.upid_first_flayer === "No definido" &&
+                    !newFileUpload01 && (
+                      <>
+                        <input
+                          type="file"
+                          id="fileInput"
+                          style={{ display: "none" }}
+                          onChange={(e) => handleFileChange(e, 1)}
+                        />
+                        <button
+                          onClick={() => {
+                            document.getElementById("fileInput")?.click();
+                          }}
+                        >
+                          Subir
+                        </button>
+                      </>
+                    )}
+
+                  {newFileUpload01 &&
+                    infoLoan?.fisrt_flyer === "No definido" &&
+                    infoLoan.upid_first_flayer === "No definido" && (
+                      <button
+                        onClick={() =>
+                          handleReUpload({
+                            name: "paid_flyer_01",
+                            // upId: infoLoan?.upid_first_flayer as string,
+                            userId: infoLoan?.userId as string,
+                            loanId: infoLoan?.id as string,
+                            newFile: newFileUpload01,
+                          })
+                        }
+                      >
+                        Confirmar Subida
+                      </button>
+                    )}
                 </div>
               </div>
 
@@ -418,21 +600,64 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                 </div>
 
                 <div className={styles.infoBox}>
-                  <div className={styles.barBtns}>
-                    <button
-                      onClick={() =>
-                        handleOpenModel(1, infoLoan?.second_flyer as string)
-                      }
-                    >
-                      Ver
-                    </button>
+                  {infoLoan?.second_flyer !== "No definido" &&
+                    infoLoan?.upid_second_flyer !== "No definido" && (
+                      <div className={styles.barBtns}>
+                        <button
+                          onClick={() =>
+                            handleOpenModel(1, infoLoan?.second_flyer as string)
+                          }
+                        >
+                          Ver
+                        </button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Descargar
-                    </button>
-                  </div>
+                        <button
+                          onClick={() =>
+                            router.push(`${infoLoan?.second_flyer}`)
+                          }
+                        >
+                          Descargar
+                        </button>
+                      </div>
+                    )}
+
+                  {infoLoan?.second_flyer === "No definido" &&
+                    infoLoan.upid_second_flyer === "No definido" &&
+                    !newFileUpload02 && (
+                      <>
+                        <input
+                          type="file"
+                          id="fileInput"
+                          style={{ display: "none" }}
+                          onChange={(e) => handleFileChange(e, 2)}
+                        />
+                        <button
+                          onClick={() => {
+                            document.getElementById("fileInput")?.click();
+                          }}
+                        >
+                          Subir
+                        </button>
+                      </>
+                    )}
+
+                  {newFileUpload02 &&
+                    infoLoan?.second_flyer === "No definido" &&
+                    infoLoan.upid_second_flyer === "No definido" && (
+                      <button
+                        onClick={() =>
+                          handleReUpload({
+                            name: "paid_flyer_02",
+                            // upId: infoLoan?.upid_second_flyer as string,
+                            userId: infoLoan?.userId as string,
+                            loanId: infoLoan?.id as string,
+                            newFile: newFileUpload02,
+                          })
+                        }
+                      >
+                        Confirmar Subida
+                      </button>
+                    )}
                 </div>
               </div>
 
@@ -448,21 +673,64 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
                 </div>
 
                 <div className={styles.infoBox}>
-                  <div className={styles.barBtns}>
-                    <button
-                      onClick={() =>
-                        handleOpenModel(1, infoLoan?.third_flyer as string)
-                      }
-                    >
-                      Ver
-                    </button>
+                  {infoLoan?.third_flyer !== "No definido" &&
+                    infoLoan?.upid_third_flayer !== "No definido" && (
+                      <div className={styles.barBtns}>
+                        <button
+                          onClick={() =>
+                            handleOpenModel(1, infoLoan?.third_flyer as string)
+                          }
+                        >
+                          Ver
+                        </button>
 
-                    <button
-                      onClick={() => router.push(`${infoLoan?.fisrt_flyer}`)}
-                    >
-                      Descargar
-                    </button>
-                  </div>
+                        <button
+                          onClick={() =>
+                            router.push(`${infoLoan?.third_flyer}`)
+                          }
+                        >
+                          Descargar
+                        </button>
+                      </div>
+                    )}
+
+                  {infoLoan?.third_flyer === "No definido" &&
+                    infoLoan?.upid_third_flayer === "No definido" &&
+                    !newFileUpload03 && (
+                      <>
+                        <input
+                          type="file"
+                          id="fileInput"
+                          style={{ display: "none" }}
+                          onChange={(e) => handleFileChange(e, 3)}
+                        />
+                        <button
+                          onClick={() => {
+                            document.getElementById("fileInput")?.click();
+                          }}
+                        >
+                          Subir
+                        </button>
+                      </>
+                    )}
+
+                  {newFileUpload03 &&
+                    infoLoan?.third_flyer === "No definido" &&
+                    infoLoan.upid_third_flayer === "No definido" && (
+                      <button
+                        onClick={() =>
+                          handleReUpload({
+                            name: "paid_flyer_03",
+                            // upId: infoLoan?.upid_third_flayer as string,
+                            userId: infoLoan?.userId as string,
+                            loanId: infoLoan?.id as string,
+                            newFile: newFileUpload03,
+                          })
+                        }
+                      >
+                        Confirmar Subida
+                      </button>
+                    )}
                 </div>
               </div>
             </div>

@@ -1,12 +1,7 @@
 import { ScalarEmployee, ScalarLoanApplication } from "@/types/User";
 import React, { useEffect, useState } from "react";
 import styles from "./styles/cardLoan.module.css";
-import {
-  TbBell,
-  TbChecklist,
-  TbMailFilled,
-  TbPhoneFilled,
-} from "react-icons/tb";
+import { TbBell } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useGlobalContext } from "@/context/Auth";
@@ -19,19 +14,15 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
   const { user } = useGlobalContext();
   const [infoEmployee, setInfoEmployee] = useState<ScalarEmployee | null>(null);
 
-  // const formattedPrice = (price: string) => {
-  //   const number = parseFloat(price);
-
-  //   const formatter = new Intl.NumberFormat("es-CO", {
-  //     style: "currency",
-  //     currency: "COP",
-  //     minimumFractionDigits: 2,
-  //     maximumFractionDigits: 2,
-  //   });
-
-  //   const formattedNumber = formatter.format(number);
-  //   return formattedNumber;
-  // };
+  const isDocumentRejected =
+    (loan.fisrt_flyer === "No definido" &&
+      loan.upid_first_flayer === "No definido") ||
+    (loan.second_flyer === "No definido" &&
+      loan.upid_second_flyer === "No definido") ||
+    (loan.third_flyer === "No definido" &&
+      loan.upid_third_flayer === "No definido") ||
+    (loan.labor_card === "No definido" &&
+      loan.upid_labor_card === "No definido");
 
   useEffect(() => {
     const getEmployee = async () => {
@@ -77,11 +68,22 @@ function CardLoan({ loan }: { loan: ScalarLoanApplication }) {
                     La cantidad aprobada ha cambiado
                   </p>
                 )}
-                {!loan.newCantityOpt !== null && !loan.newCantity && (
-                  <p className={styles.messageNot}>Sin acciones pendientes</p>
-                )}
-                {loan.newCantityOpt !== null && loan.newCantity && (
-                  <p className={styles.messageNot}>Sin acciones pendientes</p>
+                {!loan.newCantityOpt !== null &&
+                  !loan.newCantity &&
+                  !isDocumentRejected && (
+                    <p className={styles.messageNot}>Sin acciones pendientes</p>
+                  )}
+
+                {loan.newCantityOpt !== null &&
+                  loan.newCantity &&
+                  !isDocumentRejected && (
+                    <p className={styles.messageNot}>Sin acciones pendientes</p>
+                  )}
+
+                {isDocumentRejected && (
+                  <p className={styles.messageNot}>
+                    Un documento ha sido rechazado
+                  </p>
                 )}
               </div>
             </div>
