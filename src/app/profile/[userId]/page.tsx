@@ -6,7 +6,13 @@ import styles from "./page.module.css";
 import Avatar from "react-avatar";
 import Image from "next/image";
 import axios from "axios";
-import { AuthUser, GenreUser, ScalarDocument, ScalarUser } from "@/types/User";
+import {
+  AuthUser,
+  companiesUser,
+  GenreUser,
+  ScalarDocument,
+  ScalarUser,
+} from "@/types/User";
 import { toast } from "sonner";
 import { useGlobalContext } from "@/context/Auth";
 import { useRouter } from "next/navigation";
@@ -26,6 +32,7 @@ import Modal from "@/components/modal/Modal";
 import { pdfjs } from "react-pdf";
 import SelectGenre from "@/components/accesories/selectGenre";
 import { convertToBase64 } from "@/handlers/convertToBase64";
+import SelectCompanies from "@/components/accesories/selectCompanies";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -95,6 +102,13 @@ function Profile({ params }: { params: { userId: string } }) {
     setDataProfile((prevData) => ({
       ...(prevData as ScalarUser),
       genre: option as GenreUser,
+    }));
+  };
+
+  const handleChangeCompanie = (option: companiesUser) => {
+    setDataProfile((prevData) => ({
+      ...(prevData as ScalarUser),
+      currentCompanie: option,
     }));
   };
 
@@ -170,6 +184,8 @@ function Profile({ params }: { params: { userId: string } }) {
         { userId: dataProfile?.id },
         { headers: { Authorization: `Bearer ${user?.token}` } }
       );
+
+      console.log(response)
 
       if (response.data.success == true) {
         const isComplete = response.data.data.complete;
@@ -735,6 +751,16 @@ function Profile({ params }: { params: { userId: string } }) {
                           handleChangeProfile(e, "place_of_birth")
                         }
                         name="place_of_birth"
+                      />
+                    </div>
+                  </div>
+
+                  <div className={styles.boxPartInfo}>
+                    <p>A que Empresa perteneces</p>
+                    <div className={styles.partChange}>
+                      <SelectCompanies
+                        select={handleChangeCompanie}
+                        valueDefault={dataProfile?.currentCompanie || ""}
                       />
                     </div>
                   </div>

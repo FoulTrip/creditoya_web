@@ -8,10 +8,7 @@ export async function POST(req: Request) {
     const authorizationHeader = req.headers.get("Authorization");
 
     if (!authorizationHeader) {
-      return NextResponse.json(
-        { message: "Token de autorización no proporcionado" },
-        { status: 401 }
-      );
+      throw new Error("Token de autorización no proporcionado");
     }
 
     const token = authorizationHeader.split(" ")[1];
@@ -19,10 +16,10 @@ export async function POST(req: Request) {
     const decodedToken = TokenService.verifyToken(
       token,
       process.env.JWT_SECRET as string
-    ); // Reemplaza "tu-clave-secreta" con tu clave secreta
+    );
 
     if (!decodedToken) {
-      return NextResponse.json({ message: "Token no válido" }, { status: 401 });
+      throw new Error("Token no válido");
     }
 
     const { userId } = await req.json();

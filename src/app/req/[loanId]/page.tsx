@@ -136,7 +136,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
 
-      console.log(modifyLoad);
+      // console.log(modifyLoad);
 
       if (modifyLoad.data.success == true) {
         const dataFresh = await RefreshDataLoan(
@@ -168,7 +168,7 @@ function RequestInfo({ params }: { params: { loanId: string } }) {
     idx: number
   ) => {
     const file = event.target.files?.[0];
-    console.log(file, idx);
+    // console.log(file, idx);
     if (file) {
       if (idx == 0) {
         console.log("este");

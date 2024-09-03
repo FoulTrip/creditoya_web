@@ -5,6 +5,7 @@ export type ScalarUser = {
   names: string;
   firstLastName: string;
   secondLastName: string;
+  currentCompanie?: companiesUser;
   avatar?: string;
   phone?: string;
   residence_phone_number?: string;
@@ -50,6 +51,7 @@ export type AuthUser = {
   createdAt?: Date;
   updatedAt?: Date;
   token: string;
+  currentCompanie: companiesUser;
 };
 
 // Tipo para LoanApplication
@@ -104,3 +106,14 @@ export type Status =
 export type TypesDocument = "CC" | "CE" | "PASAPORTE";
 
 export type GenreUser = "Femenino" | "Masculino" | "No";
+
+export type companiesUser =
+  | "incauca_sas"
+  | "incauca_cosecha"
+  | "providencia_sas"
+  | "providencia_cosecha"
+  | "con_alta"
+  | "pichichi_sas"
+  | "pichichi_coorte"
+  | "valor_agregado"
+  | "no";

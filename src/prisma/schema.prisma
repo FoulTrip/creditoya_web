@@ -13,6 +13,7 @@ model User {
     email                  String            @unique
     names                  String
     firstLastName          String
+    currentCompanie        companiesUser     @default(no)
     secondLastName         String
     avatar                 String            @default("No definido")
     phone                  String            @unique @default("No definido")
@@ -33,7 +34,7 @@ model UsersIntranet {
     id         String   @id @default(uuid()) @map("_id")
     name       String
     lastNames  String
-    email      String   @unique
+    email      String   @unique()
     password   String
     phone      String   @unique @default("No definido")
     rol        String   @default("No definido")
@@ -102,4 +103,16 @@ enum GenreUser {
     Femenino
     Masculino
     No
+}
+
+enum companiesUser {
+    incauca_sas
+    incauca_cosecha
+    providencia_sas
+    providencia_cosecha
+    con_alta
+    pichichi_sas
+    pichichi_coorte
+    valor_agregado
+    no
 }
