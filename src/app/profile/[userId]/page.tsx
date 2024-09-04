@@ -185,7 +185,7 @@ function Profile({ params }: { params: { userId: string } }) {
         { headers: { Authorization: `Bearer ${user?.token}` } }
       );
 
-      console.log(response)
+      // console.log(response)
 
       if (response.data.success == true) {
         const isComplete = response.data.data.complete;
