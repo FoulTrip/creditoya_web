@@ -8,7 +8,7 @@
 }
 
 .ContractContainer {
-  min-height: 100dvh;
+  /* min-height: 100dvh; */
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
@@ -16,12 +16,12 @@
 }
 
 .partBox {
-  flex-basis: 400px;
+  /* flex-basis: 400px; */
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   gap: 30px;
-  height: auto;
+  /* height: auto; */
 }
 
 .accountInput {
