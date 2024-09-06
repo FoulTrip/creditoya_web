@@ -260,7 +260,16 @@ function Contract({
       setCreatingLoan(true);
       setOpenWarnBanner(false);
 
-      if (user?.currentCompanie === "no") {
+      if (
+        user?.currentCompanie === "con_alta" ||
+        user?.currentCompanie === "incauca_cosecha" ||
+        user?.currentCompanie === "incauca_sas" ||
+        user?.currentCompanie === "pichichi_coorte" ||
+        user?.currentCompanie === "pichichi_sas" ||
+        user?.currentCompanie === "providencia_cosecha" ||
+        user?.currentCompanie === "providencia_sas" ||
+        user?.currentCompanie === "no"
+      ) {
         if (firstFlayer === null) throw new Error("Falta primer volante");
         if (secondFlayer === null) throw new Error("Falta segundo volante");
         if (threeFlayer === null) throw new Error("Falta tercer volante");
@@ -405,7 +414,7 @@ function Contract({
             }
           }
         }
-      } else {
+      } else if (user?.currentCompanie === "valor_agregado") {
         if (signatureSrc === null) throw new Error("Falta tu firma");
 
         const formArrays = [signatureSrc];
