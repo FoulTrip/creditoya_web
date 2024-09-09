@@ -163,6 +163,8 @@ function Contract({
           throw new Error("Eligue tu tipo de cuenta");
         if (!dataContract.cantity)
           throw new Error("Ingresa la cantidad a solicitar");
+        if (Number(dataContract.cantity) > 2000000)
+          throw new Error("La cantidad maxima es de 2'000.000");
         if (!dataContract.entity)
           throw new Error("Selecciona tu entidad bancaria");
         if (!imagePreview4 && !imagePreview5 && !imagePreview6)
@@ -771,7 +773,14 @@ function Contract({
                 />
               </div>
 
-              {user?.currentCompanie === "no" && (
+              {(user?.currentCompanie === "no" ||
+                user?.currentCompanie === "con_alta" ||
+                user?.currentCompanie === "incauca_cosecha" ||
+                user?.currentCompanie === "incauca_sas" ||
+                user?.currentCompanie === "pichichi_coorte" ||
+                user?.currentCompanie === "pichichi_sas" ||
+                user?.currentCompanie === "providencia_cosecha" ||
+                user?.currentCompanie === "providencia_sas") && (
                 <>
                   <div>
                     <h3 className={styles.titleVolants}>
