@@ -128,7 +128,7 @@ function Contract({
           );
           // console.log(response);
           const data: ScalarUser = response.data.data;
-          // console.log(data);
+          console.log(data);
           setUserInfo(data);
           setDataContract((prevDataContract) => ({
             ...(prevDataContract as ScalarLoanApplication),
@@ -773,14 +773,7 @@ function Contract({
                 />
               </div>
 
-              {(user?.currentCompanie === "no" ||
-                user?.currentCompanie === "con_alta" ||
-                user?.currentCompanie === "incauca_cosecha" ||
-                user?.currentCompanie === "incauca_sas" ||
-                user?.currentCompanie === "pichichi_coorte" ||
-                user?.currentCompanie === "pichichi_sas" ||
-                user?.currentCompanie === "providencia_cosecha" ||
-                user?.currentCompanie === "providencia_sas") && (
+              {userInfo?.currentCompanie !== "valor_agregado" && (
                 <>
                   <div>
                     <h3 className={styles.titleVolants}>
