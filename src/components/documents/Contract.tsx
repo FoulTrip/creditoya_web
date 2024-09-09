@@ -137,7 +137,7 @@ function Contract({
           setLoading(false);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -262,7 +262,7 @@ function Contract({
       setCreatingLoan(true);
       setOpenWarnBanner(false);
 
-      console.log(userInfo?.currentCompanie);
+      // console.log(userInfo?.currentCompanie);
 
       const allowedCompanies = [
         "con_alta",
@@ -471,15 +471,15 @@ function Contract({
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
-          console.log(send);
+          // console.log(send);
 
           if (send.data.success == true) {
-            ws?.send(
-              JSON.stringify({
-                type: "new_loan",
-                owner: user?.id,
-              })
-            );
+            // ws?.send(
+            //   JSON.stringify({
+            //     type: "new_loan",
+            //     owner: user?.id,
+            //   })
+            // );
 
             const allLoans = await axios.post(
               "/api/user/loans",
