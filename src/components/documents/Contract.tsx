@@ -128,7 +128,7 @@ function Contract({
           );
           // console.log(response);
           const data: ScalarUser = response.data.data;
-          console.log(data);
+          // console.log(data);
           setUserInfo(data);
           setDataContract((prevDataContract) => ({
             ...(prevDataContract as ScalarLoanApplication),
@@ -262,16 +262,20 @@ function Contract({
       setCreatingLoan(true);
       setOpenWarnBanner(false);
 
-      if (
-        user?.currentCompanie === "con_alta" ||
-        user?.currentCompanie === "incauca_cosecha" ||
-        user?.currentCompanie === "incauca_sas" ||
-        user?.currentCompanie === "pichichi_coorte" ||
-        user?.currentCompanie === "pichichi_sas" ||
-        user?.currentCompanie === "providencia_cosecha" ||
-        user?.currentCompanie === "providencia_sas" ||
-        user?.currentCompanie === "no"
-      ) {
+      console.log(userInfo?.currentCompanie);
+
+      const allowedCompanies = [
+        "con_alta",
+        "incauca_cosecha",
+        "incauca_sas",
+        "pichichi_coorte",
+        "pichichi_sas",
+        "providencia_cosecha",
+        "providencia_sas",
+        "no",
+      ];
+
+      if (allowedCompanies.includes(userInfo?.currentCompanie as string)) {
         if (firstFlayer === null) throw new Error("Falta primer volante");
         if (secondFlayer === null) throw new Error("Falta segundo volante");
         if (threeFlayer === null) throw new Error("Falta tercer volante");
@@ -416,7 +420,7 @@ function Contract({
             }
           }
         }
-      } else if (user?.currentCompanie === "valor_agregado") {
+      } else if (userInfo?.currentCompanie === "valor_agregado") {
         if (signatureSrc === null) throw new Error("Falta tu firma");
 
         const formArrays = [signatureSrc];
@@ -467,7 +471,7 @@ function Contract({
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
-          // console.log(send)
+          console.log(send);
 
           if (send.data.success == true) {
             ws?.send(
