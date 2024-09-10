@@ -1,4 +1,3 @@
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { GlobalProvider } from "@/context/Auth";
 import NavBar from "@/components/NavrBar/NavBarComponent";
@@ -7,7 +6,6 @@ import { Toaster } from "sonner";
 // stats vercel
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
-import { WsProvider } from "./WsProvider";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -23,7 +21,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <WsProvider>
           <GlobalProvider>
             <Toaster richColors position="top-center" />
             <NavBar />
@@ -31,7 +28,6 @@ export default function RootLayout({
             <SpeedInsights />
             <Analytics />
           </GlobalProvider>
-        </WsProvider>
       </body>
     </html>
   );
