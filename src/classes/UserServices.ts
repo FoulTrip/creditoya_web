@@ -318,6 +318,8 @@ class UserService {
     if (!user.city || user.city === "No definido") missingFields.push("city");
     if (!user.place_of_birth || user.place_of_birth === "No definido")
       missingFields.push("place_of_birth");
+    if (!user.currentCompanie)
+      missingFields.push("currentCompanie");
 
     // Check document fields
     if (!user.Document.length) {

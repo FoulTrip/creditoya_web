@@ -137,7 +137,7 @@ function Contract({
           setLoading(false);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -163,6 +163,8 @@ function Contract({
           throw new Error("Eligue tu tipo de cuenta");
         if (!dataContract.cantity)
           throw new Error("Ingresa la cantidad a solicitar");
+        // if (Number(dataContract.cantity) > 2000000)
+        //   throw new Error("La cantidad maxima es de 2'000.000");
         if (!dataContract.entity)
           throw new Error("Selecciona tu entidad bancaria");
         if (!imagePreview4 && !imagePreview5 && !imagePreview6)
@@ -258,153 +260,246 @@ function Contract({
     try {
       setOpenPreSend(false);
       setCreatingLoan(true);
+      setOpenWarnBanner(false);
 
-      if (firstFlayer === null) throw new Error("Falta primer volante");
-      if (secondFlayer === null) throw new Error("Falta segundo volante");
-      if (threeFlayer === null) throw new Error("Falta tercer volante");
-      if (laborCard === null) throw new Error("Falta cuarto volante");
-      if (signatureSrc === null) throw new Error("Falta tu firma");
+      // console.log(userInfo?.currentCompanie);
 
-      const formArrays = [
-        firstFlayer,
-        secondFlayer,
-        threeFlayer,
-        laborCard,
-        signatureSrc,
+      const allowedCompanies = [
+        "con_alta",
+        "incauca_cosecha",
+        "incauca_sas",
+        "pichichi_coorte",
+        "pichichi_sas",
+        "providencia_cosecha",
+        "providencia_sas",
+        "no",
       ];
 
-      const addFirstFlayer = await axios.post(
-        "/api/upload/google/create",
-        firstFlayer,
-        {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-            // "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      if (allowedCompanies.includes(userInfo?.currentCompanie as string)) {
+        if (firstFlayer === null) throw new Error("Falta primer volante");
+        if (secondFlayer === null) throw new Error("Falta segundo volante");
+        if (threeFlayer === null) throw new Error("Falta tercer volante");
+        if (laborCard === null) throw new Error("Falta carta laboral");
+        if (signatureSrc === null) throw new Error("Falta tu firma");
 
-      // console.log(addFirstFlayer)
+        const formArrays = [
+          firstFlayer,
+          secondFlayer,
+          threeFlayer,
+          laborCard,
+          signatureSrc,
+        ];
 
-      const addSecondFlayer = await axios.post(
-        "/api/upload/google/create",
-        secondFlayer,
-        {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-            // "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      // console.log(addSecondFlayer)
-
-      const addThreeFlayer = await axios.post(
-        "/api/upload/google/create",
-        threeFlayer,
-        {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-            // "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      // console.log(addThreeFlayer)
-
-      const addLaborCard = await axios.post(
-        "/api/upload/google/create",
-        laborCard,
-        {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-            // "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      // console.log(addLaborCard)
-
-      const addSignature = await axios.post(
-        "/api/upload/signature",
-        {
-          img: signatureSrc.get("img"),
-          userId,
-          upSignatureId: signatureSrc.get("upSignatureId"),
-        },
-        { headers: { Authorization: `Bearer ${user?.token}` } }
-      );
-
-      // Eliminación de archivos temporales
-      for (const formData of formArrays) {
-        const nameDoc = formData.get("name") || formData.get("img");
-        if (nameDoc) {
-          await axios.post("/api/temp/files/delete", {
-            nameFile: nameDoc,
-          });
-        }
-      }
-
-      const response = await axios.post(
-        "/api/loan/create",
-        {
-          loanData: {
-            ...dataContract,
-            fisrt_flyer: addFirstFlayer.data.data.link,
-            upid_first_flayer: addFirstFlayer.data.data.upid,
-            second_flyer: addSecondFlayer.data.data.link,
-            upid_second_flyer: addSecondFlayer.data.data.upid,
-            third_flyer: addThreeFlayer.data.data.link,
-            upid_third_flayer: addThreeFlayer.data.data.upid,
-            labor_card: addLaborCard.data.data.link,
-            upid_labor_card: addLaborCard.data.data.upid,
-            signature: addSignature.data.data,
-            upSignatureId: signatureSrc.get("upSignatureId"),
-          },
-        },
-        { headers: { Authorization: `Bearer ${user?.token}` } }
-      );
-
-      // console.log(response)
-
-      if (response.data.success == true) {
-        const data: ScalarLoanApplication = response.data.data;
-
-        const send = await axios.post(
-          "/api/mail/new_loan",
+        const addFirstFlayer = await axios.post(
+          "/api/upload/google/create",
+          firstFlayer,
           {
-            name: `${userInfo?.names} ${userInfo?.firstLastName} ${userInfo?.secondLastName}`,
-            addressee: userInfo?.email as string,
-            loanId: data?.id,
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+              // "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        // console.log(addFirstFlayer)
+
+        const addSecondFlayer = await axios.post(
+          "/api/upload/google/create",
+          secondFlayer,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+              // "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        // console.log(addSecondFlayer)
+
+        const addThreeFlayer = await axios.post(
+          "/api/upload/google/create",
+          threeFlayer,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+              // "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        // console.log(addThreeFlayer)
+
+        const addLaborCard = await axios.post(
+          "/api/upload/google/create",
+          laborCard,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+              // "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        const addSignature = await axios.post(
+          "/api/upload/signature",
+          {
+            img: signatureSrc.get("img"),
+            userId,
+            upSignatureId: signatureSrc.get("upSignatureId"),
           },
           { headers: { Authorization: `Bearer ${user?.token}` } }
         );
-        // console.log(send)
 
-        if (send.data.success == true) {
-          ws?.send(
-            JSON.stringify({
-              type: "new_loan",
-              owner: user?.id,
-            })
-          );
+        // Eliminación de archivos temporales
+        for (const formData of formArrays) {
+          const nameDoc = formData.get("name") || formData.get("img");
+          if (nameDoc) {
+            await axios.post("/api/temp/files/delete", {
+              nameFile: nameDoc,
+            });
+          }
+        }
 
-          const allLoans = await axios.post(
-            "/api/user/loans",
+        const response = await axios.post(
+          "/api/loan/create",
+          {
+            loanData: {
+              ...dataContract,
+              fisrt_flyer: addFirstFlayer.data.data.link,
+              upid_first_flayer: addFirstFlayer.data.data.upid,
+              second_flyer: addSecondFlayer.data.data.link,
+              upid_second_flyer: addSecondFlayer.data.data.upid,
+              third_flyer: addThreeFlayer.data.data.link,
+              upid_third_flayer: addThreeFlayer.data.data.upid,
+              labor_card: addLaborCard.data.data.link,
+              upid_labor_card: addLaborCard.data.data.upid,
+              signature: addSignature.data.data,
+              upSignatureId: signatureSrc.get("upSignatureId"),
+            },
+          },
+          { headers: { Authorization: `Bearer ${user?.token}` } }
+        );
+
+        // console.log(response)
+
+        if (response.data.success == true) {
+          const data: ScalarLoanApplication = response.data.data;
+
+          const send = await axios.post(
+            "/api/mail/new_loan",
             {
-              userId,
+              name: `${userInfo?.names} ${userInfo?.firstLastName} ${userInfo?.secondLastName}`,
+              addressee: userInfo?.email as string,
+              loanId: data?.id,
             },
             { headers: { Authorization: `Bearer ${user?.token}` } }
           );
+          // console.log(send)
 
-          if (allLoans.data.success) {
-            const data: ScalarLoanApplication[] = allLoans.data.data;
+          if (send.data.success == true) {
+            ws?.send(
+              JSON.stringify({
+                type: "new_loan",
+                owner: user?.id,
+              })
+            );
 
-            success && success(data);
-            toggleContract();
+            const allLoans = await axios.post(
+              "/api/user/loans",
+              {
+                userId,
+              },
+              { headers: { Authorization: `Bearer ${user?.token}` } }
+            );
+
+            if (allLoans.data.success) {
+              const data: ScalarLoanApplication[] = allLoans.data.data;
+
+              success && success(data);
+              toggleContract();
+            }
+          }
+        }
+      } else if (userInfo?.currentCompanie === "valor_agregado") {
+        if (signatureSrc === null) throw new Error("Falta tu firma");
+
+        const formArrays = [signatureSrc];
+
+        const addSignature = await axios.post(
+          "/api/upload/signature",
+          {
+            img: signatureSrc.get("img"),
+            userId,
+            upSignatureId: signatureSrc.get("upSignatureId"),
+          },
+          { headers: { Authorization: `Bearer ${user?.token}` } }
+        );
+
+        // Eliminación de archivos temporales
+        for (const formData of formArrays) {
+          const nameDoc = formData.get("name") || formData.get("img");
+          if (nameDoc) {
+            await axios.post("/api/temp/files/delete", {
+              nameFile: nameDoc,
+            });
+          }
+        }
+
+        const response = await axios.post(
+          "/api/loan/create",
+          {
+            loanData: {
+              ...dataContract,
+              signature: addSignature.data.data,
+              upSignatureId: signatureSrc.get("upSignatureId"),
+            },
+          },
+          { headers: { Authorization: `Bearer ${user?.token}` } }
+        );
+
+        // console.log(response)
+
+        if (response.data.success == true) {
+          const data: ScalarLoanApplication = response.data.data;
+
+          const send = await axios.post(
+            "/api/mail/new_loan",
+            {
+              name: `${userInfo?.names} ${userInfo?.firstLastName} ${userInfo?.secondLastName}`,
+              addressee: userInfo?.email as string,
+              loanId: data?.id,
+            },
+            { headers: { Authorization: `Bearer ${user?.token}` } }
+          );
+          // console.log(send);
+
+          if (send.data.success == true) {
+            // ws?.send(
+            //   JSON.stringify({
+            //     type: "new_loan",
+            //     owner: user?.id,
+            //   })
+            // );
+
+            const allLoans = await axios.post(
+              "/api/user/loans",
+              {
+                userId,
+              },
+              { headers: { Authorization: `Bearer ${user?.token}` } }
+            );
+
+            if (allLoans.data.success) {
+              const data: ScalarLoanApplication[] = allLoans.data.data;
+
+              success && success(data);
+              toggleContract();
+            }
           }
         }
       }
+
+      // console.log(addLaborCard)
     } catch (error) {
       console.error("Error:", error);
       toast.error("Error al enviar la solicitud");
@@ -636,6 +731,7 @@ function Contract({
               telefono antes empezar a llenar la solicitud de prestamo
             </p>
           </div>
+
           <div
             className={styles.boxIconX}
             onClick={() => setOpenWarnBanner(false)}
@@ -682,302 +778,311 @@ function Contract({
                 />
               </div>
 
-              <div>
-                <h3 className={styles.titleVolants}>
-                  Tres ultimos volantes de pago
-                </h3>
-                <div className={styles.columnCards}>
-                  <div
-                    className={
-                      imagePreview4 === "No definido"
-                        ? styles.boxInfoPay
-                        : styles.boxInfoPayActive
-                    }
-                    {...(imagePreview4 === "No definido"
-                      ? getRootProps4()
-                      : {})}
-                  >
-                    {imagePreview4 === "No definido" && (
-                      <input {...getInputProps4()} />
-                    )}
-                    {imagePreview4 && imagePreview4 != "No definido" ? (
-                      <>
-                        <div className={styles.supraBarStatus}>
-                          <div className={styles.barStatusDocs}>
-                            <div className={styles.headerCardStatus}>
-                              <div className={styles.boxIconStatus}>
-                                <TbCircleCheckFilled
-                                  className={styles.iconCheck}
-                                />
+              {userInfo?.currentCompanie !== "valor_agregado" && (
+                <>
+                  <div>
+                    <h3 className={styles.titleVolants}>
+                      Tres ultimos volantes de pago
+                    </h3>
+                    <div className={styles.columnCards}>
+                      <div
+                        className={
+                          imagePreview4 === "No definido"
+                            ? styles.boxInfoPay
+                            : styles.boxInfoPayActive
+                        }
+                        {...(imagePreview4 === "No definido"
+                          ? getRootProps4()
+                          : {})}
+                      >
+                        {imagePreview4 === "No definido" && (
+                          <input {...getInputProps4()} />
+                        )}
+                        {imagePreview4 && imagePreview4 != "No definido" ? (
+                          <>
+                            <div className={styles.supraBarStatus}>
+                              <div className={styles.barStatusDocs}>
+                                <div className={styles.headerCardStatus}>
+                                  <div className={styles.boxIconStatus}>
+                                    <TbCircleCheckFilled
+                                      className={styles.iconCheck}
+                                    />
+                                  </div>
+                                  <p className={styles.warninCC}>
+                                    Primer volante de pago
+                                  </p>
+                                </div>
                               </div>
-                              <p className={styles.warninCC}>
-                                Primer volante de pago
-                              </p>
-                            </div>
-                          </div>
 
-                          <div className={styles.optionsBox}>
-                            <div className={styles.boxIconsStatus}>
-                              <div
-                                className={styles.boxIcon}
-                                onClick={() => handleDeleteDoc(0)}
-                              >
-                                <TbTrash
-                                  className={styles.trashIcon}
-                                  size={20}
-                                />
+                              <div className={styles.optionsBox}>
+                                <div className={styles.boxIconsStatus}>
+                                  <div
+                                    className={styles.boxIcon}
+                                    onClick={() => handleDeleteDoc(0)}
+                                  >
+                                    <TbTrash
+                                      className={styles.trashIcon}
+                                      size={20}
+                                    />
+                                  </div>
+                                </div>
+
+                                <button
+                                  className={styles.btnOpenDoc}
+                                  onClick={() =>
+                                    handlerOpenModel({
+                                      link: imagePreview4,
+                                    })
+                                  }
+                                >
+                                  Revisar
+                                </button>
                               </div>
                             </div>
-
-                            <button
-                              className={styles.btnOpenDoc}
-                              onClick={() =>
-                                handlerOpenModel({
-                                  link: imagePreview4,
-                                })
-                              }
-                            >
-                              Revisar
-                            </button>
+                          </>
+                        ) : (
+                          <div className={styles.containerDropDocuments}>
+                            <div className={styles.boxIconPreview}>
+                              <CiMoneyCheck1
+                                className={styles.iconPreview}
+                                size={60}
+                              />
+                            </div>
+                            <p className={styles.textPreview}>
+                              {loadingProccessImg04 &&
+                                "Procesando tu volante..."}
+                              {!loadingProccessImg04 &&
+                                "Subir primer volante de pago"}
+                            </p>
                           </div>
-                        </div>
-                      </>
-                    ) : (
-                      <div className={styles.containerDropDocuments}>
-                        <div className={styles.boxIconPreview}>
-                          <CiMoneyCheck1
-                            className={styles.iconPreview}
-                            size={60}
-                          />
-                        </div>
-                        <p className={styles.textPreview}>
-                          {loadingProccessImg04 && "Procesando tu volante..."}
-                          {!loadingProccessImg04 &&
-                            "Subir primer volante de pago"}
-                        </p>
+                        )}
                       </div>
-                    )}
-                  </div>
 
-                  <div
-                    className={
-                      imagePreview5 === "No definido"
-                        ? styles.boxInfoPay
-                        : styles.boxInfoPayActive
-                    }
-                    {...(imagePreview5 === "No definido"
-                      ? getRootProps5()
-                      : {})}
-                  >
-                    {imagePreview5 === "No definido" && (
-                      <input {...getInputProps5()} />
-                    )}
-                    {imagePreview5 && imagePreview5 != "No definido" ? (
-                      <>
-                        <div className={styles.supraBarStatus}>
-                          <div className={styles.barStatusDocs}>
-                            <div className={styles.headerCardStatus}>
-                              <div className={styles.boxIconStatus}>
-                                <TbCircleCheckFilled
-                                  className={styles.iconCheck}
-                                />
+                      <div
+                        className={
+                          imagePreview5 === "No definido"
+                            ? styles.boxInfoPay
+                            : styles.boxInfoPayActive
+                        }
+                        {...(imagePreview5 === "No definido"
+                          ? getRootProps5()
+                          : {})}
+                      >
+                        {imagePreview5 === "No definido" && (
+                          <input {...getInputProps5()} />
+                        )}
+                        {imagePreview5 && imagePreview5 != "No definido" ? (
+                          <>
+                            <div className={styles.supraBarStatus}>
+                              <div className={styles.barStatusDocs}>
+                                <div className={styles.headerCardStatus}>
+                                  <div className={styles.boxIconStatus}>
+                                    <TbCircleCheckFilled
+                                      className={styles.iconCheck}
+                                    />
+                                  </div>
+                                  <p className={styles.warninCC}>
+                                    Segundo volante de pago
+                                  </p>
+                                </div>
                               </div>
-                              <p className={styles.warninCC}>
-                                Segundo volante de pago
-                              </p>
-                            </div>
-                          </div>
 
-                          <div className={styles.optionsBox}>
-                            <div className={styles.boxIconsStatus}>
-                              <div
-                                className={styles.boxIcon}
-                                onClick={() => handleDeleteDoc(1)}
-                              >
-                                <TbTrash
-                                  className={styles.trashIcon}
-                                  size={20}
-                                />
+                              <div className={styles.optionsBox}>
+                                <div className={styles.boxIconsStatus}>
+                                  <div
+                                    className={styles.boxIcon}
+                                    onClick={() => handleDeleteDoc(1)}
+                                  >
+                                    <TbTrash
+                                      className={styles.trashIcon}
+                                      size={20}
+                                    />
+                                  </div>
+                                </div>
+
+                                <button
+                                  className={styles.btnOpenDoc}
+                                  onClick={() =>
+                                    handlerOpenModel({
+                                      link: imagePreview5,
+                                    })
+                                  }
+                                >
+                                  Revisar
+                                </button>
                               </div>
                             </div>
-
-                            <button
-                              className={styles.btnOpenDoc}
-                              onClick={() =>
-                                handlerOpenModel({
-                                  link: imagePreview5,
-                                })
-                              }
-                            >
-                              Revisar
-                            </button>
+                          </>
+                        ) : (
+                          <div className={styles.containerDropDocuments}>
+                            <div className={styles.boxIconPreview}>
+                              <CiMoneyCheck1
+                                className={styles.iconPreview}
+                                size={60}
+                              />
+                            </div>
+                            <p className={styles.textPreview}>
+                              {loadingProccessImg05 &&
+                                "Procesando tu volante..."}
+                              {!loadingProccessImg05 &&
+                                "Subir segundo volante de pago"}
+                            </p>
                           </div>
-                        </div>
-                      </>
-                    ) : (
-                      <div className={styles.containerDropDocuments}>
-                        <div className={styles.boxIconPreview}>
-                          <CiMoneyCheck1
-                            className={styles.iconPreview}
-                            size={60}
-                          />
-                        </div>
-                        <p className={styles.textPreview}>
-                          {loadingProccessImg05 && "Procesando tu volante..."}
-                          {!loadingProccessImg05 &&
-                            "Subir segundo volante de pago"}
-                        </p>
+                        )}
                       </div>
-                    )}
-                  </div>
 
-                  <div
-                    className={
-                      imagePreview6 === "No definido"
-                        ? styles.boxInfoPay
-                        : styles.boxInfoPayActive
-                    }
-                    {...(imagePreview6 === "No definido"
-                      ? getRootProps6()
-                      : {})}
-                  >
-                    {imagePreview6 === "No definido" && (
-                      <input {...getInputProps6()} />
-                    )}
-                    {imagePreview6 && imagePreview6 != "No definido" ? (
-                      <>
-                        <div className={styles.supraBarStatus}>
-                          <div className={styles.barStatusDocs}>
-                            <div className={styles.headerCardStatus}>
-                              <div className={styles.boxIconStatus}>
-                                <TbCircleCheckFilled
-                                  className={styles.iconCheck}
-                                />
+                      <div
+                        className={
+                          imagePreview6 === "No definido"
+                            ? styles.boxInfoPay
+                            : styles.boxInfoPayActive
+                        }
+                        {...(imagePreview6 === "No definido"
+                          ? getRootProps6()
+                          : {})}
+                      >
+                        {imagePreview6 === "No definido" && (
+                          <input {...getInputProps6()} />
+                        )}
+                        {imagePreview6 && imagePreview6 != "No definido" ? (
+                          <>
+                            <div className={styles.supraBarStatus}>
+                              <div className={styles.barStatusDocs}>
+                                <div className={styles.headerCardStatus}>
+                                  <div className={styles.boxIconStatus}>
+                                    <TbCircleCheckFilled
+                                      className={styles.iconCheck}
+                                    />
+                                  </div>
+                                  <p className={styles.warninCC}>
+                                    Tercer volante de pago
+                                  </p>
+                                </div>
                               </div>
-                              <p className={styles.warninCC}>
-                                Tercer volante de pago
-                              </p>
-                            </div>
-                          </div>
 
-                          <div className={styles.optionsBox}>
-                            <div className={styles.boxIconsStatus}>
-                              <div
-                                className={styles.boxIcon}
-                                onClick={() => handleDeleteDoc(2)}
-                              >
-                                <TbTrash
-                                  className={styles.trashIcon}
-                                  size={20}
-                                />
+                              <div className={styles.optionsBox}>
+                                <div className={styles.boxIconsStatus}>
+                                  <div
+                                    className={styles.boxIcon}
+                                    onClick={() => handleDeleteDoc(2)}
+                                  >
+                                    <TbTrash
+                                      className={styles.trashIcon}
+                                      size={20}
+                                    />
+                                  </div>
+                                </div>
+
+                                <button
+                                  className={styles.btnOpenDoc}
+                                  onClick={() =>
+                                    handlerOpenModel({
+                                      link: imagePreview6,
+                                    })
+                                  }
+                                >
+                                  Revisar
+                                </button>
                               </div>
                             </div>
-
-                            <button
-                              className={styles.btnOpenDoc}
-                              onClick={() =>
-                                handlerOpenModel({
-                                  link: imagePreview6,
-                                })
-                              }
-                            >
-                              Revisar
-                            </button>
+                          </>
+                        ) : (
+                          <div className={styles.containerDropDocuments}>
+                            <div className={styles.boxIconPreview}>
+                              <CiMoneyCheck1
+                                className={styles.iconPreview}
+                                size={60}
+                              />
+                            </div>
+                            <p className={styles.textPreview}>
+                              {loadingProccessImg06 &&
+                                "Procesando tu volante..."}
+                              {!loadingProccessImg06 &&
+                                "Subir tercer volante de pago"}
+                            </p>
                           </div>
-                        </div>
-                      </>
-                    ) : (
-                      <div className={styles.containerDropDocuments}>
-                        <div className={styles.boxIconPreview}>
-                          <CiMoneyCheck1
-                            className={styles.iconPreview}
-                            size={60}
-                          />
-                        </div>
-                        <p className={styles.textPreview}>
-                          {loadingProccessImg06 && "Procesando tu volante..."}
-                          {!loadingProccessImg06 &&
-                            "Subir tercer volante de pago"}
-                        </p>
+                        )}
                       </div>
-                    )}
-                  </div>
 
-                  <h3 className={styles.titleVolantsCard}>
-                    Carta laboral actualizada
-                  </h3>
+                      <h3 className={styles.titleVolantsCard}>
+                        Carta laboral actualizada
+                      </h3>
 
-                  <div
-                    className={
-                      imagePreview3 === "No definido"
-                        ? styles.boxInfoPay
-                        : styles.boxInfoPayActive
-                    }
-                    {...(imagePreview3 === "No definido"
-                      ? getRootProps3()
-                      : {})}
-                  >
-                    {imagePreview3 === "No definido" && (
-                      <input {...getInputProps3()} />
-                    )}
-                    {imagePreview3 && imagePreview3 != "No definido" ? (
-                      <>
-                        <div className={styles.supraBarStatus}>
-                          <div className={styles.barStatusDocs}>
-                            <div className={styles.headerCardStatus}>
-                              <div className={styles.boxIconStatus}>
-                                <TbCircleCheckFilled
-                                  className={styles.iconCheck}
-                                />
+                      <div
+                        className={
+                          imagePreview3 === "No definido"
+                            ? styles.boxInfoPay
+                            : styles.boxInfoPayActive
+                        }
+                        {...(imagePreview3 === "No definido"
+                          ? getRootProps3()
+                          : {})}
+                      >
+                        {imagePreview3 === "No definido" && (
+                          <input {...getInputProps3()} />
+                        )}
+                        {imagePreview3 && imagePreview3 != "No definido" ? (
+                          <>
+                            <div className={styles.supraBarStatus}>
+                              <div className={styles.barStatusDocs}>
+                                <div className={styles.headerCardStatus}>
+                                  <div className={styles.boxIconStatus}>
+                                    <TbCircleCheckFilled
+                                      className={styles.iconCheck}
+                                    />
+                                  </div>
+                                  <p className={styles.warninCC}>
+                                    Carta Laboral
+                                  </p>
+                                </div>
                               </div>
-                              <p className={styles.warninCC}>Carta Laboral</p>
-                            </div>
-                          </div>
 
-                          <div className={styles.optionsBox}>
-                            <div className={styles.boxIconsStatus}>
-                              <div
-                                className={styles.boxIcon}
-                                onClick={() => handleDeleteDoc(3)}
-                              >
-                                <TbTrash
-                                  className={styles.trashIcon}
-                                  size={20}
-                                />
+                              <div className={styles.optionsBox}>
+                                <div className={styles.boxIconsStatus}>
+                                  <div
+                                    className={styles.boxIcon}
+                                    onClick={() => handleDeleteDoc(3)}
+                                  >
+                                    <TbTrash
+                                      className={styles.trashIcon}
+                                      size={20}
+                                    />
+                                  </div>
+                                </div>
+
+                                <button
+                                  className={styles.btnOpenDoc}
+                                  onClick={() =>
+                                    handlerOpenModel({
+                                      link: imagePreview3,
+                                    })
+                                  }
+                                >
+                                  Revisar
+                                </button>
                               </div>
                             </div>
-
-                            <button
-                              className={styles.btnOpenDoc}
-                              onClick={() =>
-                                handlerOpenModel({
-                                  link: imagePreview3,
-                                })
-                              }
-                            >
-                              Revisar
-                            </button>
+                          </>
+                        ) : (
+                          <div className={styles.containerDropDocuments}>
+                            <div className={styles.boxIconPreview}>
+                              <CiMoneyCheck1
+                                className={styles.iconPreview}
+                                size={60}
+                              />
+                            </div>
+                            <p className={styles.textPreview}>
+                              {loadingProccessImg03 &&
+                                "Procesando tu carta laboral..."}
+                              {!loadingProccessImg03 && "Subir carta laboral"}
+                            </p>
                           </div>
-                        </div>
-                      </>
-                    ) : (
-                      <div className={styles.containerDropDocuments}>
-                        <div className={styles.boxIconPreview}>
-                          <CiMoneyCheck1
-                            className={styles.iconPreview}
-                            size={60}
-                          />
-                        </div>
-                        <p className={styles.textPreview}>
-                          {loadingProccessImg03 &&
-                            "Procesando tu carta laboral..."}
-                          {!loadingProccessImg03 && "Subir carta laboral"}
-                        </p>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           </div>
 

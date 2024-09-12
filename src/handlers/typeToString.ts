@@ -16,10 +16,9 @@ const keyToStringMap: { [key in keyof ScalarUser | string]: string } = {
   place_of_birth: "Lugar de nacimiento",
   phone_whatsapp: "Numero de WhatsApp",
   documentSides: "Documento de lado y lado",
-  documentFront: "Documento frontal",
-  documentBack: "Documento lado trasero",
   number: "Numero de documento",
   imageWithCC: "Selfie de seguridad",
+  currentCompanie: "A que empresa perteneces?"
 };
 
 export const handleKeyToString = (key: string): string => {
