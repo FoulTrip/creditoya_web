@@ -2,14 +2,12 @@
 
 import React, { FormEvent, useState } from "react";
 import axios from "axios";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import styles from "./auth.module.css";
-import { AuthUser, ScalarUser } from "@/types/User";
+import { AuthUser } from "@/types/User";
 import { useGlobalContext } from "@/context/Auth";
 import { TbKey, TbMail, TbUserCog } from "react-icons/tb";
-import { SendMailSignup } from "@/handlers/sendEmails/SendCreate";
-// import AvatarUpload from "../AvatarChange";
 
 interface UserTypes {
   names: string;
