@@ -1,60 +1,50 @@
 export const generateMailCreateLoan = ({
   completeName,
   loanId,
+  reqCantity,
 }: {
   completeName: string;
   loanId: string;
+  reqCantity: string;
 }) => {
-  return `
-    <!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Creación de Préstamo</title>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
-      * {
-        margin: 0;
-        font-family: "Roboto", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <div style="justify-content: flex-start">
-        <img
-          style="width: 200px; height: auto"
-          src="https://res.cloudinary.com/dvquomppa/image/upload/v1717654334/credito_ya/cirm9vbdngqyxymcpfad.png"
-        />
-      </div>
-      <p style="margin-top: 1em">
-        ${completeName}, Nos complace informarte que tu solicitud de préstamo ha
-        sido creada exitosamente
-      </p>
-      <p style="margin-top: 1em">
-        Espera el proceso de aceptacion en tiempo real desde
-        <a
-          style="text-decoration: none"
-          href="https://creditoya.vercel.app/dashboard"
-          >tu cuenta</a
-        >
-      </p>
+  return `<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="Roboto, sans-serif" />
+    </mj-attributes>
+    <mj-style inline="inline">
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+    </mj-style>
+  </mj-head>
 
-      <p style="margin-top: 10px">
-        Mira los detalles completos
-        <a
-          style="text-decoration: none"
-          href="https://creditoya.vercel.app/req/${loanId}"
-          >aqui</a
-        >
-      </p>
-      <h5 style="margin-top: 2em; color: #6c6c6c">Saludos,</h5>
-      <h4>Equipo de Credito Ya</h4>
-    </main>
-  </body>
-</html>
-    `;
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-image width="200px" src="https://res.cloudinary.com/dvquomppa/image/upload/v1717654334/credito_ya/cirm9vbdngqyxymcpfad.png"></mj-image>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#FFEBCC">
+      <mj-column>
+        <mj-text font-size="16px" font-weight="bold" color="#FF6600">Nueva solicitud de préstamo creada</mj-text>
+        <mj-text font-size="12px" color="#FF6600">ID: ${loanId}</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="15px" font-weight="bold">Cantidad Solicitada</mj-text>
+        <mj-text font-size="12px">$ ${reqCantity}</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="12px">Para más detalles, por favor accede aquí a tu cuenta</mj-text>
+        <mj-button background-color="#4CAF50" color="#ffffff" href="https://creditoya.vercel.app/req/${loanId}">Ir a tu cuenta</mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
+`;
 };

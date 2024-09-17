@@ -3,6 +3,8 @@ import TokenService from "@/classes/TokenServices";
 import { NextResponse } from "next/server";
 import { generateMailSignup } from "@/handlers/sendEmails/generates/GenerateCreateMail";
 import { generateMailCreateLoan } from "@/handlers/sendEmails/generates/GenerateCreateLoan";
+import mjml2html from "mjml";
+import { MJMLtoHTML } from "@/handlers/MjmlToHtml";
 
 export async function POST(req: Request) {
   try {
@@ -31,16 +33,24 @@ export async function POST(req: Request) {
       name,
       addressee,
       loanId,
-    }: { name: string; addressee: string; loanId: string } = await req.json();
+      reqCantity,
+    }: { name: string; addressee: string; loanId: string; reqCantity: string } =
+      await req.json();
 
-    const content = generateMailCreateLoan({ completeName: name, loanId });
+    const content = generateMailCreateLoan({
+      completeName: name,
+      loanId,
+      reqCantity,
+    });
+
+    const html = await MJMLtoHTML(content)
 
     const data = await transporter.sendMail({
       from: `"Credito Ya" <${process.env.GOOGLE_EMAIL}>`,
       to: addressee,
       subject: "Nueva solicitud de prestamo",
       text: "Thanks you for creating your account",
-      html: content,
+      html: html,
     });
 
     console.log(data);

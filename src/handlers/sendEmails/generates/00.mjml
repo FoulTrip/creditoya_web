@@ -1,7 +1,4 @@
-export const generateMailSignup = (completeName: string) => {
-  const name = completeName.split(" ")[0] as string;
-
-  return `<mjml>
+<mjml>
   <mj-head>
     <mj-attributes>
       <mj-all font-family="Roboto, sans-serif" />
@@ -21,6 +18,7 @@ export const generateMailSignup = (completeName: string) => {
 
     <mj-section>
       <mj-column>
+      
         <mj-text font-size="20px" line-height="0px" padding-bottom="20px">
           David, ¡Bienvenido a Credito Ya!
         </mj-text>
@@ -49,5 +47,3 @@ export const generateMailSignup = (completeName: string) => {
     </mj-section>
   </mj-body>
 </mjml>
-`;
-};

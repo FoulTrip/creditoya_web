@@ -1,7 +1,7 @@
 import { transporter } from "@/lib/NodeMailer";
-import TokenService from "@/classes/TokenServices";
 import { NextResponse } from "next/server";
 import { generateMailSignup } from "@/handlers/sendEmails/generates/GenerateCreateMail";
+import { MJMLtoHTML } from "@/handlers/MjmlToHtml";
 
 export async function POST(req: Request) {
   try {
@@ -9,13 +9,14 @@ export async function POST(req: Request) {
       await req.json();
 
     const content = generateMailSignup(name);
+    const html = await MJMLtoHTML(content);
 
     const data = await transporter.sendMail({
       from: `"Credito Ya" <${process.env.GOOGLE_EMAIL}>`,
       to: addressee,
       subject: "Bienvenido a Credito Ya",
-      text: "Thanks you for creating your account",
-      html: content,
+      text: "Thank you for creating your account",
+      html: html,
     });
 
     console.log(data);
