@@ -43,6 +43,39 @@ function Signup() {
     e.preventDefault();
     setIsLoading(true);
 
+    // Expresión regular para validar formato de correo electrónico
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    // Verificación adicional para dominios comunes
+    const commonDomains = [
+      "gmail.com",
+      "outlook.com",
+      "yahoo.com",
+      "icloud.com",
+      "hotmail.com",
+    ];
+
+    if (!emailRegex.test(data.email)) {
+      toast.error("Por favor ingresa un correo electrónico válido.");
+      setIsLoading(false);
+      return; // Detener la ejecución si el correo no es válido
+    }
+
+    // Extraer el dominio del correo electrónico
+    const emailDomain = data.email.split("@")[1];
+
+    // Verificar si el dominio coincide con uno de los dominios comunes
+    const domainIsCommon = commonDomains.some(
+      (domain) => domain === emailDomain
+    );
+
+    // Si el dominio es similar pero incorrecto, mostrar error
+    if (!domainIsCommon) {
+      toast.error(`Escribe un correo electronico valido`);
+      setIsLoading(false);
+      return; // Detener la ejecución si el dominio es incorrecto
+    }
+
     try {
       const response = await axios.post("/api/user/create", data);
 
@@ -91,6 +124,26 @@ function Signup() {
       }
     }
   };
+
+  // // Función para sugerir dominios comunes
+  // const sugerirDominio = (emailDomain: string) => {
+  //   const suggestions = {
+  //     gmil: "gmail.com",
+  //     yahooo: "yahoo.com",
+  //     outlok: "outlook.com",
+  //     iclud: "icloud.com",
+  //     hotmial: "hotmail.com",
+  //   };
+
+  //   // Buscar una sugerencia basada en errores tipográficos
+  //   for (const [error, suggestion] of Object.entries(suggestions)) {
+  //     if (emailDomain.includes(error)) {
+  //       return suggestion;
+  //     }
+  //   }
+
+  //   return ""; // No hay sugerencia si no se encuentra un error común
+  // };
 
   return (
     <>
