@@ -125,25 +125,6 @@ function Signup() {
     }
   };
 
-  // // Función para sugerir dominios comunes
-  // const sugerirDominio = (emailDomain: string) => {
-  //   const suggestions = {
-  //     gmil: "gmail.com",
-  //     yahooo: "yahoo.com",
-  //     outlok: "outlook.com",
-  //     iclud: "icloud.com",
-  //     hotmial: "hotmail.com",
-  //   };
-
-  //   // Buscar una sugerencia basada en errores tipográficos
-  //   for (const [error, suggestion] of Object.entries(suggestions)) {
-  //     if (emailDomain.includes(error)) {
-  //       return suggestion;
-  //     }
-  //   }
-
-  //   return ""; // No hay sugerencia si no se encuentra un error común
-  // };
 
   return (
     <>

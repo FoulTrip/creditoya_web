@@ -12,7 +12,6 @@ export async function POST(req: Request) {
     }
 
     const token = authorizationHeader.split(" ")[1];
-
     const decodedToken = TokenService.verifyToken(
       token,
       process.env.JWT_SECRET as string
@@ -27,8 +26,9 @@ export async function POST(req: Request) {
     const response = await UserService.checkMissingFields(userId);
     return NextResponse.json({ success: true, data: response });
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json({ success: false, error: error.message });
-    }
+    return NextResponse.json({
+      success: false,
+      error: error instanceof Error ? error.message : "Error desconocido",
+    });
   }
 }
