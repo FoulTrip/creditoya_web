@@ -125,7 +125,6 @@ function Signup() {
     }
   };
 
-
   return (
     <>
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -140,6 +139,7 @@ function Signup() {
             placeholder="Nombre(s)"
             onChange={handleChange}
             value={data.names}
+            autoComplete="off"
           />
         </div>
 
@@ -154,6 +154,7 @@ function Signup() {
             placeholder="Primer Apellido"
             onChange={handleChange}
             value={data.firstLastName}
+            autoComplete="off"
           />
         </div>
 
@@ -168,6 +169,7 @@ function Signup() {
             placeholder="Segundo Apellido"
             onChange={handleChange}
             value={data.secondLastName}
+            autoComplete="off"
           />
         </div>
 
@@ -182,6 +184,7 @@ function Signup() {
             placeholder="Correo Electronico"
             onChange={handleChange}
             value={data.email}
+            autoComplete="off"
           />
         </div>
 
@@ -196,6 +199,7 @@ function Signup() {
             placeholder="Contraseña"
             onChange={handleChange}
             value={data.password}
+            autoComplete="off"
           />
         </div>
 

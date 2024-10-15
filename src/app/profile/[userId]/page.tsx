@@ -44,9 +44,7 @@ function Profile({ params }: { params: { userId: string } }) {
   const [loadingData, setLoadingData] = useState(true);
   const [isWarnComplete, setIsWarnComplete] = useState(false);
   const [dataProfile, setDataProfile] = useState<ScalarUser | null>(null);
-
   const [v, setV] = useState(false);
-
   const [numberCc, setNumberCc] = useState<string | null>(null);
   const [upId, setUpId] = useState<string | null>(null);
   const [selectedImagePerfil, setSelectedImagePerfil] = useState<string | null>(
@@ -59,6 +57,8 @@ function Profile({ params }: { params: { userId: string } }) {
   const [openViewPdf, setOpenViewPdf] = useState<boolean>(false);
   const [link, setLink] = useState<string>();
   const [isProfileComplete, setIsProfileComplete] = useState<boolean>(false);
+
+  const router = useRouter();
 
   const handleChangeProfile = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -115,8 +115,6 @@ function Profile({ params }: { params: { userId: string } }) {
   const handleCloseModel = () => {
     setOpenViewPdf(false);
   };
-
-  const router = useRouter();
 
   useEffect(() => {
     // Check if the user is authenticated and authorized
@@ -205,7 +203,11 @@ function Profile({ params }: { params: { userId: string } }) {
         dataProfile as ScalarUser;
 
       const hasEmptyFields = Object.values(dataToUpdate).some(
-        (value) => value == "" || value == null || value == undefined
+        (value) =>
+          value == "" ||
+          value == null ||
+          value == undefined ||
+          (typeof value === "string" && value.trim() === "")
       );
 
       if (hasEmptyFields) throw new Error("Ningun dato puede quedar vacio");
@@ -690,6 +692,7 @@ function Profile({ params }: { params: { userId: string } }) {
                         value={dataProfile?.names}
                         onChange={(e) => handleChangeProfile(e, "names")}
                         name="names"
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -705,6 +708,7 @@ function Profile({ params }: { params: { userId: string } }) {
                           handleChangeProfile(e, "firstLastName")
                         }
                         name="firstLastName"
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -720,6 +724,7 @@ function Profile({ params }: { params: { userId: string } }) {
                           handleChangeProfile(e, "secondLastName")
                         }
                         name="secondLastName"
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -737,6 +742,7 @@ function Profile({ params }: { params: { userId: string } }) {
                                 .split("T")[0]
                             : ""
                         }
+                        autoComplete="off"
                         onChange={(e) => handleChangeProfile(e, "birth_day")}
                         name="birth_day"
                       />
@@ -758,6 +764,7 @@ function Profile({ params }: { params: { userId: string } }) {
                           handleChangeProfile(e, "place_of_birth")
                         }
                         name="place_of_birth"
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -783,6 +790,7 @@ function Profile({ params }: { params: { userId: string } }) {
                         value={dataProfile?.email || ""}
                         onChange={(e) => handleChangeProfile(e, "email")}
                         name="email"
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -800,6 +808,7 @@ function Profile({ params }: { params: { userId: string } }) {
                         }
                         onChange={(e) => handleChangeProfile(e, "phone")}
                         name="phone"
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -819,6 +828,7 @@ function Profile({ params }: { params: { userId: string } }) {
                           handleChangeProfile(e, "residence_phone_number")
                         }
                         name="residence_phone_number"
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -838,6 +848,7 @@ function Profile({ params }: { params: { userId: string } }) {
                           handleChangeProfile(e, "phone_whatsapp")
                         }
                         name="phone_whatsapp"
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -857,6 +868,7 @@ function Profile({ params }: { params: { userId: string } }) {
                           handleChangeProfile(e, "residence_address")
                         }
                         name="residence_address"
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -874,6 +886,7 @@ function Profile({ params }: { params: { userId: string } }) {
                         }
                         onChange={(e) => handleChangeProfile(e, "city")}
                         name="city"
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -898,6 +911,7 @@ function Profile({ params }: { params: { userId: string } }) {
                 type="text"
                 value={numberCc == "No definido" ? "" : (numberCc as string)}
                 onChange={(e) => setNumberCc(e.target.value)}
+                autoComplete="off"
               />
               <button
                 onClick={handleSubmitNumberCc}
