@@ -202,15 +202,15 @@ function Profile({ params }: { params: { userId: string } }) {
       const { id, password, createdAt, updatedAt, ...dataToUpdate } =
         dataProfile as ScalarUser;
 
-      const hasEmptyFields = Object.values(dataToUpdate).some(
-        (value) =>
-          value == "" ||
-          value == null ||
-          value == undefined ||
-          (typeof value === "string" && value.trim() === "")
-      );
+      // const hasEmptyFields = Object.values(dataToUpdate).some(
+      //   (value) =>
+      //     value == "" ||
+      //     value == null ||
+      //     value == undefined ||
+      //     (typeof value === "string" && value.trim() === "")
+      // );
 
-      if (hasEmptyFields) throw new Error("Ningun dato puede quedar vacio");
+      // if (hasEmptyFields) throw new Error("Ningun dato puede quedar vacio");
 
       // Enviar solo las propiedades definidas en updateData
       const response = await axios.put(
