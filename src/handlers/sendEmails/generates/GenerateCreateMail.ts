@@ -22,7 +22,7 @@ export const generateMailSignup = (completeName: string) => {
     <mj-section>
       <mj-column>
         <mj-text font-size="20px" line-height="0px" padding-bottom="20px">
-          David, ¡Bienvenido a Credito Ya!
+          ${completeName} ¡Bienvenido a Credito Ya!
         </mj-text>
 
         <mj-text font-size="16px" line-height="1.3">
