@@ -78,6 +78,7 @@ export type ScalarLoanApplication = {
   labor_card?: string;
   upid_labor_card?: string;
   entity: string;
+  isBan?: string;
   terms_and_conditions: boolean;
   created_at: Date;
   updated_at: Date;

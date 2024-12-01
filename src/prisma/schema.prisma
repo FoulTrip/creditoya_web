@@ -24,6 +24,7 @@ model User {
     residence_address      String            @default("No definido")
     place_of_birth         String            @default("No definido")
     city                   String            @default("No definido")
+    isBan                  Boolean?
     Document               Document[]
     createdAt              DateTime          @default(now())
     updatedAt              DateTime          @updatedAt

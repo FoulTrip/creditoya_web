@@ -2,14 +2,12 @@
 
 import React, { FormEvent, useState } from "react";
 import axios from "axios";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import styles from "./auth.module.css";
-import { AuthUser, ScalarUser } from "@/types/User";
+import { AuthUser } from "@/types/User";
 import { useGlobalContext } from "@/context/Auth";
 import { TbKey, TbMail, TbUserCog } from "react-icons/tb";
-import { SendMailSignup } from "@/handlers/sendEmails/SendCreate";
-// import AvatarUpload from "../AvatarChange";
 
 interface UserTypes {
   names: string;
@@ -44,6 +42,39 @@ function Signup() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+
+    // Expresión regular para validar formato de correo electrónico
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    // Verificación adicional para dominios comunes
+    const commonDomains = [
+      "gmail.com",
+      "outlook.com",
+      "yahoo.com",
+      "icloud.com",
+      "hotmail.com",
+    ];
+
+    if (!emailRegex.test(data.email)) {
+      toast.error("Por favor ingresa un correo electrónico válido.");
+      setIsLoading(false);
+      return; // Detener la ejecución si el correo no es válido
+    }
+
+    // Extraer el dominio del correo electrónico
+    const emailDomain = data.email.split("@")[1];
+
+    // Verificar si el dominio coincide con uno de los dominios comunes
+    const domainIsCommon = commonDomains.some(
+      (domain) => domain === emailDomain
+    );
+
+    // Si el dominio es similar pero incorrecto, mostrar error
+    if (!domainIsCommon) {
+      toast.error(`Escribe un correo electronico valido`);
+      setIsLoading(false);
+      return; // Detener la ejecución si el dominio es incorrecto
+    }
 
     try {
       const response = await axios.post("/api/user/create", data);
@@ -108,6 +139,7 @@ function Signup() {
             placeholder="Nombre(s)"
             onChange={handleChange}
             value={data.names}
+            autoComplete="off"
           />
         </div>
 
@@ -122,6 +154,7 @@ function Signup() {
             placeholder="Primer Apellido"
             onChange={handleChange}
             value={data.firstLastName}
+            autoComplete="off"
           />
         </div>
 
@@ -136,6 +169,7 @@ function Signup() {
             placeholder="Segundo Apellido"
             onChange={handleChange}
             value={data.secondLastName}
+            autoComplete="off"
           />
         </div>
 
@@ -150,6 +184,7 @@ function Signup() {
             placeholder="Correo Electronico"
             onChange={handleChange}
             value={data.email}
+            autoComplete="off"
           />
         </div>
 
@@ -164,6 +199,7 @@ function Signup() {
             placeholder="Contraseña"
             onChange={handleChange}
             value={data.password}
+            autoComplete="off"
           />
         </div>
 

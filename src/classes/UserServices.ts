@@ -284,7 +284,7 @@ class UserService {
     });
   }
 
-  // Method to check for missing fields in User and Document models
+  // Método optimizado para verificar campos faltantes en modelos de User y Document
   static async checkMissingFields(
     userId: string
   ): Promise<{ complete: boolean; missing: string[] }> {
@@ -299,37 +299,48 @@ class UserService {
 
     const missingFields: string[] = [];
 
-    // Check user fields
-    // if (!user.avatar || user.avatar === "No definido")
-    //   missingFields.push("avatar");
-    if (!user.phone || user.phone === "No definido")
+    // Verificar campos del usuario
+    if (!user.phone || user.phone.trim() === "" || user.phone === "No definido")
       missingFields.push("phone");
     if (
       !user.residence_phone_number ||
+      user.residence_phone_number.trim() === "" ||
       user.residence_phone_number === "No definido"
     )
       missingFields.push("residence_phone_number");
-    if (!user.phone_whatsapp || user.phone_whatsapp === "No definido")
+    if (
+      !user.phone_whatsapp ||
+      user.phone_whatsapp.trim() === "" ||
+      user.phone_whatsapp === "No definido"
+    )
       missingFields.push("phone_whatsapp");
     if (!user.birth_day) missingFields.push("birth_day");
     if (!user.genre || user.genre === "No") missingFields.push("genre");
-    if (!user.residence_address || user.residence_address === "No definido")
+    if (
+      !user.residence_address ||
+      user.residence_address.trim() === "" ||
+      user.residence_address === "No definido"
+    )
       missingFields.push("residence_address");
-    if (!user.city || user.city === "No definido") missingFields.push("city");
-    if (!user.place_of_birth || user.place_of_birth === "No definido")
+    if (!user.city || user.city.trim() === "" || user.city === "No definido")
+      missingFields.push("city");
+    if (
+      !user.place_of_birth ||
+      user.place_of_birth.trim() === "" ||
+      user.place_of_birth === "No definido"
+    )
       missingFields.push("place_of_birth");
-    if (!user.currentCompanie)
-      missingFields.push("currentCompanie");
 
-    // Check document fields
+    // Verificar campos del documento
     if (!user.Document.length) {
       missingFields.push("documentSides", "number", "imageWithCC");
     } else {
       user.Document.forEach((document) => {
-        if (document.documentSides === "No definido")
+        if (!document.documentSides || document.documentSides === "No definido")
           missingFields.push("documentSides");
-        if (document.number === "No definido") missingFields.push("number");
-        if (document.imageWithCC === "No definido")
+        if (!document.number || document.number === "No definido")
+          missingFields.push("number");
+        if (!document.imageWithCC || document.imageWithCC === "No definido")
           missingFields.push("imageWithCC");
       });
     }

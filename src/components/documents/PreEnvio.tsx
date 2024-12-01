@@ -22,17 +22,13 @@ function PreEnvio({ data, Success, token, completeName, mail }: PreEnvioProps) {
   const [userInput, setUserInput] = useState<Array<string>>(Array(5).fill(""));
   const [codeSent, setCodeSent] = useState(false);
   const inputsRef = useRef<HTMLInputElement[]>([]);
-  const effectRan = useRef(false);
 
   useEffect(() => {
-    // Only in Develop
-    // if (effectRan.current) return;
-
     const sendCodeMail = async ({ code }: { code: string }) => {
       const numberCode: number = Number(code);
       const name: string = completeName;
       try {
-        const response = await axios.post(
+        await axios.post(
           "/api/mail/2f",
           {
             addressee: mail,
@@ -41,7 +37,6 @@ function PreEnvio({ data, Success, token, completeName, mail }: PreEnvioProps) {
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        console.log(response.data);
         setCodeSent(true);
       } catch (error) {
         console.error("Error sending code:", error);
@@ -56,26 +51,25 @@ function PreEnvio({ data, Success, token, completeName, mail }: PreEnvioProps) {
       setVerifyNumber(Array.from(String(newKey)));
       sendCodeMail({ code: newKey });
     }
-
-    // Only in Develop
-    // effectRan.current = true;
   }, [codeSent, completeName, mail, token]);
 
   const handleChange =
     (position: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newInput = [...userInput];
+      newInput[position] = e.target.value;
+      setUserInput(newInput);
+
       if (e.target.value === "") return;
-      userInput[position] = e.target.value;
-      setUserInput([...userInput]);
+
       if (position === verifyNumber.length - 1) {
-        handleSubmit();
-      }
-      if (position < verifyNumber.length - 1) {
+        handleSubmit(newInput);
+      } else {
         inputsRef.current[position + 1]?.focus();
       }
     };
 
-  const handleSubmit = () => {
-    if (userInput.join("") === verifyNumber.join("")) {
+  const handleSubmit = (inputArray = userInput) => {
+    if (inputArray.join("") === verifyNumber.join("")) {
       Success();
       toast.success("Código correcto");
     } else {
@@ -88,7 +82,7 @@ function PreEnvio({ data, Success, token, completeName, mail }: PreEnvioProps) {
   return (
     <>
       <main style={{ display: "grid", placeContent: "center", height: "100%" }}>
-        <div style={{}}>
+        <div>
           <div className={styles.headerSignature}>
             <h1>Verificación de seguridad</h1>
           </div>

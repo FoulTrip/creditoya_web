@@ -1,5 +1,4 @@
 import { transporter } from "@/lib/NodeMailer";
-import TokenService from "@/classes/TokenServices";
 // import { EmailTemplate } from "@/components/mail/Template";
 import { NextResponse } from "next/server";
 

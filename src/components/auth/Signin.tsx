@@ -74,6 +74,7 @@ function Signin() {
               placeholder="Correo Electronico"
               onChange={handleChange}
               value={formData.email}
+              autoComplete="off"
             />
           </div>
 
@@ -88,6 +89,7 @@ function Signin() {
               placeholder="Contraseña"
               onChange={handleChange}
               value={formData.password}
+              autoComplete="off"
             />
           </div>
 
